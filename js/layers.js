@@ -1688,27 +1688,25 @@ addLayer("per", {
         22: {
             title: "Tesseracts.. wait what",
             description: "^4 money.",
-            cost: new Decimal("1e1.291e33"),
+            cost: new Decimal("1e9.999e32"),
             currencyInternalName: "points",
             currencyLocation() { return player },
             currencyDisplayName: "money",
             unlocked(){return hasMilestone('p',34)},
         },
         23: {
-            title: "",
-            description: "",
+            title: "VOID",
+            description: "The void is coming.",
             cost: new Decimal(1.79e308),
             currencyInternalName: "points",
             currencyLocation() { return player.p },
             currencyDisplayName: "prestiges",
             style() {
-                if (hasUpgrade(this.layer, this.id)) {
-                    return {
+                return {
                         'background-color': '#000000',
                         'color': '#ffffff',
                         'box-shadow': '0px 0px 15px #ff0000',
                         'border-color': '#ff0000'
-                    }
                 }
             },
             unlocked(){return hasMilestone('p',34)},
@@ -1732,20 +1730,18 @@ addLayer("per", {
             unlocked(){return hasMilestone('p',34)},
         },
         32: {
-            title: "",
-            description: "",
+            title: "VOID",
+            description: "The void is coming.",
             cost: new Decimal(1.79e308),
             currencyInternalName: "points",
             currencyLocation() { return player.p },
             currencyDisplayName: "prestiges",
             style() {
-                if (hasUpgrade(this.layer, this.id)) {
-                    return {
+                return {
                         'background-color': '#000000',
                         'color': '#ffffff',
                         'box-shadow': '0px 0px 15px #ff0000',
                         'border-color': '#ff0000'
-                    }
                 }
             },
             unlocked(){return hasMilestone('p',34)},

@@ -204,13 +204,13 @@ var colors = {
 	},
 	exquisite: {
 		1: "#00aa55",
-		2: "#00954a",
-		3: "#006734",
+		2: "#008844",
+		3: "#006633",
 		color: "#dfdfdf",
 		points: "#00aa55",
 		locked: "#bf8f8f",
-		background: "#00140a",
-		background_tooltip: "rgba(0, 20, 10, 0.75)",
+		background: "#030e05",
+		background_tooltip: "rgba(3, 14, 5, 0.85)",
 	},
 }
 function changeTheme() {
