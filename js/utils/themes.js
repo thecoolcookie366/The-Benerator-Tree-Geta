@@ -1,5 +1,22 @@
 // ************ Themes ************
-var themes = ["default", "binary"]
+function getAvailableThemes() {
+	let list = ["default", "binary"]
+	if (player.points.gte("1e1e9")) {
+		list.push("softcap")
+	}
+	if (player.points.gte("1e1e33")) {
+		list.push("softcap2")
+	}
+	if (player.points.gte("1e1.796e308")) {
+		list.push("softcap3")
+	}
+	if (player.points.gte("eeeeee2")) {
+		list.push("hardcap")
+	}
+	return list
+}
+
+var themes = ["default", "binary", "softcap", "softcap2", "softcap3", "hardcap"]
 
 var colors = {
 	default: {
@@ -22,6 +39,46 @@ var colors = {
 		background: "#000000",
 		background_tooltip: "rgba(13, 37, 1, 0.75)",
 	},
+	softcap: {
+		1: "#990000",
+		2: "#660000",
+		3: "#440000",
+		color: "#d1c7a5",
+		points: "#ffcc00",
+		locked: "#555555",
+		background: "#1c1c1c",
+		background_tooltip: "rgba(40, 40, 40, 0.85)",
+	},
+	softcap2: {
+		1: "#ff6600",
+		2: "#b34700",
+		3: "#803300",
+		color: "#e6ccb3",
+		points: "#ff5500",
+		locked: "#3d3d3d",
+		background: "#140e0a",
+		background_tooltip: "rgba(41, 23, 12, 0.85)",
+	},
+	softcap3: {
+		1: "#00b3ff",
+		2: "#0077aa",
+		3: "#004466",
+		color: "#cccccc",
+		points: "#e6e6e6",
+		locked: "#1a1a1a",
+		background: "#12151c",
+		background_tooltip: "rgba(18, 21, 28, 0.9)",
+	},
+	hardcap: {
+		1: "#9900ee",
+		2: "#6600aa",
+		3: "#330066",
+		color: "#e6ccff",
+		points: "#cc00ff",
+		locked: "#222222",
+		background: "#050008",
+		background_tooltip: "rgba(25, 0, 35, 0.9)",
+	},
 }
 function changeTheme() {
 
@@ -37,14 +94,14 @@ function getThemeName() {
 }
 
 function switchTheme() {
-	let index = themes.indexOf(options.theme)
-	if (options.theme === null || index >= themes.length-1 || index < 0) {
-		options.theme = themes[0];
+	let available = getAvailableThemes()
+	let index = available.indexOf(options.theme)
+	if (options.theme === null || index >= available.length-1 || index < 0) {
+		options.theme = available[0];
 	}
 	else {
 		index ++;
-		options.theme = themes[index];
-		options.theme = themes[1];
+		options.theme = available[index];
 	}
 	changeTheme();
 	resizeCanvas();
