@@ -5,15 +5,14 @@ let modInfo = {
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "Cookie's Creations Server",
-	discordLink: "https://discord.gg/aUbDYX5Z3a",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 296280,  // In hours
+	discordLink: "https://discord.gg",
+	initialStartPoints: new Decimal (10), 
+	offlineLimit: 296280,  
 }
 
-// Set your version in num and name
 let VERSION = {
-	num: "1.01",
-	name: "The Leveling Update",
+	num: "1.02",
+	name: "The Puzzling Update: Part 1",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -23,6 +22,13 @@ let changelog = `<h1>Changelog:</h1><br>
 	B = medium update <br>
 	C = small update <br>
 	<br>
+	<h2>v1.02</h2><br>
+		- Added Primary and Secondary, 2/4 of the puzzles.<br>
+		- Added 2 new generators, once again.<br>
+		- Ascension. Enjoy!<br>
+		- A lot more themes.<br>
+		- A bunch of other things. So many I can't even count them all.<br>
+		<br>
 	<h2>v1.01</h2><br>
 		- Added XP and Levels.<br>
 		- Added 2 new generators.<br>
@@ -34,20 +40,16 @@ let changelog = `<h1>Changelog:</h1><br>
 
 let winText = `<i>You prestiged your way to the end! Now... how about you wait for the next update?</i>`
 
-// If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
-// (The ones here are examples, all official functions are already taken care of)
 var doNotCallTheseFunctionsEveryTick = ["blowUpEverything"]
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
 }
 
-// Determines if it should show points/sec
 function canGenPoints(){
 	return true
 }
 
-// Calculate points/sec!
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
@@ -122,18 +124,44 @@ function getPointGen() {
 	if (hasUpgrade('per', 12)) gain = gain.pow("1.2")
 	if (hasMilestone('terri', 0)) gain = gain.pow("1.25")
 	if (hasUpgrade('med', 23)) gain = gain.pow("1.5")
-	let cap = new Decimal("1e1e9")
-    if (gain.gte(cap)) {
-        gain = cap.times(gain.div(cap).sqrt())
-    }
-	let cap2 = new Decimal("1e1e33")
-    if (gain.gte(cap2)) {
-        gain = cap2.times(gain.div(cap2).root(10))
-    }
-	let cap3 = new Decimal("1e1.796e308")
-    if (gain.gte(cap3)) {
-        gain = cap3.times(gain.div(cap3).log10().add(1))
-    }
+	if (hasUpgrade('per', 34)) gain = gain.pow("2")
+	if (hasMilestone('a', 0) && player.p.points.lte("1e1000")) gain = gain.pow("2")
+	if (hasUpgrade('per', 13)) gain = gain.pow("3")
+	if (hasUpgrade('per', 22)) gain = gain.pow("4")
+	if (hasMilestone('p', 35)) gain = gain.pow("1e6")
+	if (hasMilestone('a', 0) && player.p.points.gte("1e1000")) gain = gain.pow("1e303")
+	if (!hasUpgrade('per', 14)) {
+		let cap = new Decimal("1e1e9")
+		if (gain.gte(cap)) {
+			gain = cap.times(gain.div(cap).sqrt())
+		}
+		let cap2 = new Decimal("1e1e33")
+		if (gain.gte(cap2)) {
+			gain = cap2.times(gain.div(cap2).root(10))
+		}
+		let cap3 = new Decimal("1e1.796e308")
+		if (gain.gte(cap3)) {
+			gain = cap3.times(gain.div(cap3).log10().add(1))
+		}
+	}
+	if (hasUpgrade('per', 14) && player.points.gte("1e1e2e5")) {
+		let cap = new Decimal("1e1e9")
+		if (gain.gte(cap)) {
+			gain = cap.times(gain.div(cap).sqrt())
+		}
+		let cap2 = new Decimal("1e1e33")
+		if (gain.gte(cap2)) {
+			gain = cap2.times(gain.div(cap2).root(10))
+		}
+		let cap3 = new Decimal("1e1.796e308")
+		if (gain.gte(cap3)) {
+			gain = cap3.times(gain.div(cap3).log10().add(1))
+		}
+		let fakeHardcap = new Decimal("1e1e2e5")
+		if (player.points.gte(fakeHardcap)) {
+    		return new Decimal(0)
+    	}
+	}
 	let hardcapValue = new Decimal("(e^6)2") 
     if (player.points.gte(hardcapValue)) {
         return new Decimal(0)
@@ -142,50 +170,55 @@ function getPointGen() {
 	return gain
 }
 
-// You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
 }}
 
-// Display extra things at the top of the page
 var displayThings = [
     function() {
         let noticeText = ""
-        if (player.points.gte("1e1e9")) {
-            noticeText += "<span style='color: #ff7f7f; font-weight: bold; font-size: 14px;'>Softcap: Money gain square rooted past e1e9 money!</span>"
+        if (!hasUpgrade('per', 14)) {
+            if (player.points.gte("1e1e9")) {
+                noticeText += "<span style='color: #ff7f7f; font-weight: bold; font-size: 14px;'>Softcap: Money gain square rooted past e1e9 money!</span>"
+            }
+            if (player.points.gte("1e1e33")) {
+                noticeText += "<br><span style='color: #ff4c4c; font-weight: bold; font-size: 14px;'>Softcap²: Money gain tenth rooted past e1e33 money!</span>"
+            }
+            if (player.points.gte("1e1.796e308")) {
+                noticeText += "<br><span style='color: #ff1111; font-weight: bold; font-size: 14px;'>Softcap³: Money gain is heavily rooted past e1.796e308 money!</span>"
+            }
         }
-        if (player.points.gte("1e1e33")) {
-            noticeText += "<br><span style='color: #ff4c4c; font-weight: bold; font-size: 14px;'>Softcap²: Money gain tenth rooted past e1e33 money!</span>"
-        }
-		if (player.points.gte("1e1.796e308")) {
-            noticeText += "<br><span style='color: #ff1111; font-weight: bold; font-size: 14px;'>Softcap³: Money gain is heavily rooted past e1.796e308 money!</span>"
+		if (hasUpgrade('per', 14) && player.points.gte("1e1e2e5")) {
+            if (player.points.gte("1e1e9")) {
+                noticeText += "<span style='color: #ff7f7f; font-weight: bold; font-size: 14px;'>Softcap: Money gain square rooted past e1e9 money!</span>"
+            }
+            if (player.points.gte("1e1e33")) {
+                noticeText += "<br><span style='color: #ff4c4c; font-weight: bold; font-size: 14px;'>Softcap²: Money gain tenth rooted past e1e33 money!</span>"
+            }
+            if (player.points.gte("1e1.796e308")) {
+                noticeText += "<br><span style='color: #ff1111; font-weight: bold; font-size: 14px;'>Softcap³: Money gain is heavily rooted past e1.796e308 money!</span>"
+            }
+			if (player.points.gte("1e1e1e5")) {
+                noticeText += "<br><span style='color: #b70202; font-weight: bold; font-size: 14px;'>Hardcap?: Nuh uh, you won't get more than e1e200,000 money until v1.03 releases!</span>"
+            }
         }
 		if (player.points.gte("(e^6)2")) {
-            noticeText += "<br><span style='color: #b70202; font-weight: bold; font-size: 14px;'>Hardcap: The physics of this universe cap you at 2.471F6 money!</span>"
+            noticeText += (noticeText ? "<br>" : "") + "<span style='color: #ca0aff; font-weight: bold; font-size: 14px;'>Hardcap: The physics of this universe cap you at 2.471F6 money!</span>"
         }
         return noticeText
     }
 ]
 
-// Determines when the game "ends"
 function isEndgame() {
-	return player.p.points.gte(new Decimal("210"))
+	return player.a.points.gte(new Decimal("2"))
 }
 
-
-
-// Less important things beyond this point!
-
-// Style for the background, can be a function
 var backgroundStyle = {
 
 }
 
-// You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(3600) // Default is 1 hour which is just arbitrarily large
+	return(3600) 
 }
 
-// Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
-// you can cap their current resources with this.
 function fixOldSave(oldVersion){
 }

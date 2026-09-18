@@ -31,9 +31,10 @@ addLayer("p", {
         return exp
     },
     resetsNothing() {return true},
-    canBuyMax() {return hasMilestone('p',27)},
-    autoPrestige() {return hasMilestone('snd',0)},
+    canBuyMax() {return hasMilestone('p',27) || hasMilestone('a',0)},
+    autoPrestige() {return hasMilestone('snd',0) || hasMilestone('a',0)},
     onReset() {if (player.points.lte(1)) player.points = new Decimal (1)},
+    onReset() {if (hasUpgrade('per', 24)) player.p.points = player.p.points.mul(11)},
     effectDescription() {
         return 'here is the color index:<br>'+
                '<span style="color: #5cb85c; font-weight: bold; font-size: 14px;">Green</span> means first milestone.<br>' +
@@ -579,6 +580,21 @@ addLayer("p", {
                 }
             },
         },
+        35: {
+        requirementDescription: "<h3><span>The Finale (Prestige 1e1,500)</span></h3>",
+        effectDescription: "<i>^1e6 money. Also unlock a new peculiar layer...</i>",
+        done() { return player.p.points.gte("1e1500") },
+        style() {
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                        'background-color': '#540808',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #ff0000',
+                        'border-color': '#ff0000'
+                    }
+                }
+            },
+        },
     },
     //hotkeys:[{key:"p",description:"P: Reset for points (universe 1)",onPress(){if (canReset(this.layer))doReset(this.layer);}}],
     branches:[''],
@@ -586,6 +602,121 @@ addLayer("p", {
     layerShown(){return true},
 
 
+})
+
+addLayer("a", {
+    name: "ascension", 
+    symbol: "A", 
+    position: 1, 
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#9a9797",
+    nodeStyle: {
+        background: "linear-gradient( #ff6200, #000000, #d400ff)",
+        backgroundOrigin: "border-box",
+        borderColor: "rgba(0,0,0,0.5)",
+        color: "rgb(255, 255, 255)",
+    },
+    tooltip() { 
+        return "Ascension " + formatWhole(player[this.layer].points); 
+    },
+    requires() {
+        let costs = [
+            new Decimal("5e9999"), 
+            new Decimal("5e99999"),
+            new Decimal("5e199999"),
+            new Decimal("(e^1.79e308)2"),
+        ]
+        let currentPoints = player[this.layer].points.toNumber()
+        return costs[currentPoints]
+    },
+    resource: "ascensions", 
+    baseResource: "prestiges", 
+    baseAmount() { return player.p.points }, 
+    type: "static", 
+    onPrestige(gain) {
+        if (layers["per"] !== undefined) {
+            layerDataReset("terri");
+            layerDataReset("p");
+            layerDataReset("awf");
+            layerDataReset("dia");
+            layerDataReset("med");
+            layerDataReset("xp");
+            layerDataReset("alr");
+            layerDataReset("lv");
+            layerDataReset("dec");
+            layerDataReset("pri");
+            layerDataReset("good");
+            layerDataReset("snd");
+            layerDataReset("per");
+        }
+        document.body.style.background = "radial-gradient( #000000, #ffffff)";
+        document.body.style.transition = "none";
+        setTimeout(() => {
+            document.body.style.transition = "background 1s ease";
+            document.body.style.background = ""; 
+        }, 500);
+    },
+    gainMult() { 
+        let mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { 
+        let exp = new Decimal(1)
+        return exp
+    },
+    milestones: {
+        0: {
+            requirementDescription: "<h3><span>Ascension I</span></h3>",
+            effectDescription: "<i>Welcome back! Here is what you get:<br>1. Keep most QoL such as buy max prestiges.<br>2. Generator upgrades are automatic now.<br>3. ^2 money, but ^1e303 if above 1.79e308 prestiges.<br>How's that sound?</i>",
+            done() { return player.a.points.gte(1) },
+            style() {
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                        'background-color': '#543008',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #ff8800',
+                        'border-color': '#ff8800'
+                    }
+                }
+            },
+        },
+        1: {
+            requirementDescription: "<h3><span>Ascension II</span></h3>",
+            effectDescription: "<i>hey bro this is the endgame... have some patience?<br><br>right. i almost forgot your exquisite generator...</i>",
+            done() { return player.a.points.gte(2) },
+            style() {
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                        'background-color': '#540854',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #d400ff',
+                        'border-color': '#d400ff'
+                    }
+                }
+            },
+        },
+        2: {
+            requirementDescription: "<h3><span>Ascension III</span></h3>",
+            effectDescription: "<i>what (true endgame)</i>",
+            done() { return player.a.points.gte(3) },
+            style() {
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                        'background-color': '#543008',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #ff8800',
+                        'border-color': '#ff8800'
+                    }
+                }
+            },
+        },
+    },
+    branches: ['per'], 
+    row: 6, 
+    layerShown(){ return hasMilestone('p', 35) || hasMilestone('a', 0)},
 })
 
 addLayer("terri", {
@@ -623,6 +754,7 @@ addLayer("terri", {
     resetsNothing() {return hasMilestone('p',1)},
     autoPrestige() {return hasMilestone('p',1)},
     canBuyMax() {return hasMilestone('p',1)},
+    autoUpgrade() {return hasMilestone('a', 0)},
     effect() {
         return player[this.layer].points.pow(0.5);
     },
@@ -914,6 +1046,7 @@ addLayer("awf", {
     resetsNothing() {return hasMilestone('p',3)},
     autoPrestige() {return hasMilestone('p',3)},
     canBuyMax() {return hasMilestone('p',3)},
+    autoUpgrade() {return hasMilestone('a', 0)},
     effect() {
         return player[this.layer].points.add(1);
     },
@@ -1195,6 +1328,7 @@ addLayer("med", {
     resetsNothing() {return hasMilestone('p',6)},
     autoPrestige() {return hasMilestone('p',6)},
     canBuyMax() {return hasMilestone('p',6)},
+    autoUpgrade() {return hasMilestone('a', 0)},
     passiveGeneration() {
         let Gen = 0
         if (hasMilestone('xp',3)) Gen = 1
@@ -1241,19 +1375,19 @@ addLayer("med", {
         22: {
             title: "Did you forget about these upgrades?",
             description: "^3.33 the xp cap.",
-            cost: new Decimal(117),
+            cost: new Decimal(114),
             unlocked(){return hasMilestone('awf',0)},
         },
         23: {
             title: "Wait, no more xp cap?",
             description: "^1.5 money.",
-            cost: new Decimal(118),
+            cost: new Decimal(115),
             unlocked(){return hasMilestone('p',32)},
         },
         24: {
             title: "The new meta (wait we did this before)",
             description: "^1.1 money.",
-            cost: new Decimal(119),
+            cost: new Decimal(116),
             unlocked(){return hasMilestone('p',32)},
         },
     },
@@ -1299,6 +1433,7 @@ addLayer("alr", {
     resetsNothing() {return hasMilestone('p',10)},
     autoPrestige() {return hasMilestone('p',10)},
     canBuyMax() {return hasMilestone('p',10)},
+    autoUpgrade() {return hasMilestone('a', 0)},
     effect() {
         return player[this.layer].points.add(1).mul(player.points.pow(0.05));
     },
@@ -1389,6 +1524,7 @@ addLayer("dec", {
     resetsNothing() {return hasMilestone('p',19)},
     autoPrestige() {return hasMilestone('p',19)},
     canBuyMax() {return hasMilestone('p',19)},
+    autoUpgrade() {return hasMilestone('a', 0)},
     effect() {
         return player.alr.points.add(1).mul(player.points.pow(0.1));
     },
@@ -1453,6 +1589,7 @@ addLayer("good", {
     resetsNothing() {return hasMilestone('p',29)},
     autoPrestige() {return hasMilestone('p',29)},
     canBuyMax() {return hasMilestone('p',29)},
+    autoUpgrade() {return hasMilestone('a', 0)},
     effect() {
         return player[this.layer].points.add(1).mul(player.points.pow(0.2));
     },
@@ -1501,6 +1638,7 @@ addLayer("per", {
     resetsNothing() {return hasMilestone('p',34)},
     autoPrestige() {return hasMilestone('p',34)},
     canBuyMax() {return hasMilestone('p',34)},
+    autoUpgrade() {return player.p.points.gte("1.796e308")},
     effectDescription() {
         return "which is doing nothing, unfortunately, to prevent inflation.<br><br>Well, at least you can find all sorts of upgrades here!"
     },
@@ -1521,15 +1659,21 @@ addLayer("per", {
             unlocked(){return hasMilestone('p',34)},
         },
         13: {
-            title: "p-holder",
-            description: "p-holder",
-            cost: new Decimal(Infinity),
+            title: "Cubes.. stuff like that",
+            description: "^3 money. How unexpected!",
+            cost: new Decimal("1e9.0071993e15"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
             unlocked(){return hasMilestone('p',34)},
         },
         14: {
-            title: "p-holder",
-            description: "p-holder",
-            cost: new Decimal(Infinity),
+            title: " ",
+            description: "<h1>Inflate.</h1>",
+            cost: new Decimal("1e1000"),
+            currencyInternalName: "points",
+            currencyLocation() { return player.p },
+            currencyDisplayName: "prestiges",
             unlocked(){return hasMilestone('p',34)},
         },
         21: {
@@ -1542,36 +1686,68 @@ addLayer("per", {
             unlocked(){return hasMilestone('p',34)},
         },
         22: {
-            title: "p-holder",
-            description: "p-holder",
-            cost: new Decimal(Infinity),
+            title: "Tesseracts.. wait what",
+            description: "^4 money.",
+            cost: new Decimal("1e1.291e33"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
             unlocked(){return hasMilestone('p',34)},
         },
         23: {
-            title: "p-holder",
-            description: "p-holder",
-            cost: new Decimal(Infinity),
+            title: "",
+            description: "",
+            cost: new Decimal(1.79e308),
+            currencyInternalName: "points",
+            currencyLocation() { return player.p },
+            currencyDisplayName: "prestiges",
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#000000',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #ff0000',
+                        'border-color': '#ff0000'
+                    }
+                }
+            },
             unlocked(){return hasMilestone('p',34)},
         },
         24: {
-            title: "p-holder",
-            description: "p-holder",
-            cost: new Decimal(Infinity),
+            title: "Why...",
+            description: "You've gone too far. Start elevenfolding your prestiges every frame. <i>Why are you like this...</i>",
+            cost: new Decimal(2.44e154),
             currencyInternalName: "points",
             currencyLocation() { return player.p },
             currencyDisplayName: "prestiges",
             unlocked(){return hasMilestone('p',34)},
         },
         31: {
-            title: "p-holder",
-            description: "p-holder",
-            cost: new Decimal(Infinity),
+            title: "xp :shock:",
+            description: "^1,000 xp cap.",
+            cost: new Decimal("1e1e100"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
             unlocked(){return hasMilestone('p',34)},
         },
         32: {
-            title: "p-holder",
-            description: "p-holder",
-            cost: new Decimal(Infinity),
+            title: "",
+            description: "",
+            cost: new Decimal(1.79e308),
+            currencyInternalName: "points",
+            currencyLocation() { return player.p },
+            currencyDisplayName: "prestiges",
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#000000',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #ff0000',
+                        'border-color': '#ff0000'
+                    }
+                }
+            },
             unlocked(){return hasMilestone('p',34)},
         },
         33: {
@@ -1584,15 +1760,21 @@ addLayer("per", {
             unlocked(){return hasMilestone('p',34)},
         },
         34: {
-            title: "p-holder",
-            description: "p-holder",
-            cost: new Decimal(Infinity),
+            title: "Remember that terrible milestone that gave you a square?",
+            description: "^2 money.",
+            cost: new Decimal("1e1.01e9"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
             unlocked(){return hasMilestone('p',34)},
         },
         41: {
-            title: "p-holder",
-            description: "p-holder",
-            cost: new Decimal(Infinity),
+            title: "Limitless XP",
+            description: "^1.79e308 xp cap.",
+            cost: new Decimal("1e1e200"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
             unlocked(){return hasMilestone('p',34)},
         },
         42: {
@@ -1614,15 +1796,60 @@ addLayer("per", {
             unlocked(){return hasMilestone('p',34)},
         },
         44: {
-            title: "p-holder",
-            description: "p-holder",
-            cost: new Decimal(Infinity),
+            title: "Upgrade in 5",
+            description: "This upgrade is impossible",
+            cost: new Decimal(1),
             unlocked(){return hasMilestone('p',34)},
         },
     },
     branches:['good'],
     row: 6, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('p',34)},
+
+
+})
+
+addLayer("exc", {
+    name: "exc", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "θ", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#00aa55",
+    //nodeStyle: {
+    //    background: "linear-gradient( #ff0000, #0000ff)",
+    //    backgroundOrigin: "border-box",
+    //    borderColor: "rgba(0,0,0,0.5)",
+    //    color: "rgb(255, 255, 255)",
+    //},
+    tooltip() { 
+        return formatWhole(player[this.layer].points) + " Exquisite Generators"; 
+    },
+    requires: new Decimal(1), // Can be a function that takes requirement increases into account
+    resource: "exquisite generators", // Name of prestige currency
+    baseResource: "perfect generators", // Name of resource prestige is based on
+    baseAmount() {return player.per.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 1.25, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal (1)
+        return exp
+    },
+    resetsNothing() {return hasMilestone('a',1)},
+    autoPrestige() {return hasMilestone('a',1)},
+    canBuyMax() {return hasMilestone('a',1)},
+    effectDescription() {
+        return "and it looks like you still haven't gotten a perfect generator, what the hell are you doing"
+    },
+    branches:['per'],
+    row: 7, // Row the layer is in on the tree (0 is the first row)
+    layerShown(){return hasMilestone('a',1)},
 
 
 })
@@ -1950,6 +2177,12 @@ addLayer("lv", {
         if (hasUpgrade('med', 22)) {
             totalCap = totalCap.pow(3.33);
         }
+        if (hasUpgrade('per', 31)) {
+            totalCap = totalCap.pow(1000);
+        }
+        if (hasUpgrade('per', 41)) {
+            totalCap = totalCap.pow(1.79e308);
+        }
         return totalCap.sub(baseCap);
     },
 
@@ -1957,7 +2190,8 @@ addLayer("lv", {
         return "increasing your xp gain cap by +" + format(tmp[this.layer].effect);
     },
     resetsNothing() {return hasMilestone('p',12)},
-    canBuyMax() {return hasMilestone('p',28)},
+    canBuyMax() {return hasMilestone('p',28) || hasMilestone('a',0)},
+    autoPrestige() {return hasMilestone('lv',3) || hasMilestone('a',0)},
     milestones: {
         0: {
         requirementDescription: "<h3><span>Level 5</span></h3>",
@@ -1980,6 +2214,22 @@ addLayer("lv", {
                         'color': '#ffffff',
                         'box-shadow': '0px 0px 15px #ffffff',
                         'border-color': '#ffffff'
+                    }
+                }
+            },
+        },
+        3: {
+        requirementDescription: "<h3><span>e1.796e308 money</span></h3>",
+        effectDescription: "<i>Auto levels...</i>",
+        done() { return player.points.gte("1e1.796e308") },
+        unlocked() { return player.points.gte("1e1e300") },
+        style() {
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                        'background-color': '#000000',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #ff0000',
+                        'border-color': '#ff0000'
                     }
                 }
             },
@@ -2303,7 +2553,7 @@ addLayer("plv", {
             rewardsText += "Stage 3 completion reward: ^1.011 money.<br>";
         }
         if (hasAchievement(this.layer, 14)) {
-            rewardsText += "Stage 4 completion reward: [soon]<br>";
+            rewardsText += "Stage 4 completion reward: Literally nothing, since ascension is so strong.<br>";
         }
         if (hasAchievement(this.layer, 21)) {
             rewardsText += "Stage 5 completion reward: [soon]<br>";
@@ -2318,7 +2568,7 @@ addLayer("plv", {
             rewardsText += "Stage 8 completion reward: [soon]<br>";
         }
         
-        return "which is based on:<br>log10(money) (+" + format(baseAmount) + ")<br>sqrt(prestige) (x" + format(prestigeMult) + ")<br>playtime^0.01 (^" + format(timeExponent) + ")<br><br>You are currently at Stage " + currentStage + "/10.<br>" + rewardsText + "<br><br>";
+        return "which is based on:<br>log10(money) (+" + format(baseAmount) + ")<br>sqrt(prestige) (x" + format(prestigeMult) + ")<br>playtime^0.01 (^" + format(timeExponent) + ")<br><br>You are currently at Stage " + currentStage + "/10.<br>" + rewardsText + "<br><br>There are some new themes in the game, and here's how to unlock them:<br>normal, binary - free<br>softcap, softcap2, softcap3, hardcap - reach the corresponding softcaps<br>purelight, puredark - reach softcap 3 or the easier way, ????????<br>terrible, awful, mediocre... - unlock that generator";
     },
     update(diff) {
         let baseAmount = player.points.add(1).log10().max(0);
@@ -2349,7 +2599,7 @@ addLayer("plv", {
             name: "Stage 2 Complete",
             done() { return player.plv.points.gte(1e6) },
             tooltip: "Get Player Level 1,000,000.",
-            unlocked() { return player.plv.points.gte(1e3)},
+            unlocked() { return player.plv.points.gte(1e3) || player.a.points.gte(1)},
             style() {
                 if (hasAchievement(this.layer, this.id)) {
                     return {
@@ -2365,7 +2615,7 @@ addLayer("plv", {
             name: "Stage 3 Complete",
             done() { return player.plv.points.gte(1e11) },
             tooltip: "Get Player Level 1e11.",
-            unlocked() { return player.plv.points.gte(1e6)},
+            unlocked() { return player.plv.points.gte(1e6) || player.a.points.gte(1)},
             style() {
                 if (hasAchievement(this.layer, this.id)) {
                     return {
@@ -2379,9 +2629,9 @@ addLayer("plv", {
         },
         14: {
             name: "Stage 4 Complete",
-            done() { return player.plv.points.gte(1.79e308) },
-            tooltip: "Get Player Level 1.79e308. You wouldn't do it this update anyway, wouldn't you?",
-            unlocked() { return player.plv.points.gte(1e11)},
+            done() { return player.a.points.gte(1) },
+            tooltip: "Ascend once.",
+            unlocked() { return player.plv.points.gte(1e11) || player.a.points.gte(1)},
             style() {
                 if (hasAchievement(this.layer, this.id)) {
                     return {
