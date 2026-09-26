@@ -50,7 +50,7 @@ addLayer("p", {
                'No color means it is a general boost.'
     },
     onPrestige(gain) {
-        if (!hasMilestone('a',0) && !hasMilestone('snd',0)) {
+        if ((!hasMilestone('a',0) && !hasMilestone('snd',0))) {
             document.body.style.background = "linear-gradient( #ff0000, #000000, #0000ff)";
             document.body.style.transition = "none";
             setTimeout(() => {
@@ -636,7 +636,10 @@ addLayer("a", {
         let costs = [
             new Decimal("5e9999"), 
             new Decimal("5e99999"),
-            new Decimal("5e199999"),
+            new Decimal("1e2e6"),
+            new Decimal("1e1e9"),
+            new Decimal("(e^1.79e308)2"),
+            new Decimal("(e^1.79e308)2"),
             new Decimal("(e^1.79e308)2"),
         ]
         let currentPoints = player[this.layer].points.toNumber()
@@ -695,7 +698,7 @@ addLayer("a", {
         },
         1: {
             requirementDescription: "<h3><span>Ascension II</span></h3>",
-            effectDescription: "<i>hey bro this is the endgame... have some patience?<br><br>right. i almost forgot your exquisite generator...</i>",
+            effectDescription: "<i>Welcome back! Unlock Exquisite Generators.</i>",
             done() { return player.a.points.gte(2) },
             style() {
                 if (hasMilestone(this.layer, this.id)) {
@@ -710,15 +713,30 @@ addLayer("a", {
         },
         2: {
             requirementDescription: "<h3><span>Ascension III</span></h3>",
-            effectDescription: "<i>what (true endgame)</i>",
+            effectDescription: "<i>Exquisite Generator expansion (really?)</i>",
             done() { return player.a.points.gte(3) },
             style() {
                 if (hasMilestone(this.layer, this.id)) {
                     return {
-                        'background-color': '#543008',
+                        'background-color': '#540854',
                         'color': '#ffffff',
-                        'box-shadow': '0px 0px 15px #ff8800',
-                        'border-color': '#ff8800'
+                        'box-shadow': '0px 0px 15px #d400ff',
+                        'border-color': '#d400ff'
+                    }
+                }
+            },
+        },
+        3: {
+            requirementDescription: "<h3><span>Ascension IV</span></h3>",
+            effectDescription: "<i>How endless is endless numbers? Let's find out!<br>^0 money, however unlock the next generator.</i>",
+            done() { return player.a.points.gte(4) },
+            style() {
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                        'background-color': '#540854',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #d400ff',
+                        'border-color': '#d400ff'
                     }
                 }
             },
@@ -1851,11 +1869,138 @@ addLayer("exc", {
     autoPrestige() {return hasMilestone('a',1)},
     canBuyMax() {return hasMilestone('a',1)},
     effectDescription() {
-        return "and it looks like you still haven't gotten a perfect generator, what the hell are you doing"
+        return "unfortunately, you've ran out of boosts for now."
+    },
+    upgrades: {
+        11: {
+            title: "The point of no return",
+            description: "Unlock the 3rd puzzle layer, Tertiary.",
+            cost: new Decimal("1e1e200000"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+        },
+        12: {
+            title: "Air",
+            description: "Air Exponent. ^1e25,000 money.",
+            cost: new Decimal("1e1e1e6"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+            unlocked() { return hasMilestone('a', 2) }
+        },
+        13: {
+            title: "The point of return",
+            description: "Do NOT trust upgrade expansions. Or...?",
+            cost: new Decimal("1e1e4.4444444e7"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+            unlocked() { return hasMilestone('a', 2) }
+        },
     },
     branches:['per'],
     row: 7, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('a',1)},
+
+
+})
+
+addLayer("flw", {
+    name: "flw", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "ι", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#0055aa",
+    //nodeStyle: {
+    //    background: "linear-gradient( #ff0000, #0000ff)",
+    //    backgroundOrigin: "border-box",
+    //    borderColor: "rgba(0,0,0,0.5)",
+    //    color: "rgb(255, 255, 255)",
+    //},
+    tooltip() { 
+        return formatWhole(player[this.layer].points) + " Flawless Generators"; 
+    },
+    requires() {
+        let costs = [
+            new Decimal("62.5"),
+            new Decimal("375"),
+            new Decimal("5000"),
+            new Decimal("2.5e9"),
+            new Decimal("1.25e39"),
+            new Decimal("3e1076047"),
+        ]
+        let currentPoints = player[this.layer].points.toNumber()
+        return costs[currentPoints]
+    },
+    resource: "flawless generators", // Name of prestige currency
+    baseResource: "money", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal (1)
+        return exp
+    },
+    resetsNothing() {return hasMilestone('a',3)},
+    canBuyMax() {return hasMilestone('a',3)},
+    effectDescription() {
+        return "making your progression much, <i>much</i> slower."
+    },
+    upgrades: {
+        11: {
+            title: "Inflation is... gone?",
+            description: "+1 money/s, again. Applies after all additions, multiplications, exponents, and the ^0 debuff.",
+            cost: new Decimal("1"),
+            pay() {},
+        },
+        12: {
+            title: "Can finally have some peace... wait",
+            description: "x25 money.",
+            cost: new Decimal("2"),
+            pay() {},
+        },
+        13: {
+            title: "We need more boosts, right? No, that can cause inflation, remember?",
+            description: "x1e6 money.",
+            cost: new Decimal("3"),
+            pay() {},
+        },
+        14: {
+            title: "First, we play. Then we wait.",
+            description: "Boost money based on log(playtime). tip: should wait until it reaches ^5.",
+            cost: new Decimal("4"),
+            pay() {},
+            effect() {
+                let timeLog = Math.log10(player.timePlayed + 1)
+                let basePower = Math.max(1, timeLog);
+                let cappedPower = Math.min(5, basePower);
+                return cappedPower;
+            },
+            effectDisplay() { return "^" + format(upgradeEffect(this.layer, this.id), 3) },
+        },
+        21: {
+            title: "Heydere",
+            description: "Not sure about this. ^27,953 money.",
+            cost: new Decimal("5"),
+            pay() {},
+        },
+        31: {
+            title: "[TITLE CARD]",
+            description: "^e1e9 money. Disable the ^0 debuff.",
+            cost: new Decimal("6"),
+            pay() {},
+        },
+    },
+    branches:['exc'],
+    row: 8, // Row the layer is in on the tree (0 is the first row)
+    layerShown(){return hasMilestone('a',3)},
 
 
 })
@@ -2268,8 +2413,8 @@ addLayer("pri", {
         return formatWhole(player[this.layer].points) + "/5 Primary"; 
     },
     requires() {
-    if (player[this.layer].points.gte(5)) return new Decimal(Infinity); 
-    return new Decimal(240);
+        if (player[this.layer].points.gte(5)) return new Decimal(Infinity); 
+        return new Decimal(240);
     }, 
     resource: "primary", // Name of prestige currency
     baseResource: "prestiges", // Name of resource prestige is based on
@@ -2400,6 +2545,11 @@ addLayer("snd", {
 		points: new Decimal(0),
         typedCode: "",
     }},
+    update(diff) {
+        if (player.a.points.gte(1)) {
+            player[this.layer].typedCode = "THECOOLCOOKIE366";
+        }
+    },
     color: "#35658d",
     nodeStyle: {
         background: "radial-gradient( #35658d, #000000)",
@@ -2538,6 +2688,124 @@ addLayer("snd", {
 
 })
 
+addLayer("ter", {
+    name: "third", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "3rd", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order 
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#ec5f30",
+    nodeStyle: {
+        background: "radial-gradient( #ec5f30, #000000)",
+        backgroundOrigin: "border-box",
+        borderColor: "rgba(0,0,0,0.5)",
+        color: "rgb(0, 0, 0)",
+    },
+    tooltip() { 
+        return formatWhole(player[this.layer].points) + "/∞ Tertiary"; 
+    },
+    requires() {
+        return new Decimal("1e105000");
+    },
+    resource: "tertiary", // Name of prestige currency
+    baseResource: "prestiges", // Name of resource prestige is based on
+    baseAmount() {return player.p.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent() {
+        if (player[this.layer].points.gte("6.66e666")) {
+            return 6.66e-66
+        }
+        if (player[this.layer].points.toNumber() >= 3.4e38) {
+            return 0.01
+        }
+        if (player[this.layer].points.toNumber() >= 4000) {
+            return 0.1
+        }
+        if (player[this.layer].points.toNumber() >= 3) {
+            return 1
+        }
+        return 10
+    },
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal (1)
+        return exp
+    },
+    effectDescription() {
+        if (hasUpgrade('ter', 11) && hasUpgrade('ter', 12) && hasUpgrade('ter', 13) && hasUpgrade('ter', 14)) {
+            return "that was not the puzzle??";
+        }
+        if (hasUpgrade('exc', 13)) {
+            return "maybe this is the puzzle?";
+        }
+        if (player.ter.points.gte("6.66e666")) {
+            return "you're limitless now. Go for the 3rd ascension! But i still don't see the puzzle???";
+        }
+        if (player.ter.points.gte(3.4e38)) {
+            return "and welcome back to inflation! But... where's the puzzle? Get 6.66e666 tertiary.";
+        }
+        if (player.ter.points.gte(4e3)) {
+            return "but i still don't see a puzzle! Try getting 3.4e38 tertiary...";
+        }
+        if (player.ter.points.gte(3)) {
+            return "but where is the puzzle? Try getting 4,000 tertiary...";
+        }
+        let spoilerHTML = `
+            <br><br>
+            <details style="background: #1c1c1c; border: 2px solid #66ff47; padding: 8px 12px; border-radius: 6px; cursor: pointer; max-width: 280px; margin: 8px auto; text-align: center; display: inline-block;">
+                <summary style="font-weight: bold; color: #dfdfdf; outline: none; user-select: none; font-size: 0.95em;">stuck? click here to reveal answer</summary>
+                <div style="margin-top: 6px; color: #ff6b6b; font-size: 1.15em; font-weight: bold; letter-spacing: 2px;">i actually don't remember the code for this... you know what, just get 3 tertiary, you'll figure it out.</div>
+            </details>
+        `;
+        return "what do you think?" + spoilerHTML;
+    },
+    upgrades: {
+        11: {
+            title: "Third",
+            description: "First",
+            cost: new Decimal("1e1.22e66"),
+            unlocked() { return hasUpgrade('exc', 13) }
+        },
+        12: {
+            title: "First",
+            description: "Fourth",
+            cost: new Decimal("1e1.2e66"),
+            unlocked() { return hasUpgrade('exc', 13) }
+        },
+        13: {
+            title: "Second",
+            description: "Third",
+            cost: new Decimal("1e1.21e66"),
+            unlocked() { return hasUpgrade('exc', 13) }
+        },
+        14: {
+            title: "Fourth",
+            description: "Second",
+            cost: new Decimal("1e1.23e66"),
+            unlocked() { return hasUpgrade('exc', 13) }
+        },
+        21: {
+            title: "What are you doing?!",
+            description: "^1e1,000,000 money.",
+            cost: new Decimal("1e1.24e66"),
+            unlocked() { return hasUpgrade('ter', 11) && hasUpgrade('ter', 12) && hasUpgrade('ter', 13) && hasUpgrade('ter', 14)}
+        },
+    },
+    resetsNothing() {return hasUpgrade('exc',11)},
+    autoPrestige() {return player.ter.points.gte("6.66e666")},
+    canBuyMax() {return hasUpgrade('exc',11)},
+    branches:['exc'],
+    row: 7, // Row the layer is in on the tree (0 is the first row)
+    layerShown(){return hasUpgrade('exc',11)},
+
+
+})
+
 addLayer("plv", {
     symbol: "∅",
     position: 1,
@@ -2576,7 +2844,7 @@ addLayer("plv", {
             rewardsText += "Stage 4 completion reward: Literally nothing, since ascension is so strong.<br>";
         }
         if (hasAchievement(this.layer, 21)) {
-            rewardsText += "Stage 5 completion reward: [soon]<br>";
+            rewardsText += "Stage 5 completion reward: You deserve a ^1 money boost, in this economy.<br>";
         }
         if (hasAchievement(this.layer, 22)) {
             rewardsText += "Stage 6 completion reward: [soon]<br>";
@@ -2663,6 +2931,22 @@ addLayer("plv", {
                 }
             },
         },
+        21: {
+            name: "Stage 5 Complete",
+            done() { return player.points.gte(1000) && player.a.points.gte(4) },
+            tooltip: "Get 1,000 money in Ascension 4+.",
+            unlocked() { return player.a.points.gte(4)},
+            style() {
+                if (hasAchievement(this.layer, this.id)) {
+                    return {
+                        'background-color': '#000000',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #00ffff',
+                        'border-color': '#00ffff'
+                    }
+                }
+            },
+        },
     },
 })
 
@@ -2678,6 +2962,13 @@ addLayer("cmg", {
         bestDrop: "None",
         bestDropChance: 0,
         currentTab: "mining",
+        cookies: new Decimal(0),
+        cookieActive: 0,
+        currentPickaxe: "default",
+        unlockedPickaxes: {
+            drill: false,
+            black_hole: false
+        },
         luck1: new Decimal(0),
         speed1: new Decimal(0),
         luck2: new Decimal(0),
@@ -2716,6 +3007,94 @@ addLayer("cmg", {
     tooltip() { 
         return "Cookie's Mining Game" 
     },
+    processCookieDrops(currentHighest, currentTopName) {
+        let cookieBlocks = player.cmg.cookieActive || 0;
+        
+        let pool = [
+            { id: "p12", name: "10^12", chance: 1000000000000, value: new Decimal("1e12") },
+            { id: "p11", name: "10^11", chance: 10000000000,  value: new Decimal("1e11") },
+            { id: "p10", name: "10^10", chance: 1000000000,   value: new Decimal("1e10") },
+            { id: "p9",  name: "10^9",  chance: 100000000,    value: new Decimal("1e9") },
+            { id: "p8",  name: "10^8",  chance: 10000000,     value: new Decimal("1e8") },
+            { id: "p7",  name: "10^7",  chance: 1000000,      value: new Decimal("1e7") },
+            { id: "p6",  name: "10^6",  chance: 100000,       value: new Decimal("1e6") },
+            { id: "p5",  name: "10^5",  chance: 10000,        value: new Decimal("1e5") },
+            { id: "p4",  name: "10^4",  chance: 1000,         value: new Decimal("1e4") },
+            { id: "p3",  name: "10^3",  chance: 100,          value: new Decimal("1e3") },
+            { id: "p2",  name: "10^2",  chance: 10,           value: new Decimal("1e2") },
+            { id: "p1",  name: "10^1",  chance: 5,            value: new Decimal("1e1") },
+            { id: "p0",  name: "10^0",  chance: 1,             value: new Decimal("1e0") },
+        ];
+
+        let results = {
+            oresGained: new Decimal(0),
+            highestRarity: currentHighest,
+            topOreName: currentTopName,
+            counts: {}
+        };
+
+        pool.forEach(ore => {
+            results.counts[ore.id] = 0;
+            results.counts[ore.id + "_ionized"] = 0;
+            results.counts[ore.id + "_spectral"] = 0;
+        });
+
+        if (cookieBlocks <= 0) return results;
+
+        let b = player.cmg.buyables || {};
+
+        let ionizedDiv = 50;
+        if (b[52] >= 1) ionizedDiv /= 2;
+        if (b[61] >= 1) ionizedDiv /= 2;
+        if (b[62] >= 1) ionizedDiv /= 1.5;
+        if (b[71] >= 1) ionizedDiv /= 2;
+        if (b[72] >= 1) ionizedDiv /= 2.5;
+
+        let spectralDiv = 2500;
+        if (b[52] >= 1) spectralDiv /= 2;
+        if (b[61] >= 1) spectralDiv /= 2;
+        if (b[62] >= 1) spectralDiv /= 1.5;
+        if (b[71] >= 1) spectralDiv /= 2;
+        if (b[72] >= 1) spectralDiv /= 2.5;
+
+        for (let c = 0; c < cookieBlocks; c++) {
+            for (let ore of pool) {
+                let luckyChance = ore.chance / 1000000000;
+
+                if (Math.random() < (1 / Math.max(1, luckyChance))) {
+                    let specCount = 0; 
+                    let ionCount = 0; 
+                    let normCount = 0;
+                    let r = Math.random();
+                    
+                    if (r < (1 / spectralDiv)) specCount++;
+                    else if (r < (1 / ionizedDiv)) ionCount++;
+                    else normCount++;
+
+                    results.counts[ore.id] += normCount;
+                    results.counts[ore.id + "_ionized"] += ionCount;
+                    results.counts[ore.id + "_spectral"] += specCount;
+
+                    results.oresGained = results.oresGained.add(ore.value.mul(normCount));
+                    results.oresGained = results.oresGained.add(ore.value.mul(50).mul(ionCount));
+                    results.oresGained = results.oresGained.add(ore.value.mul(2500).mul(specCount));
+
+                    let runChanceScore = ore.chance;
+                    if (specCount > 0) runChanceScore *= spectralDiv;
+                    else if (ionCount > 0) runChanceScore *= ionizedDiv;
+
+                    if (runChanceScore > results.highestRarity) {
+                        results.highestRarity = runChanceScore;
+                        if (specCount > 0) results.topOreName = "Spectral " + ore.name;
+                        else if (ionCount > 0) results.topOreName = "Ionized " + ore.name;
+                        else results.topOreName = ore.name;
+                    }
+                    break; 
+                }
+            }
+        }
+        return results;
+    },
     getMiningRate() {
         let rate = new Decimal(16);
         if (player.cmg.speed1.gte(1)) rate = rate.add(50);
@@ -2724,6 +3103,10 @@ addLayer("cmg", {
         
         if (player.cmg.speed2.gte(1)) rate = rate.mul(2);
         if (player.cmg.speed4.gte(1)) rate = rate.mul(3);
+
+        if (player.cmg.currentPickaxe === "drill") rate = rate.mul(2.5);
+        if (player.cmg.currentPickaxe === "black_hole") rate = rate.mul(5);
+
         return rate;
     },
     update(diff) {
@@ -2740,7 +3123,7 @@ addLayer("cmg", {
     clickables: {
         11: {
             title() { return "<h2>press here to mine</h2>" },
-                        display() { 
+                display() { 
                 if (player.cmg.cooldown.gt(0)) {
                     return `<br><b style="color: #ff4444; font-size: 1.1em;">to prevent stupidity there's a cooldown: ${player.cmg.cooldown.toFixed(1)}s</b>`;
                 }
@@ -2786,7 +3169,7 @@ addLayer("cmg", {
                     { id: "p3",  name: "10^3",  chance: 1000,          value: new Decimal("1e3") },
                     { id: "p2",  name: "10^2",  chance: 100,           value: new Decimal("1e2") },
                     { id: "p1",  name: "10^1",  chance: 10,            value: new Decimal("1e1") },
-                    { id: "p0",  name: "10^0",  chance: 1,             value: new Decimal("1e0") }
+                    { id: "p0",  name: "10^0",  chance: 1,             value: new Decimal("1e0") },
                 ];
 
                 let counts = {};
@@ -2807,33 +3190,30 @@ addLayer("cmg", {
                     let b = player.cmg.buyables || {};
                     
                     let ionizedDiv = 50;
-                    if ((b[52] || new Decimal(0)).gte(1)) ionizedDiv /= 2;
-                    if ((b[61] || new Decimal(0)).gte(1)) ionizedDiv /= 2;
-                    if ((b[62] || new Decimal(0)).gte(1)) ionizedDiv /= 1.5;
-                    if ((b[71] || new Decimal(0)).gte(1)) ionizedDiv /= 2;
-                    if ((b[72] || new Decimal(0)).gte(1)) ionizedDiv /= 2.5;
+                    if (b[52] >= 1) ionizedDiv /= 2;
+                    if (b[61] >= 1) ionizedDiv /= 2;
+                    if (b[62] >= 1) ionizedDiv /= 1.5;
+                    if (b[71] >= 1) ionizedDiv /= 2;
+                    if (b[72] >= 1) ionizedDiv /= 2.5;
 
                     let spectralDiv = 2500;
-                    if ((b[52] || new Decimal(0)).gte(1)) spectralDiv /= 2;
-                    if ((b[61] || new Decimal(0)).gte(1)) spectralDiv /= 2;
-                    if ((b[62] || new Decimal(0)).gte(1)) spectralDiv /= 1.5;
-                    if ((b[71] || new Decimal(0)).gte(1)) spectralDiv /= 2;
-                    if ((b[72] || new Decimal(0)).gte(1)) spectralDiv /= 2.5;
+                    if (b[52] >= 1) spectralDiv /= 2;
+                    if (b[61] >= 1) spectralDiv /= 2;
+                    if (b[62] >= 1) spectralDiv /= 1.5;
+                    if (b[71] >= 1) spectralDiv /= 2;
+                    if (b[72] >= 1) spectralDiv /= 2.5;
 
                     let expected = remainingOps / ore.chance;
                     let amountFound = 0;
 
-                    if (expected > 20) {
+                    if (expected > 20 || remainingOps > 50000) {
                         let sd = Math.sqrt(expected * (1 - 1 / ore.chance));
-                        let u1 = Math.random();
-                        let u2 = Math.random();
+                        let u1 = Math.random(); let u2 = Math.random();
                         let normalValue = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
                         amountFound = Math.max(0, Math.floor(expected + normalValue * sd));
                     } else {
                         for (let j = 0; j < remainingOps; j++) {
-                            if (Math.random() < (1 / ore.chance)) {
-                                amountFound++;
-                            }
+                            if (Math.random() < (1 / ore.chance)) amountFound++;
                         }
                     }
 
@@ -2842,9 +3222,7 @@ addLayer("cmg", {
                     if (amountFound > 0) {
                         remainingOps -= amountFound;
 
-                        let specCount = 0;
-                        let ionCount = 0;
-                        let normCount = 0;
+                        let specCount = 0; let ionCount = 0; let normCount = 0;
 
                         if (amountFound > 20) {
                             let expSpec = amountFound / spectralDiv;
@@ -2866,13 +3244,9 @@ addLayer("cmg", {
                         } else {
                             for (let k = 0; k < amountFound; k++) {
                                 let r = Math.random();
-                                if (r < (1 / spectralDiv)) {
-                                    specCount++;
-                                } else if (r < (1 / ionizedDiv)) {
-                                    ionCount++;
-                                } else {
-                                    normCount++;
-                                }
+                                if (r < (1 / spectralDiv)) specCount++;
+                                else if (r < (1 / ionizedDiv)) ionCount++;
+                                else normCount++;
                             }
                         }
 
@@ -2887,15 +3261,28 @@ addLayer("cmg", {
                         if (specCount > 0 && (ore.chance * spectralDiv) > highestRarityThisRun) {
                             highestRarityThisRun = ore.chance * spectralDiv;
                             topOreNameThisRun = "Spectral " + ore.name;
-                        } else if (ionCount > 0 && (ore.chance * ionizedDiv) > highestRarityThisRun) {
+                        }
+                        if (ionCount > 0 && (ore.chance * ionizedDiv) > highestRarityThisRun) {
                             highestRarityThisRun = ore.chance * ionizedDiv;
                             topOreNameThisRun = "Ionized " + ore.name;
-                        } else if (normCount > 0 && ore.chance > highestRarityThisRun) {
+                        }
+                        if (normCount > 0 && ore.chance > highestRarityThisRun) {
                             highestRarityThisRun = ore.chance;
                             topOreNameThisRun = ore.name;
                         }
                     }
                 }
+
+                let cookieResults = layers.cmg.processCookieDrops(highestRarityThisRun, topOreNameThisRun);
+                
+                totalOresGained = totalOresGained.add(cookieResults.oresGained);
+                highestRarityThisRun = cookieResults.highestRarity;
+                topOreNameThisRun = cookieResults.topOreName;
+                for (let id in cookieResults.counts) {
+                    counts[id] += cookieResults.counts[id];
+                }
+
+                player.cmg.cookieActive = 0;
 
                 player.cmg.points = player.cmg.points.add(totalOresGained);
                 for (let id in counts) {
@@ -2907,20 +3294,29 @@ addLayer("cmg", {
                     player.cmg.bestDropChance = highestRarityThisRun;
                 }
 
-                let log = `welcome back player! you have mined ${formatWhole(ops)} ores!\n`;
+                let log = `welcome back! you have mined ${formatWhole(ops)} ores!\n`;
                 log += `--------------------------------------------------\n`;
                 pool.forEach(ore => {
                     if (counts[ore.id + "_spectral"] > 0) {
-                        log += `<span style="color: #e100ff; font-weight: bold;">Spectral ${ore.name}: ${formatWhole(counts[ore.id + "_spectral"])} found!!!</span>\n`;
+                        if (ore.id === "p12") {
+                            log += `<span style="color: #660000; font-weight: bold;">Spectral 10^12: ${formatWhole(counts[ore.id + "_spectral"])} found!!!</span>\n`;
+                        } else {
+                            log += `<span style="color: #e100ff;">Spectral ${ore.name}: ${formatWhole(counts[ore.id + "_spectral"])} found!!!</span>\n`;
+                        }
                     }
                     if (counts[ore.id + "_ionized"] > 0) {
-                        log += `<span style="color: #00b8ff; font-weight: bold;">Ionized ${ore.name}: ${formatWhole(counts[ore.id + "_ionized"])} found!</span>\n`;
+                        if (ore.id === "p12") {
+                            log += `<span style="color: #aa0000; font-weight: bold;">Ionized 10^12: ${formatWhole(counts[ore.id + "_ionized"])} found!</span>\n`;
+                        } else {
+                            log += `<span style="color: #00b8ff;">Ionized ${ore.name}: ${formatWhole(counts[ore.id + "_ionized"])} found!</span>\n`;
+                        }
                     }
                     if (counts[ore.id] > 0) {
                         if (ore.id === "p12") {
-                            log += `<h1>10^12: ${formatWhole(counts[ore.id])} found!</h1>\n`;
-                        } else {
-                            log += `${ore.name}: ${formatWhole(counts[ore.id])} found\n`;
+                            log += `<span style="color: #ff0000; font-weight: bold;">10^12: ${formatWhole(counts[ore.id])} found!</span>\n`;
+                        }
+                        else {
+                            log += `<span>${ore.name}: ${formatWhole(counts[ore.id])} found</span>\n`;
                         }
                     }
                 });
@@ -2950,6 +3346,178 @@ addLayer("cmg", {
                 }
                 return baseStyle;
             }
+        },
+        12: {
+        title() { return "press here to use ability" },
+        display() {
+            let seconds = player.cmg.timeAccumulated.toNumber();
+            if (player.cmg.currentPickaxe !== "black_hole") {
+                return `<span style="color: #666;">you need the black hole for this!</span>`;
+            }
+            if (seconds < 28800) {
+                let displayDays = Math.floor(seconds / 86400);
+                let displayHours = Math.floor((seconds % 86400) / 3600);
+                let displayMinutes = Math.floor((seconds % 3600) / 60);
+                let displaySeconds = Math.floor(seconds % 60);
+
+                let timePart = "";
+                if (displayDays > 0) timePart += displayDays + "d ";
+                timePart += displayHours + "h " + displayMinutes + "m " + displaySeconds + "s";
+
+                return `<span style="color: #ff9999; font-weight: bold;">not ready yet! wait at least 8 hours!<br>Charge: ${timePart} / 8h 0m 0s</span>`;
+            }
+            return `<span style="color: #ffffff; font-weight: bold; text-shadow: 0 0 5px #ff0000;">ready...</span><br><span style="color: #ffb3b3;">all ores will turn ionized and gain an ore with x1e11 luck</span>`;
+        },
+        canClick() {
+            return true;
+        },
+        onClick() {
+            if (player.cmg.currentPickaxe !== "black_hole") return;
+            
+            let seconds = player.cmg.timeAccumulated.toNumber();
+            if (seconds < 28800) {
+                let currentHours = Math.floor(seconds / 3600);
+                player.cmg.lastRunLog = `<div style="color: #ff4444; font-weight: bold; text-align: center; font-family: monospace;">[ nuh uh ]<br>that ability of yours isn't charged yet. wait until 8 hours and then we'll see.</div>`;
+                return;
+            }
+
+            let currentRate = layers.cmg.getMiningRate();
+            let ops = player.cmg.timeAccumulated.mul(currentRate).floor().toNumber();
+            let secondsConsumed = ops / currentRate.toNumber();
+            player.cmg.timeAccumulated = player.cmg.timeAccumulated.sub(secondsConsumed);
+            
+            player.cmg.cooldown = new Decimal(10);
+
+            let pool = [
+                { id: "p12", name: "10^12", chance: 1000000000000, value: new Decimal("1e12") },
+                { id: "p11", name: "10^11", chance: 100000000000,  value: new Decimal("1e11") },
+                { id: "p10", name: "10^10", chance: 10000000000,   value: new Decimal("1e10") },
+                { id: "p9",  name: "10^9",  chance: 1000000000,    value: new Decimal("1e9") },
+                { id: "p8",  name: "10^8",  chance: 100000000,     value: new Decimal("1e8") },
+                { id: "p7",  name: "10^7",  chance: 10000000,      value: new Decimal("1e7") },
+                { id: "p6",  name: "10^6",  chance: 1000000,       value: new Decimal("1e6") },
+                { id: "p5",  name: "10^5",  chance: 100000,        value: new Decimal("1e5") },
+                { id: "p4",  name: "10^4",  chance: 10000,         value: new Decimal("1e4") },
+                { id: "p3",  name: "10^3",  chance: 1000,          value: new Decimal("1e3") },
+                { id: "p2",  name: "10^2",  chance: 100,           value: new Decimal("1e2") },
+                { id: "p1",  name: "10^1",  chance: 10,           value: new Decimal("1e1") },
+                { id: "p0",  name: "10^0",  chance: 1,             value: new Decimal("1e0") },
+            ];
+
+            let counts = {};
+            pool.forEach(ore => {
+                counts[ore.id] = 0;
+                counts[ore.id + "_ionized"] = 0;
+                counts[ore.id + "_spectral"] = 0;
+            });
+
+            let totalOresGained = new Decimal(0);
+            let highestRarityThisRun = 0;
+            let topOreNameThisRun = "None";
+            let remainingOps = ops;
+
+            for (let ore of pool) {
+                if (remainingOps <= 0) break;
+                let expected = remainingOps / ore.chance;
+                let amountFound = 0;
+
+                if (expected > 20 || remainingOps > 100000) {
+                    let sd = Math.sqrt(expected * (1 - 1 / ore.chance));
+                    let u1 = Math.random(); let u2 = Math.random();
+                    let normalValue = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+                    amountFound = Math.max(0, Math.floor(expected + normalValue * sd));
+                } else {
+                    for (let j = 0; j < remainingOps; j++) {
+                        if (Math.random() < (1 / ore.chance)) amountFound++;
+                    }
+                }
+
+                if (amountFound > remainingOps) amountFound = remainingOps;
+                
+                if (amountFound > 0) {
+                    remainingOps -= amountFound;
+                    
+                    counts[ore.id + "_ionized"] = amountFound;
+                    totalOresGained = totalOresGained.add(ore.value.mul(50).mul(amountFound));
+
+                    let runChanceScore = ore.chance * 50;
+                    if (runChanceScore > highestRarityThisRun) {
+                        highestRarityThisRun = runChanceScore;
+                        topOreNameThisRun = "Ionized " + ore.name;
+                    }
+                }
+            }
+
+            for (let ore of pool) {
+                let luckyChance = ore.chance / 100000000000;
+                if (Math.random() < (1 / Math.max(1, luckyChance))) {
+                    counts[ore.id] += 1;
+                    totalOresGained = totalOresGained.add(ore.value);
+                    
+                    if (ore.chance > highestRarityThisRun) {
+                        highestRarityThisRun = ore.chance;
+                        topOreNameThisRun = ore.name;
+                    }
+                    break;
+                }
+            }
+
+            player.cmg.points = player.cmg.points.add(totalOresGained);
+            for (let id in counts) {
+                player.cmg.minedOres[id] = player.cmg.minedOres[id].add(counts[id]);
+            }
+
+            if (highestRarityThisRun > 0 && (player.cmg.bestDrop === "None" || highestRarityThisRun > player.cmg.bestDropChance)) {
+                player.cmg.bestDrop = `${topOreNameThisRun} (1/${format(highestRarityThisRun)})`;
+                player.cmg.bestDropChance = highestRarityThisRun;
+            }
+
+            let log = `you used the abil! just about ${formatWhole(ops)} ores have been turned into ionized ores!\n`;
+            log += `--------------------------------------------------\n`;
+            pool.forEach(ore => {
+                if (counts[ore.id + "_ionized"] > 0) {
+                    if (ore.id === "p12") {
+                        log += `<span style="color: #0000aa; font-weight: bold;">Ionized 10^12: ${formatWhole(counts[ore.id + "_ionized"])} found!</span>\n`;
+                    } else {
+                        log += `<span style="color: #00b8ff;">Ionized ${ore.name}: ${formatWhole(counts[ore.id + "_ionized"])} found!</span>\n`;
+                    }
+                }
+                if (counts[ore.id] > 0) {
+                    if (ore.id === "p12") {
+                        log += `<span style="color: #0000ff; font-weight: bold;">10^12: ${formatWhole(counts[ore.id])} found</span>\n`;
+                    } else {
+                        log += `<span style="color: #ff00ff; font-weight: bold;">${ore.name}: ${formatWhole(counts[ore.id])} found</span>\n`;
+                    }
+                }
+            });
+            log += `--------------------------------------------------\n`;
+            if (highestRarityThisRun > 0) {
+                log += `<span style="color: #ffee33; font-weight: bold; text-shadow: 0 0 5px rgba(255,238,51,0.3);">rarest ore: ${topOreNameThisRun} (1/${format(highestRarityThisRun)})</span>`;
+            }
+            player.cmg.lastRunLog = log;
+        },
+        style() {
+            let isReady = player.cmg.timeAccumulated.toNumber() >= 28800;
+            let backColor = isReady ? "#4a1212" : "#221111";
+            let borderColor = isReady ? "#ff3333" : "#552222";
+            
+            if (player.cmg.currentPickaxe !== "black_hole") {
+                backColor = "#111";
+                borderColor = "#333";
+            }
+            
+            return {
+                "width": "180px",
+                "height": "60px",
+                "border-radius": "5px",
+                "font-family": "monospace",
+                "border": `1px solid ${borderColor}`,
+                "background-color": backColor,
+                "cursor": "pointer",
+                "color": "#ffffff",
+                "margin-top": "10px"
+            };
+        }
         },
         21: {
             title() { return "mining" },
@@ -3068,11 +3636,11 @@ addLayer("cmg", {
             display() {
                 let bought = player.cmg.speed5.gte(1);
                 return bought ? "<br><b style='color:#89e188;'>you bought it!</b><br><br><span style='color:#89e188;'>+5,000 ores/s. man is your device that good or...</span>" : 
-                "<br>+5,000 ores/s. big warning: a full 2 day mine can take a minute to load<br><br>Cost:<br><span style='color:#ff33ec; font-weight: bold;'>10,000 of 10^11</span>";
+                "<br>+5,000 ores/s. big warning: a full 2 day mine can take a minute to load<br><br>Cost:<br><span style='color:#b833ff; font-weight: bold;'>5 of 10^10</span>";
             },
-            canClick() { return player.cmg.speed5.lt(1) && player.cmg.minedOres.p11.gte(10000) },
+            canClick() { return player.cmg.speed5.lt(1) && player.cmg.minedOres.p10.gte(5) },
             onClick() {
-                player.cmg.minedOres.p11 = player.cmg.minedOres.p11.sub(10000);
+                player.cmg.minedOres.p10 = player.cmg.minedOres.p10.sub(5);
                 player.cmg.speed5 = new Decimal(1);
             },
             style() {
@@ -3110,7 +3678,7 @@ addLayer("cmg", {
             display() {
                 let bought = player.cmg.luck2.gte(1);
                 return bought ? "<br><b style='color:#89e188;'>you bought it!</b><br><br><span style='color:#89e188;'>enjoy this luck boost!</span>" : 
-                "<br>x2 variant luck again. what<br><br>Cost:<br><span style='color:#ff9633; font-weight: bold;'>10 of Ionized 10^6</span>";
+                "<br>x2 variant luck again. what<br><br>Cost:<br><span style='color:#00b8ff; font-weight: bold;'>10 of Ionized 10^6</span>";
             },
             canClick() { return player.cmg.luck2.lt(1) && player.cmg.minedOres.p6_ionized.gte(10) },
             onClick() {
@@ -3131,11 +3699,11 @@ addLayer("cmg", {
             display() {
                 let bought = player.cmg.luck3.gte(1);
                 return bought ? "<br><b style='color:#89e188;'>you bought it!</b><br><br><span style='color:#89e188;'>it's all variant luck! x1.5 of it.</span>" : 
-                "<br>x1.5 variant luck. you're insane.<br><br>Cost:<br><span style='color:#b833ff; font-weight: bold;'>2,500 of 10^10</span>";
+                "<br>x1.5 variant luck. you're insane.<br><br>Cost:<br><span style='color:#9e271b; font-weight: bold;'>750,000,000 of 10^0</span>";
             },
-            canClick() { return player.cmg.luck3.lt(1) && player.cmg.minedOres.p10.gte(2500) },
+            canClick() { return player.cmg.luck3.lt(1) && player.cmg.minedOres.p0.gte(750e6) },
             onClick() {
-                player.cmg.minedOres.p10 = player.cmg.minedOres.p10.sub(2500);
+                player.cmg.minedOres.p0 = player.cmg.minedOres.p0.sub(750e6);
                 player.cmg.luck3 = new Decimal(1);
             },
             style() {
@@ -3152,11 +3720,11 @@ addLayer("cmg", {
             display() {
                 let bought = player.cmg.luck4.gte(1);
                 return bought ? "<br><b style='color:#89e188;'>you bought it!</b><br><br><span style='color:#89e188;'>that's too much luck man.. but fine, x2.</span>" : 
-                "<br>variants are x2 more common, again!<br><br>Cost:<br><span style='color:#ff33ec; font-weight: bold;'>100 of Ionized 10^11</span>";
+                "<br>variants are x2 more common, again!<br><br>Cost:<br><span style='color:#00b8ff; font-weight: bold;'>1 of Ionized 10^9</span>";
             },
-            canClick() { return player.cmg.luck4.lt(1) && player.cmg.minedOres.p11_ionized.gte(100) },
+            canClick() { return player.cmg.luck4.lt(1) && player.cmg.minedOres.p9_ionized.gte(1) },
             onClick() {
-                player.cmg.minedOres.p11_ionized = player.cmg.minedOres.p11_ionized.sub(100);
+                player.cmg.minedOres.p9_ionized = player.cmg.minedOres.p9_ionized.sub(1);
                 player.cmg.luck4 = new Decimal(1);
             },
             style() {
@@ -3173,12 +3741,11 @@ addLayer("cmg", {
             display() {
                 let bought = player.cmg.luck5.gte(1);
                 return bought ? "<br><b style='color:#89e188;'>you bought it!</b><br><br><span style='color:#89e188;'>ur did it, if you see this you got x2.5 variant luck and a special role in the discord server</span>" : 
-                "<br>x2.5 variant luck. it's so over<br><br>Cost:<br><span class='special-12'>5 of 10^12</span><br><span style='color: #e100ff; font-weight: bold;'>1,000 of Spectral 10^8</span>";
+                "<br>x2.5 variant luck. it's so over<br><br>Cost:<br><span class='special-12'>1 of 10^12</span>";
             },
-            canClick() { return player.cmg.luck5.lt(1) && player.cmg.minedOres.p12.gte(5) && player.cmg.minedOres.p8_spectral.gte(1000) },
+            canClick() { return player.cmg.luck5.lt(1) && player.cmg.minedOres.p12.gte(1) },
             onClick() {
-                player.cmg.minedOres.p12 = player.cmg.minedOres.p12.sub(5);
-                player.cmg.minedOres.p8_spectral = player.cmg.minedOres.p8_spectral.sub(1000);
+                player.cmg.minedOres.p12 = player.cmg.minedOres.p12.sub(1);
                 player.cmg.luck5 = new Decimal(1);
             },
             style() {
@@ -3190,6 +3757,283 @@ addLayer("cmg", {
                 }
             }
         },
+        81: {
+            title() { return "Cookie" },
+            display() { 
+                return `
+                    <div style="font-size: 11px; color: #a0a0a0; font-family: monospace;">
+                        <b>Boost:</b>
+                        mine 1 ore with <span style="color: #ffee33; font-weight: bold;">x1e10 Luck!</span>(woah dmg reference)<br>
+                        you got this many: <span style="color: #fff; font-weight: bold;">${formatWhole(player.cmg.cookies)}</span>
+                    </div>
+                `;
+            },
+            canClick() { return true }, 
+            onClick() { 
+            },
+            style() { 
+            return { 
+                "width": "180px", 
+                "height": "140px", 
+                "border-radius": "5px 0 0 5px", 
+                "border": "1px solid #315131", 
+                "background-color": "#111111", 
+                "color": "#fff",
+                "pointer-events": "none", 
+                "transform": "none",
+                "box-shadow": "none",
+                //"transform": "translateY(9.05px) !important" 
+            };
+        }
+        },
+        82: {
+                title() { return "Buy" },
+                display() { 
+                    return `
+                        <div style="font-size: 11px; font-family: monospace; line-height: 1">
+                            <b>Cost:</b>
+                            <span style="color: #666;">3,125x</span> <span style="color: #33ff57; font-weight: bold;">10^5</span>
+                            <span style="color: #666;">625x</span> <span style="color: #33ffcc; font-weight: bold;">10^6</span>
+                            <span style="color: #666;">125x</span> <span style="color: #33b8ff; font-weight: bold;">10^7</span>
+                            <span style="color: #666;">25x</span> <span style="color: #335eff; font-weight: bold;">10^8</span>
+                            <span style="color: #666;">5x</span> <span style="color: #6e33ff; font-weight: bold;">10^9</span>
+                        </div>
+                    `;
+                },
+                canClick() { 
+                    let ores = player.cmg.minedOres;
+                    if (!ores || !ores["p5"] || !ores["p6"] || !ores["p7"] || !ores["p8"] || !ores["p9"]) return false;
+                    return ores["p5"].gte(3125) && ores["p6"].gte(625) && ores["p7"].gte(125) && ores["p8"].gte(25) && ores["p9"].gte(5);
+                },
+                onClick() {
+                    let ores = player.cmg.minedOres;
+                    ores["p5"] = ores["p5"].sub(3125);
+                    ores["p6"] = ores["p6"].sub(625);
+                    ores["p7"] = ores["p7"].sub(125);
+                    ores["p8"] = ores["p8"].sub(25);
+                    ores["p9"] = ores["p9"].sub(5);
+
+                    player.cmg.cookies = player.cmg.cookies.add(1);
+                },
+                style() {
+                    return { 
+                        "width": "130px", 
+                        "height": "140px", 
+                        "border-radius": "0", 
+                        "font-family": "monospace",
+                        "border-top": "1px solid #315131", 
+                        "border-bottom": "1px solid #315131", 
+                        "border-left": "none", 
+                        "border-right": "none",
+                        "background-color": this.canClick() ? "#1c301c" : "#131313", 
+                        "cursor": this.canClick() ? "pointer" : "not-allowed",
+                        "color": "#ffffff"
+                    };
+                }
+        },
+        83: {
+        title() { return "Use" },
+        display() { 
+            let activeCount = player.cmg.cookieActive || 0;
+            if (activeCount >= 10) return "<b style='color:#ff33ec;'>Woah! You maxed it out!</b><br><br>+10 ores with x1e10 luck ready";
+            if (activeCount > 0) return `<b>active: ${activeCount}/10</b><br><br>click to use one more cookie!!`;
+            return "use a cookie to get +1 ore with x1e10 luck!";
+        },
+        canClick() { 
+            if (!player.cmg.cookies) return false;
+            let activeCount = player.cmg.cookieActive || 0;
+            return player.cmg.cookies.gte(1) && activeCount < 10;
+        },
+        onClick() {
+            player.cmg.cookies = player.cmg.cookies.sub(1);
+            if (player.cmg.cookieActive === undefined) player.cmg.cookieActive = 0;
+            player.cmg.cookieActive += 1; 
+        },
+        style() {
+            let activeCount = player.cmg.cookieActive || 0;
+            return { 
+                "width": "160px", 
+                "height": "140px", 
+                "border-radius": "0 5px 5px 0", 
+                "font-family": "monospace", 
+                "border": "1px solid #315131",
+                "background-color": this.canClick() ? "#1c241c" : (activeCount > 0 ? "#2d1c30" : "#111111"), 
+                "cursor": this.canClick() ? "pointer" : "default",
+                "color": "#ffffff"
+            };
+        }
+        },
+        91: {
+        title() {
+            return player.cmg.currentPickaxe === "default" ? "default" : "default";
+        },
+        display() {
+        if (player.cmg.currentPickaxe === "default") {
+            return `<div style="font-size: 11px; font-family: monospace; line-height: 1; padding-top: 5px;">
+                we all started here! <span style="color: #89e188; font-weight: bold;">x1 ores/s.</span><br>
+                it's equipped!
+                </div>
+            `;
+            }
+        return `
+            <div style="font-size: 11px; font-family: monospace; line-height: 1; padding-top: 5px;">
+                we all started here! <span style="color: #89e188; font-weight: bold;">x1 ores/s.</span><br>
+                click to equip!
+                </div>
+            `;
+        },
+        canClick() {
+            return player.cmg.currentPickaxe !== "default";
+        },
+        onClick() {
+            player.cmg.currentPickaxe = "default";
+        },
+        style() {
+            return {
+                "width": "180px",
+                "height": "160px",
+                "border-radius": "5px",
+                "font-family": "monospace",
+                "border": "1px solid #315131",
+                "background-color": player.cmg.currentPickaxe === "default" ? "#152a15" : "#1c301c",
+                "cursor": this.canClick() ? "pointer" : "default",
+                "color": "#ffffff"
+            };
+        }
+        },
+        92: {
+        title() {
+            if (player.cmg.currentPickaxe === "drill") return "drill";
+            if (player.cmg.unlockedPickaxes.drill) return "drill";
+            return "drill";
+        },
+        display() {
+            if (player.cmg.currentPickaxe === "drill") {
+                return `
+                <div style="font-size: 11px; font-family: monospace; line-height: 1; padding-top: 5px;">
+                    ore multi is now <span style="color: #89e188; font-weight: bold;">x2.5/s!</span><br>
+                    it's equipped!
+                `;
+            }
+            if (player.cmg.unlockedPickaxes.drill) {
+                return `
+                <div style="font-size: 11px; font-family: monospace; line-height: 1; padding-top: 5px;">
+                    ore multi is now <span style="color: #89e188; font-weight: bold;">x2.5/s!</span><br>
+                    click to equip!
+                </div>
+                `;
+            }
+            return `
+                <div style="font-size: 11px; font-family: monospace; line-height: 1; padding-top: 5px;">
+                    increases ore multi to <span style="color: #89e188; font-weight: bold;">x2.5/s!</span><br>
+                    <b>cost:</b><br>
+                    <span style="color: #666;">125,000x</span> <span style="color: #ffee33; font-weight: bold;">10^3</span>
+                    <span style="color: #666;">30,000x</span> <span style="color: #b5ff33; font-weight: bold;">10^4</span>
+                </div>
+            `;
+        },
+        canClick() {
+            if (player.cmg.currentPickaxe === "drill") return false;
+            if (player.cmg.unlockedPickaxes.drill) return true;
+            let ores = player.cmg.minedOres;
+            if (!ores || !ores["p3"] || !ores["p4"]) return false;
+            return ores["p3"].gte(125e3) && ores["p4"].gte(30e3);
+        },
+        onClick() {
+            if (player.cmg.unlockedPickaxes.drill) {
+                player.cmg.currentPickaxe = "drill";
+                return;
+            }
+            let ores = player.cmg.minedOres;
+            ores["p3"] = ores["p3"].sub(125e3);
+            ores["p4"] = ores["p4"].sub(30e3);
+            player.cmg.unlockedPickaxes.drill = true;
+            player.cmg.currentPickaxe = "drill";
+        },
+        style() {
+            let activeColor = "#131313";
+            if (player.cmg.currentPickaxe === "drill") activeColor = "#152a15";
+            else if (this.canClick()) activeColor = "#1c301c";
+            
+            return {
+                "width": "180px",
+                "height": "160px",
+                "border-radius": "5px",
+                "font-family": "monospace",
+                "border": "1px solid #315131",
+                "background-color": activeColor,
+                "cursor": this.canClick() ? "pointer" : "not-allowed",
+                "color": "#ffffff"
+            };
+        }
+        },
+        93: {
+        title() {
+            if (player.cmg.currentPickaxe === "black_hole") return "black hole";
+            if (player.cmg.unlockedPickaxes.black_hole) return "black hole";
+            return "black hole";
+        },
+        display() {
+            if (player.cmg.currentPickaxe === "black_hole") {
+                return `
+                <div style="font-size: 11px; font-family: monospace; line-height: 1; padding-top: 5px;">
+                    ore multi is now <span style="color: #89e188; font-weight: bold;">x5/s!</span><br>
+                    it's equipped!
+                </div>
+                `;
+            }
+            if (player.cmg.unlockedPickaxes.black_hole) {
+                return `
+                <div style="font-size: 11px; font-family: monospace; line-height: 1; padding-top: 5px;">
+                    ore multi is now <span style="color: #89e188; font-weight: bold;">x5/s!</span><br>
+                    click to equip!
+                </div>
+                `;
+            }
+            return `
+                <div style="font-size: 11px; font-family: monospace; line-height: 1; padding-top: 5px;">
+                    ore multi goes brr again. <span style="color: #89e188; font-weight: bold;">x5 ores/s!</span> also unlocks... the ability button?<br>
+                    <b>cost:</b><br>
+                    <span style="color: #666;">1x</span> <span style="color: #b833ff; font-weight: bold;">10^10</span>
+                    <span style="color: #666;">1.00e10x</span> <span style="color: #9e271b; font-weight: bold;">10^0</span>
+                </div>
+            `;
+        },
+        canClick() {
+            if (player.cmg.currentPickaxe === "black_hole") return false;
+            if (player.cmg.unlockedPickaxes.black_hole) return true;
+            let ores = player.cmg.minedOres;
+            if (!ores || !ores["p10"] || !ores["p0"]) return false;
+            return ores["p10"].gte(1) && ores["p0"].gte(10000000000);
+        },
+        onClick() {
+            if (player.cmg.unlockedPickaxes.black_hole) {
+                player.cmg.currentPickaxe = "black_hole";
+                return;
+            }
+            let ores = player.cmg.minedOres;
+            ores["p10"] = ores["p10"].sub(1);
+            ores["p0"] = ores["p0"].sub(10000000000);
+            player.cmg.unlockedPickaxes.black_hole = true;
+            player.cmg.currentPickaxe = "black_hole";
+        },
+        style() {
+            let activeColor = "#131313";
+            if (player.cmg.currentPickaxe === "black_hole") activeColor = "#152a15";
+            else if (this.canClick()) activeColor = "#1c301c";
+
+            return {
+                "width": "180px",
+                "height": "160px",
+                "border-radius": "5px",
+                "font-family": "monospace",
+                "border": "1px solid #315131",
+                "background-color": activeColor,
+                "cursor": this.canClick() ? "pointer" : "not-allowed",
+                "color": "#ffffff"
+            };
+        }
+        },
     },
     tabFormat: [
     "blank",
@@ -3197,16 +4041,28 @@ addLayer("cmg", {
         return `
         <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
             <button onclick="player.cmg.currentTab = 'mining'" 
-                    style="width: 180px; height: 40px; border-radius: 5px; border: 1px solid #315131; cursor: pointer; font-family: monospace; font-size: 14px; font-weight: bold; transition: all 0.2s;
+                    style="width: 140px; height: 40px; border-radius: 5px; border: 1px solid #315131; cursor: pointer; font-family: monospace; font-size: 14px; font-weight: bold; transition: all 0.2s;
                     background-color: ${player.cmg.currentTab === 'mining' ? '#315131' : '#151a15'};
                     color: ${player.cmg.currentTab === 'mining' ? '#89e188' : '#a0a0a0'};">
                 mining
             </button>
             <button onclick="player.cmg.currentTab = 'upgrades'" 
-                    style="width: 180px; height: 40px; border-radius: 5px; border: 1px solid #315131; cursor: pointer; font-family: monospace; font-size: 14px; font-weight: bold; transition: all 0.2s;
+                    style="width: 140px; height: 40px; border-radius: 5px; border: 1px solid #315131; cursor: pointer; font-family: monospace; font-size: 14px; font-weight: bold; transition: all 0.2s;
                     background-color: ${player.cmg.currentTab === 'upgrades' ? '#315131' : '#151a15'};
                     color: ${player.cmg.currentTab === 'upgrades' ? '#89e188' : '#a0a0a0'};">
                 upgrades
+            </button>
+            <button onclick="player.cmg.currentTab = 'items'" 
+                    style="width: 140px; height: 40px; border-radius: 5px; border: 1px solid #315131; cursor: pointer; font-family: monospace; font-size: 14px; font-weight: bold; transition: all 0.2s;
+                    background-color: ${player.cmg.currentTab === 'items' ? '#315131' : '#151a15'};
+                    color: ${player.cmg.currentTab === 'items' ? '#89e188' : '#a0a0a0'};">
+                items
+            </button>
+            <button onclick="player.cmg.currentTab = 'pickaxes'" 
+                    style="width: 140px; height: 40px; border-radius: 5px; border: 1px solid #315131; cursor: pointer; font-family: monospace; font-size: 14px; font-weight: bold; transition: all 0.2s;
+                    background-color: ${player.cmg.currentTab === 'pickaxes' ? '#315131' : '#151a15'};
+                    color: ${player.cmg.currentTab === 'pickaxes' ? '#89e188' : '#a0a0a0'};">
+                pickaxes
             </button>
         </div>
         `;
@@ -3214,6 +4070,7 @@ addLayer("cmg", {
     "blank", 
     ["column", [
         ["row", [["clickable", function() { return player.cmg.currentTab === "mining" ? 11 : null }]]],
+        ["row", [["clickable", function() { return player.cmg.currentTab === "mining" ? 12 : null }]]],
         ["display-text", function() {
            if (player.cmg.currentTab !== "mining") return "";
             return `
@@ -3234,23 +4091,54 @@ addLayer("cmg", {
         }],
         ["row", [
             ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 31 : null }],
-            ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 32 : null }]
-        ]],
-        ["row", [
-            ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 41 : null }],
-            ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 42 : null }]
-        ]],
-        ["row", [
-            ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 51 : null }],
             ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 52 : null }]
         ]],
         ["row", [
-            ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 61 : null }],
+            ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 32 : null }],
+            ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 61 : null }]
+        ]],
+        ["row", [
+            ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 41 : null }],
             ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 62 : null }]
         ]],
         ["row", [
-            ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 71 : null }],
+            ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 42 : null }],
+            ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 71 : null }]
+        ]],
+        ["row", [
+            ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 51 : null }],
             ["clickable", function() { return player.cmg.currentTab === "upgrades" ? 72 : null }]
+        ]],
+        ["display-text", function() {
+            if (player.cmg.currentTab !== "items") return "";
+            let activeCount = player.cmg.cookieActive || 0;
+            return `
+                <h3>[ items ]</h3><br>
+                <div style="color: #ffee33; font-family: monospace; margin-bottom: 20px; font-size: 15px;">
+                    boosts: ` + (activeCount > 0 ? 
+                        `<span style="color:#ff33ec; font-weight:bold;">Cookie (` + activeCount + `) - you will now get ` + activeCount + ` ores with x1e10 luck! [not used on ability!!]</span>` : 
+                        '<span style="color:#666;">nothing yet...</span>') + `
+                </div>
+            `;
+        }],
+        ["row", [
+            ["clickable", function() { return player.cmg.currentTab === "items" ? 81 : null }],
+            ["clickable", function() { return player.cmg.currentTab === "items" ? 82 : null }],
+            ["clickable", function() { return player.cmg.currentTab === "items" ? 83 : null }]
+        ]],
+        ["display-text", function() {
+            if (player.cmg.currentTab !== "pickaxes") return "";
+            return `
+                <h3>[ do you like pickaxes? ]</h3><br>
+                <div style="color: #ffee33; font-family: monospace; margin-bottom: 20px; font-size: 14px;">
+                currently equipped: <span style="color:#89e188; font-weight:bold;">${player.cmg.currentPickaxe.replace('_', ' ')}</span>
+                </div>
+            `;
+        }],
+        ["row", [
+            ["clickable", function() { return player.cmg.currentTab === "pickaxes" ? 91 : null }],
+            ["clickable", function() { return player.cmg.currentTab === "pickaxes" ? 92 : null }],
+            ["clickable", function() { return player.cmg.currentTab === "pickaxes" ? 93 : null }]
         ]]
     ]],
         "blank",
@@ -3260,19 +4148,20 @@ addLayer("cmg", {
         ["display-text", function() {
             let listHTML = "";
             let pool = [
+                { id: "pinf",  label: "10^NaN",  chanceStr: "1/NaN",    baseColor: "style='color: #000000;'" },
                 { id: "p12", label: "10^12", chanceStr: "1/1e12", baseColor: "class='special-12'" },
                 { id: "p11", label: "10^11", chanceStr: "1/1e11", baseColor: "style='color: #ff33ec;'" },
                 { id: "p10", label: "10^10", chanceStr: "1/1e10", baseColor: "style='color: #b833ff;'" },
                 { id: "p9",  label: "10^9",  chanceStr: "1/1e9",  baseColor: "style='color: #6e33ff;'" },
-                { id: "p8",  label: "10^8",  chanceStr: "1/1e8",  baseColor: "style='color: #335eff;'" },
-                { id: "p7",  label: "10^7",  chanceStr: "1/1e7",  baseColor: "style='color: #33b8ff;'" },
-                { id: "p6",  label: "10^6",  chanceStr: "1/1e6",  baseColor: "style='color: #33ffcc;'" },
-                { id: "p5",  label: "10^5",  chanceStr: "1/1e5",  baseColor: "style='color: #33ff57;'" },
-                { id: "p4",  label: "10^4",  chanceStr: "1/1e4",  baseColor: "style='color: #b5ff33;'" },
-                { id: "p3",  label: "10^3",  chanceStr: "1/1e3",  baseColor: "style='color: #ffee33;'" },
+                { id: "p8",  label: "10^8",  chanceStr: "1/100,000,000",  baseColor: "style='color: #335eff;'" },
+                { id: "p7",  label: "10^7",  chanceStr: "1/10,000,000",  baseColor: "style='color: #33b8ff;'" },
+                { id: "p6",  label: "10^6",  chanceStr: "1/1,000,000",  baseColor: "style='color: #33ffcc;'" },
+                { id: "p5",  label: "10^5",  chanceStr: "1/100,000",  baseColor: "style='color: #33ff57;'" },
+                { id: "p4",  label: "10^4",  chanceStr: "1/10,000",  baseColor: "style='color: #b5ff33;'" },
+                { id: "p3",  label: "10^3",  chanceStr: "1/1,000",  baseColor: "style='color: #ffee33;'" },
                 { id: "p2",  label: "10^2",  chanceStr: "1/100",  baseColor: "style='color: #ff9633;'" },
                 { id: "p1",  label: "10^1",  chanceStr: "1/10",   baseColor: "style='color: #ff4933;'" },
-                { id: "p0",  label: "10^0",  chanceStr: "1/1",    baseColor: "style='color: #9e271b;'" }
+                { id: "p0",  label: "10^0",  chanceStr: "1/1",    baseColor: "style='color: #9e271b;'" },
             ];
 
             let currentIonModifier = 50;
@@ -3328,4 +4217,4 @@ addLayer("cmg", {
         }],
         "blank"
     ]
-});
+})

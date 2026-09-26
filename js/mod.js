@@ -11,8 +11,8 @@ let modInfo = {
 }
 
 let VERSION = {
-	num: "1.02",
-	name: "The Puzzling Update: Part 1",
+	num: "1.025",
+	name: "The Mining Update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -22,6 +22,9 @@ let changelog = `<h1>Changelog:</h1><br>
 	B = medium update <br>
 	C = small update <br>
 	<br>
+	<h3>v1.025</h3><br>
+		- Added CMG. Have fun!<br>
+		<br>
 	<h2>v1.02</h2><br>
 		- Added Primary and Secondary, 2/4 of the puzzles.<br>
 		- Added 2 new generators, once again.<br>
@@ -130,6 +133,15 @@ function getPointGen() {
 	if (hasUpgrade('per', 22)) gain = gain.pow("4")
 	if (hasMilestone('p', 35)) gain = gain.pow("1e6")
 	if (hasMilestone('a', 0) && player.p.points.gte("1e1000")) gain = gain.pow("1e303")
+	if (hasUpgrade('exc', 12)) gain = gain.pow("1e25000")
+	if (hasUpgrade('ter', 21)) gain = gain.pow("1e1e6")
+	if (hasMilestone('a', 3) && !hasUpgrade('flw',31)) gain = gain.pow("0")
+	if (hasUpgrade('flw', 11)) gain = gain.add("1")
+	if (hasUpgrade('flw', 12)) gain = gain.mul("25")
+	if (hasUpgrade('flw', 13)) gain = gain.mul("1e6")
+	if (hasUpgrade('flw', 14)) gain = gain.pow(upgradeEffect('flw', 14))
+	if (hasUpgrade('flw', 21)) gain = gain.pow("27953")
+	if (hasUpgrade('flw', 31)) gain = gain.pow("1e1e9")
 	if (!hasUpgrade('per', 14)) {
 		let cap = new Decimal("1e1e9")
 		if (gain.gte(cap)) {
@@ -144,7 +156,7 @@ function getPointGen() {
 			gain = cap3.times(gain.div(cap3).log10().add(1))
 		}
 	}
-	if (hasUpgrade('per', 14) && player.points.gte("1e1e2e5")) {
+	if (hasUpgrade('per', 14) && player.points.gte("1e1e2e5") && !player.ter.points.gte(3.4e38)) {
 		let cap = new Decimal("1e1e9")
 		if (gain.gte(cap)) {
 			gain = cap.times(gain.div(cap).sqrt())
@@ -187,7 +199,7 @@ var displayThings = [
                 noticeText += "<br><span style='color: #ff1111; font-weight: bold; font-size: 14px;'>Softcap³: Money gain is heavily rooted past e1.796e308 money!</span>"
             }
         }
-		if (hasUpgrade('per', 14) && player.points.gte("1e1e2e5")) {
+		if (hasUpgrade('per', 14) && player.points.gte("1e1e2e5") && !player.ter.points.gte(3.4e38)) {
             if (player.points.gte("1e1e9")) {
                 noticeText += "<span style='color: #ff7f7f; font-weight: bold; font-size: 14px;'>Softcap: Money gain square rooted past e1e9 money!</span>"
             }
@@ -198,7 +210,7 @@ var displayThings = [
                 noticeText += "<br><span style='color: #ff1111; font-weight: bold; font-size: 14px;'>Softcap³: Money gain is heavily rooted past e1.796e308 money!</span>"
             }
 			if (player.points.gte("1e1e1e5")) {
-                noticeText += "<br><span style='color: #b70202; font-weight: bold; font-size: 14px;'>Hardcap?: Nuh uh, you won't get more than e1e200,000 money until v1.03 releases!</span>"
+                noticeText += "<br><span style='color: #b70202; font-weight: bold; font-size: 14px;'>Hardcap?: Nuh uh, you won't get more than e1e200,000 money until you do something!</span>"
             }
         }
 		if (player.points.gte("(e^6)2")) {
