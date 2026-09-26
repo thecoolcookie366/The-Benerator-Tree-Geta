@@ -638,7 +638,7 @@ addLayer("a", {
             new Decimal("5e99999"),
             new Decimal("1e2e6"),
             new Decimal("1e1e9"),
-            new Decimal("(e^1.79e308)2"),
+            new Decimal("1e1e22"),
             new Decimal("(e^1.79e308)2"),
             new Decimal("(e^1.79e308)2"),
         ]
@@ -730,6 +730,21 @@ addLayer("a", {
             requirementDescription: "<h3><span>Ascension IV</span></h3>",
             effectDescription: "<i>How endless is endless numbers? Let's find out!<br>^0 money, however unlock the next generator.</i>",
             done() { return player.a.points.gte(4) },
+            style() {
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                        'background-color': '#540854',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #d400ff',
+                        'border-color': '#d400ff'
+                    }
+                }
+            },
+        },
+        4: {
+            requirementDescription: "<h3><span>Ascension V</span></h3>",
+            effectDescription: "<i>Unlock Quaternary. Oh, god.</i>",
+            done() { return player.a.points.gte(5) },
             style() {
                 if (hasMilestone(this.layer, this.id)) {
                     return {
@@ -1926,12 +1941,13 @@ addLayer("flw", {
     },
     requires() {
         let costs = [
-            new Decimal("62.5"),
+            new Decimal("125"),
             new Decimal("375"),
             new Decimal("5000"),
             new Decimal("2.5e9"),
             new Decimal("1.25e39"),
             new Decimal("3e1076047"),
+            new Decimal("(e^1.79e308)2"),
         ]
         let currentPoints = player[this.layer].points.toNumber()
         return costs[currentPoints]
@@ -1951,7 +1967,7 @@ addLayer("flw", {
     resetsNothing() {return hasMilestone('a',3)},
     canBuyMax() {return hasMilestone('a',3)},
     effectDescription() {
-        return "making your progression much, <i>much</i> slower."
+        return "i think these might be a bit buggy (flawed generator :sob:)"
     },
     upgrades: {
         11: {
@@ -1993,7 +2009,7 @@ addLayer("flw", {
         },
         31: {
             title: "[TITLE CARD]",
-            description: "^e1e9 money. Disable the ^0 debuff.",
+            description: "^e9.2e18 money. Disable the ^0 debuff.",
             cost: new Decimal("6"),
             pay() {},
         },
@@ -2802,6 +2818,62 @@ addLayer("ter", {
     branches:['exc'],
     row: 7, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasUpgrade('exc',11)},
+
+
+})
+
+addLayer("qua", {
+    name: "last", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "4th", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order 
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#f5ac22",
+    nodeStyle: {
+        background: "radial-gradient( #f5ac22, #000000)",
+        backgroundOrigin: "border-box",
+        borderColor: "rgba(0,0,0,0.5)",
+        color: "rgb(0, 0, 0)",
+    },
+    tooltip() { 
+        return formatWhole(player[this.layer].points) + "/∞ Quaternary"; 
+    },
+    requires() {
+        return new Decimal("1e1e15532");
+    },
+    resource: "quaternary", // Name of prestige currency
+    baseResource: "prestiges", // Name of resource prestige is based on
+    baseAmount() {return player.p.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 1000,
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal (1)
+        return exp
+    },
+    effectDescription() {
+        if (player.qua.points.gte(3)) {
+            return "but where is the puzzle? Try getting 4,000 tertiary...";
+        }
+        let spoilerHTML = `
+            <br><br>
+            <details style="background: #1c1c1c; border: 2px solid #66ff47; padding: 8px 12px; border-radius: 6px; cursor: pointer; max-width: 280px; margin: 8px auto; text-align: center; display: inline-block;">
+                <summary style="font-weight: bold; color: #dfdfdf; outline: none; user-select: none; font-size: 0.95em;">stuck? click here to reveal answer</summary>
+                <div style="margin-top: 6px; color: #ff6b6b; font-size: 1.15em; font-weight: bold; letter-spacing: 2px;">get 1 perfect generator.</div>
+            </details>
+        `;
+        return "uh" + spoilerHTML;
+    },
+    resetsNothing() {return hasMilestone('a',4)},
+    canBuyMax() {return hasMilestone('a',4)},
+    branches:['flw'],
+    row: 8, // Row the layer is in on the tree (0 is the first row)
+    layerShown(){return hasMilestone('a',4)},
 
 
 })

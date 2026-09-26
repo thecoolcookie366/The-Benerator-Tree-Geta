@@ -141,7 +141,7 @@ function getPointGen() {
 	if (hasUpgrade('flw', 13)) gain = gain.mul("1e6")
 	if (hasUpgrade('flw', 14)) gain = gain.pow(upgradeEffect('flw', 14))
 	if (hasUpgrade('flw', 21)) gain = gain.pow("27953")
-	if (hasUpgrade('flw', 31)) gain = gain.pow("1e1e9")
+	if (hasUpgrade('flw', 31)) gain = gain.pow("1e9.2e18")
 	if (!hasUpgrade('per', 14)) {
 		let cap = new Decimal("1e1e9")
 		if (gain.gte(cap)) {
