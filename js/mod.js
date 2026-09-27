@@ -135,6 +135,8 @@ function getPointGen() {
 	if (hasMilestone('a', 0) && player.p.points.gte("1e1000")) gain = gain.pow("1e303")
 	if (hasUpgrade('exc', 12)) gain = gain.pow("1e25000")
 	if (hasUpgrade('ter', 21)) gain = gain.pow("1e1e6")
+	if (hasUpgrade('per', 44)) gain = gain.pow(upgradeEffect('per', 44))
+	if (hasUpgrade('qua', 11)) gain = gain.tetrate("1.000000000000001")
 	if (hasMilestone('a', 3) && !hasUpgrade('flw',31)) gain = gain.pow("0")
 	if (hasUpgrade('flw', 11)) gain = gain.add("1")
 	if (hasUpgrade('flw', 12)) gain = gain.mul("25")
@@ -142,6 +144,7 @@ function getPointGen() {
 	if (hasUpgrade('flw', 14)) gain = gain.pow(upgradeEffect('flw', 14))
 	if (hasUpgrade('flw', 21)) gain = gain.pow("27953")
 	if (hasUpgrade('flw', 31)) gain = gain.pow("1e9.2e18")
+	if (hasMilestone('a', 5)) gain = gain.pow("0")
 	if (!hasUpgrade('per', 14)) {
 		let cap = new Decimal("1e1e9")
 		if (gain.gte(cap)) {

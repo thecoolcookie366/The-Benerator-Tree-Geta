@@ -46,7 +46,7 @@ function getAvailableThemes() {
 	if (tmp.flw && tmp.flw.layerShown) {
 		list.push("flawless")
 	}
-	if (false) {
+	if (tmp.sup && tmp.sup.layerShown) {
 		list.push("supreme")
 	}
 	if (false) {

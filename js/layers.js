@@ -639,7 +639,7 @@ addLayer("a", {
             new Decimal("1e2e6"),
             new Decimal("1e1e9"),
             new Decimal("1e1e22"),
-            new Decimal("(e^1.79e308)2"),
+            new Decimal("1e1e1e1e100"),
             new Decimal("(e^1.79e308)2"),
         ]
         let currentPoints = player[this.layer].points.toNumber()
@@ -672,6 +672,7 @@ addLayer("a", {
             document.body.style.background = ""; 
         }, 500);
     },
+    autoPrestige() {return true},
     gainMult() { 
         let mult = new Decimal(1)
         return mult
@@ -752,6 +753,21 @@ addLayer("a", {
                         'color': '#ffffff',
                         'box-shadow': '0px 0px 15px #d400ff',
                         'border-color': '#d400ff'
+                    }
+                }
+            },
+        },
+        5: {
+            requirementDescription: "<h3><span>Ascension VI</span></h3>",
+            effectDescription: "<i>Unlock Supreme Generators. See you in v1.1! Also, ^0 money again.<br> True Endgame: 100,000 money in Ascension 6 :)</i>",
+            done() { return player.a.points.gte(6) },
+            style() {
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                        'background-color': '#543008',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #ff8800',
+                        'border-color': '#ff8800'
                     }
                 }
             },
@@ -1653,6 +1669,7 @@ addLayer("per", {
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
+        timeSinceUpgrade: 0,
     }},
     color: "#00ff00",
     //nodeStyle: {
@@ -1663,6 +1680,12 @@ addLayer("per", {
     //},
     tooltip() { 
         return formatWhole(player[this.layer].points) + " Perfect Generators"; 
+    },
+    update(diff) {
+        if (hasUpgrade('per', 44)) {
+            if (player.p.timeSinceUpgrade === undefined || isNaN(player.p.timeSinceUpgrade)) player.p.timeSinceUpgrade = 0
+            player.p.timeSinceUpgrade += diff
+        }
     },
     requires: new Decimal(2), // Can be a function that takes requirement increases into account
     resource: "perfect generators", // Name of prestige currency
@@ -1836,9 +1859,22 @@ addLayer("per", {
         },
         44: {
             title: "Upgrade in 5",
-            description: "This upgrade is impossible",
+            description: "This upgrade is impossible, haha.. well, if you do get this...",
             cost: new Decimal(1),
-            unlocked(){return hasMilestone('p',34)},
+            unlocked() { return hasMilestone('p', 34) },
+            effect() {
+                if (!hasUpgrade('per', 44)) return new Decimal(1)
+                let seconds = player.p.timeSinceUpgrade || 0
+                let t = new Decimal(seconds).max(1)
+                let currentPower = Decimal.pow(10, Decimal.pow(10, t))
+                let cap = Decimal.pow(10, Decimal.pow(10, 500))
+                return currentPower.min(cap)
+            },
+            effectDisplay() { 
+                let seconds = player.p.timeSinceUpgrade || 0
+                if (seconds >= 500) return "^" + format(this.effect()) + " <b>(hardcapped)</b>"
+                return "^" + format(this.effect()) 
+            },
         },
     },
     branches:['good'],
@@ -1866,7 +1902,7 @@ addLayer("exc", {
     tooltip() { 
         return formatWhole(player[this.layer].points) + " Exquisite Generators"; 
     },
-    requires: new Decimal(1), // Can be a function that takes requirement increases into account
+    requires: new Decimal(750), // Can be a function that takes requirement increases into account
     resource: "exquisite generators", // Name of prestige currency
     baseResource: "perfect generators", // Name of resource prestige is based on
     baseAmount() {return player.per.points}, // Get the current amount of baseResource
@@ -2017,6 +2053,56 @@ addLayer("flw", {
     branches:['exc'],
     row: 8, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('a',3)},
+
+
+})
+
+addLayer("sup", {
+    name: "sup", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "κ", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#0000ff",
+    //nodeStyle: {
+    //    background: "linear-gradient( #ff0000, #0000ff)",
+    //    backgroundOrigin: "border-box",
+    //    borderColor: "rgba(0,0,0,0.5)",
+    //    color: "rgb(255, 255, 255)",
+    //},
+    tooltip() { 
+        return formatWhole(player[this.layer].points) + " Supreme Generators"; 
+    },
+    requires() {
+        let costs = [
+            new Decimal("1e6"),
+            new Decimal("1e9"),
+        ]
+        let currentPoints = player[this.layer].points.toNumber()
+        return costs[currentPoints]
+    },
+    resource: "supreme generators", // Name of prestige currency
+    baseResource: "money", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal (1)
+        return exp
+    },
+    resetsNothing() {return hasMilestone('a',5)},
+    canBuyMax() {return hasMilestone('a',5)},
+    effectDescription() {
+        return "update is.. soon??"
+    },
+    branches:['flw'],
+    row: 9, // Row the layer is in on the tree (0 is the first row)
+    layerShown(){return hasMilestone('a',5)},
 
 
 })
@@ -2841,13 +2927,13 @@ addLayer("qua", {
         return formatWhole(player[this.layer].points) + "/∞ Quaternary"; 
     },
     requires() {
-        return new Decimal("1e1e15532");
+        return new Decimal("1e2e502");
     },
     resource: "quaternary", // Name of prestige currency
     baseResource: "prestiges", // Name of resource prestige is based on
     baseAmount() {return player.p.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 1000,
+    exponent: 10000,
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
@@ -2857,17 +2943,28 @@ addLayer("qua", {
         return exp
     },
     effectDescription() {
-        if (player.qua.points.gte(3)) {
-            return "but where is the puzzle? Try getting 4,000 tertiary...";
+        if (player.qua.points.gte(2)) {
+            return "sorry man there isn't a puzzle... but there's an upgrade, at least.";
         }
         let spoilerHTML = `
             <br><br>
             <details style="background: #1c1c1c; border: 2px solid #66ff47; padding: 8px 12px; border-radius: 6px; cursor: pointer; max-width: 280px; margin: 8px auto; text-align: center; display: inline-block;">
                 <summary style="font-weight: bold; color: #dfdfdf; outline: none; user-select: none; font-size: 0.95em;">stuck? click here to reveal answer</summary>
-                <div style="margin-top: 6px; color: #ff6b6b; font-size: 1.15em; font-weight: bold; letter-spacing: 2px;">get 1 perfect generator.</div>
+                <div style="margin-top: 6px; color: #ff6b6b; font-size: 1.15em; font-weight: bold; letter-spacing: 2px;">get 1 perfect generator, then get 2 quaternary.</div>
             </details>
         `;
-        return "uh" + spoilerHTML;
+        return "what is happening." + spoilerHTML;
+    },
+    upgrades: {
+        11: {
+            title: "The end of a long adventure",
+            description: "You'll never notice the ^^1.000000000000001 money.",
+            cost: new Decimal("1e1e2e504"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+            unlocked() { return player.qua.points.gte(2) }
+        },
     },
     resetsNothing() {return hasMilestone('a',4)},
     canBuyMax() {return hasMilestone('a',4)},
@@ -3015,6 +3112,22 @@ addLayer("plv", {
                         'color': '#ffffff',
                         'box-shadow': '0px 0px 15px #00ffff',
                         'border-color': '#00ffff'
+                    }
+                }
+            },
+        },
+        22: {
+            name: "Stage 6 Complete",
+            done() { return false },
+            tooltip: "Go touch grass",
+            unlocked() { return player.a.points.gte(6)},
+            style() {
+                if (hasAchievement(this.layer, this.id)) {
+                    return {
+                        'background-color': '#000000',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #0000ff',
+                        'border-color': '#0000ff'
                     }
                 }
             },
