@@ -11,8 +11,8 @@ let modInfo = {
 }
 
 let VERSION = {
-	num: "1.025",
-	name: "The Mining Update",
+	num: "1.03",
+	name: "The 'uhhh' Update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -22,6 +22,11 @@ let changelog = `<h1>Changelog:</h1><br>
 	B = medium update <br>
 	C = small update <br>
 	<br>
+	<h2>v1.03</h2><br>
+		- The last 2 puzzle layers, which strangely don't have puzzles.<br>
+		- Inflation goes crazy this update!<br>
+		- Sorry, the update is short. I'll make something better in v1.1!<br>
+		<br>
 	<h3>v1.025</h3><br>
 		- Added CMG. Have fun!<br>
 		<br>
@@ -144,8 +149,12 @@ function getPointGen() {
 	if (hasUpgrade('flw', 14)) gain = gain.pow(upgradeEffect('flw', 14))
 	if (hasUpgrade('flw', 21)) gain = gain.pow("27953")
 	if (hasUpgrade('flw', 31)) gain = gain.pow("1e9.2e18")
-	if (hasMilestone('a', 5)) gain = gain.pow("0")
-	if (!hasUpgrade('per', 14)) {
+	if (hasMilestone('a', 5) && !hasMilestone('a', 6)) gain = gain.pow("0")
+	if (hasUpgrade('sup', 11)) gain = gain.mul("1e500000000")
+	if (hasUpgrade('sup', 12)) gain = gain.tetrate("5")
+	if (hasUpgrade('sup', 14) && player.points.layer) gain = gain.tetrate(player.points.layer)
+	let applySoftcaps = !hasUpgrade('per', 14) || (hasUpgrade('per', 14) && player.points.gte("1e1e2e5") && !player.ter.points.gte(3.4e38));
+	if (applySoftcaps) {
 		let cap = new Decimal("1e1e9")
 		if (gain.gte(cap)) {
 			gain = cap.times(gain.div(cap).sqrt())
@@ -158,73 +167,117 @@ function getPointGen() {
 		if (gain.gte(cap3)) {
 			gain = cap3.times(gain.div(cap3).log10().add(1))
 		}
+		if (hasUpgrade('per', 14) && player.points.gte("1e1e2e5")) {
+			return new Decimal(0)
+		}
 	}
-	if (hasUpgrade('per', 14) && player.points.gte("1e1e2e5") && !player.ter.points.gte(3.4e38)) {
-		let cap = new Decimal("1e1e9")
-		if (gain.gte(cap)) {
-			gain = cap.times(gain.div(cap).sqrt())
+	if (!hasUpgrade('sup', 13)) {
+		let hardcapValue = new Decimal("(e^6)2") 
+		if (player.points.gte(hardcapValue)) {
+			return new Decimal(0)
 		}
-		let cap2 = new Decimal("1e1e33")
-		if (gain.gte(cap2)) {
-			gain = cap2.times(gain.div(cap2).root(10))
-		}
-		let cap3 = new Decimal("1e1.796e308")
-		if (gain.gte(cap3)) {
-			gain = cap3.times(gain.div(cap3).log10().add(1))
-		}
-		let fakeHardcap = new Decimal("1e1e2e5")
-		if (player.points.gte(fakeHardcap)) {
-    		return new Decimal(0)
-    	}
+		gain = gain.min(hardcapValue.sub(player.points).max(0))
 	}
-	let hardcapValue = new Decimal("(e^6)2") 
-    if (player.points.gte(hardcapValue)) {
-        return new Decimal(0)
-    }
-	gain = gain.min(hardcapValue.sub(player.points).max(0))
+	let trueHardcapValue = new Decimal("(e^1e15)2")
+	if (player.points.gte(trueHardcapValue)) {
+		return new Decimal(0)
+	}
+	gain = gain.min(trueHardcapValue.sub(player.points).max(0))
+	if (hasMilestone('univ', 1) && !hasChallenge('univ', 11)) gain = new Decimal("0")
+	if (hasChallenge('univ', 11)) gain = new Decimal("1")
+	if (player['univ'].challenges[11] >= 2) gain = gain.mul(10)
+	if (inChallenge('univ', 11)) {
+		let comps = player['univ'].challenges[11] || 0
+		if (comps == 0) gain = new Decimal("0.01")
+		else if (comps == 1) gain = new Decimal("0.001")
+		else if (comps == 2) gain = new Decimal("0")
+	}
+	if (inChallenge('univ', 12)) {
+		let basePoints = player.points.gt(0) ? player.points : new Decimal(2)
+		gain = basePoints
+	}
+	if (hasUpgrade('abs', 11)) gain = gain.mul(2)
+	if (hasUpgrade('abs', 13)) {
+		let completions = player.univ.challenges[22] || 0
+		gain = gain.mul(Decimal.pow(3, completions))
+	}
+	if (hasUpgrade('abs', 14)) {
+		let completions = player.univ.challenges[22] || 0
+		gain = gain.mul(Decimal.pow(5, completions))
+	}
+	if (hasUpgrade('abs', 21)) {
+		let completions = player.univ.challenges[22] || 0
+		gain = gain.mul(Decimal.pow(10, completions))
+	}
+	if (inChallenge('univ', 21)) {
+		let completions = player['univ'].challenges[21] || 0
+		if (completions == 0) gain = gain.pow(0.5)
+		else if (completions == 1) gain = gain.pow(0.25)
+		else if (completions == 2) gain = gain.pow(0.125)
+		else if (completions == 3) gain = gain.pow(0.0625)
+		else if (completions == 4) gain = gain.pow(0.03125)
+	}
+	if (hasChallenge('univ', 21)) {
+		let corruptComps = player['univ'].challenges[21] || 0
+		if (corruptComps == 1) gain = gain.pow(1.025)
+		else if (corruptComps == 2) gain = gain.pow(1.05)
+		else if (corruptComps == 3) gain = gain.pow(1.1)
+		else if (corruptComps >= 4) gain = gain.pow(1.2)
+	}
+	if (inChallenge('univ', 22)) {
+		let basePoints = player.points.gt(0) ? player.points : new Decimal(1.01)
+		gain = basePoints
+		
+		let completions = player['univ'].challenges[22] || 0
+		let maxCap = new Decimal(1000).mul(Decimal.pow(1000, completions))
+		if (hasUpgrade('abs', 22)) {
+			let boostCompletions = player.univ.challenges[21] || 1
+			maxCap = maxCap.mul(Decimal.pow(2500, boostCompletions))
+		}
+		if (gain.gt(maxCap)) gain = maxCap
+	}
 	return gain
 }
 
-function addedPlayerData() { return {
-}}
+function addedPlayerData() { 
+	return {}
+}
 
 var displayThings = [
     function() {
-        let noticeText = ""
-        if (!hasUpgrade('per', 14)) {
+        let noticeText = []
+
+        if (!hasUpgrade('per', 14) || (hasUpgrade('per', 14) && player.points.gte("1e1e2e5") && !player.ter.points.gte(3.4e38))) {
             if (player.points.gte("1e1e9")) {
-                noticeText += "<span style='color: #ff7f7f; font-weight: bold; font-size: 14px;'>Softcap: Money gain square rooted past e1e9 money!</span>"
+                noticeText.push("<span style='color: #ff7f7f; font-weight: bold; font-size: 14px;'>Softcap: Money gain square rooted past e1e9 money!</span>")
             }
             if (player.points.gte("1e1e33")) {
-                noticeText += "<br><span style='color: #ff4c4c; font-weight: bold; font-size: 14px;'>Softcap²: Money gain tenth rooted past e1e33 money!</span>"
+                noticeText.push("<span style='color: #ff4c4c; font-weight: bold; font-size: 14px;'>Softcap²: Money gain tenth rooted past e1e33 money!</span>")
             }
             if (player.points.gte("1e1.796e308")) {
-                noticeText += "<br><span style='color: #ff1111; font-weight: bold; font-size: 14px;'>Softcap³: Money gain is heavily rooted past e1.796e308 money!</span>"
+                noticeText.push("<span style='color: #ff1111; font-weight: bold; font-size: 14px;'>Softcap³: Money gain is heavily rooted past e1.796e308 money!</span>")
+            }
+			if (hasUpgrade('per', 14) && player.points.gte("1e1e2e5")) {
+                noticeText.push("<span style='color: #b70202; font-weight: bold; font-size: 14px;'>Hardcap?: Nuh uh, you won't get more than e1e200,000 money until you do something!</span>")
             }
         }
-		if (hasUpgrade('per', 14) && player.points.gte("1e1e2e5") && !player.ter.points.gte(3.4e38)) {
-            if (player.points.gte("1e1e9")) {
-                noticeText += "<span style='color: #ff7f7f; font-weight: bold; font-size: 14px;'>Softcap: Money gain square rooted past e1e9 money!</span>"
-            }
-            if (player.points.gte("1e1e33")) {
-                noticeText += "<br><span style='color: #ff4c4c; font-weight: bold; font-size: 14px;'>Softcap²: Money gain tenth rooted past e1e33 money!</span>"
-            }
-            if (player.points.gte("1e1.796e308")) {
-                noticeText += "<br><span style='color: #ff1111; font-weight: bold; font-size: 14px;'>Softcap³: Money gain is heavily rooted past e1.796e308 money!</span>"
-            }
-			if (player.points.gte("1e1e1e5")) {
-                noticeText += "<br><span style='color: #b70202; font-weight: bold; font-size: 14px;'>Hardcap?: Nuh uh, you won't get more than e1e200,000 money until you do something!</span>"
-            }
-        }
-		if (player.points.gte("(e^6)2")) {
-            noticeText += (noticeText ? "<br>" : "") + "<span style='color: #ca0aff; font-weight: bold; font-size: 14px;'>Hardcap: The physics of this universe cap you at 2.471F6 money!</span>"
-        }
-        return noticeText
+
+		if (!hasUpgrade('sup', 13)) {
+			if (player.points.gte("(e^6)2")) {
+				noticeText.push("<span style='color: #ca0aff; font-weight: bold; font-size: 14px;'>Hardcap: The physics of this universe cap you at 2.471F6 money!</span>")
+			}
+		}
+
+		if (player.points.gte("(e^1e15)2")) {
+			noticeText.push("<span style='color: #0a1aff; font-weight: bold; font-size: 14px;'>True Hardcap: The universe is breaking past F1e15 money...</span>")
+		}
+
+        return noticeText.join("<br>")
     }
 ]
 
 function isEndgame() {
-	return player.a.points.gte(new Decimal("2"))
+	return player.a.points.gte(new Decimal("6"))
 }
 
 var backgroundStyle = {

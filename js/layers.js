@@ -1,3 +1,5 @@
+// a few layers here and there...
+
 addLayer("p", {
     name: "prestige", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "P", // This appears on the layer's node. Default is the id with the first letter capitalized
@@ -640,6 +642,7 @@ addLayer("a", {
             new Decimal("1e1e9"),
             new Decimal("1e1e22"),
             new Decimal("1e1e1e1e100"),
+            new Decimal("(e^4)500000008"),
             new Decimal("(e^1.79e308)2"),
         ]
         let currentPoints = player[this.layer].points.toNumber()
@@ -759,8 +762,23 @@ addLayer("a", {
         },
         5: {
             requirementDescription: "<h3><span>Ascension VI</span></h3>",
-            effectDescription: "<i>Unlock Supreme Generators. See you in v1.1! Also, ^0 money again.<br> True Endgame: 100,000 money in Ascension 6 :)</i>",
+            effectDescription: "<i>Unlock Supreme Generators. Also, ^0 money again. :)</i>",
             done() { return player.a.points.gte(6) },
+            style() {
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                        'background-color': '#540854',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #d400ff',
+                        'border-color': '#d400ff'
+                    }
+                }
+            },
+        },
+        6: {
+            requirementDescription: "<h3><span>Ascension VII</span></h3>",
+            effectDescription: "<i>The absolute limit. Remove the second ^0. </i>",
+            done() { return player.a.points.gte(7) },
             style() {
                 if (hasMilestone(this.layer, this.id)) {
                     return {
@@ -776,6 +794,407 @@ addLayer("a", {
     branches: ['per'], 
     row: 6, 
     layerShown(){ return hasMilestone('p', 35) || hasMilestone('a', 0)},
+})
+
+addLayer("univ", {
+    name: "ascension", 
+    symbol: "U", 
+    position: 1, 
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#d6d5d5",
+    nodeStyle: {
+        background: "linear-gradient( #25b425, #000000, #e7fe00)",
+        backgroundOrigin: "border-box",
+        borderColor: "rgba(0,0,0,0.5)",
+        color: "rgb(255, 255, 255)",
+    },
+    tooltip() { 
+        return "Universe " + formatWhole(player[this.layer].points); 
+    },
+    requires() {
+        let costs = [
+            new Decimal("(e^1e15)2"),
+            new Decimal("1e1e7"), 
+        ]
+        let currentPoints = player[this.layer].points.toNumber()
+        return costs[currentPoints]
+    },
+    resource: "universes", 
+    baseResource: "money", 
+    baseAmount() { return player.points }, 
+    type: "static", 
+    onPrestige(gain) {
+        if (player.sup !== undefined) {
+            player.sup.points = new Decimal(0)
+            player.sup.upgrades = []
+        }
+
+        let overlay = document.createElement("div")
+        overlay.id = "prestige-overlay"
+        
+        Object.assign(overlay.style, {
+            position: "fixed",
+            top: "0",
+            left: "0",
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "#ffffff",
+            zIndex: "999999",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            opacity: "0",
+            transition: "opacity 0.5s ease"
+        })
+
+        let text = document.createElement("div")
+        
+        Object.assign(text.style, {
+            color: "#000000",
+            fontSize: "32px",
+            fontFamily: "monospace",
+            textAlign: "center",
+            fontWeight: "bold",
+            padding: "20px",
+            transition: "opacity 0.5s ease"
+        })
+
+        overlay.appendChild(text)
+        document.body.appendChild(overlay)
+
+        let messages = [
+            "Welcome back.",
+            "What else is there to find?",
+            "All those universes... it's all just a hardcap.",
+            "And those generators... gone.",
+            "All that money no longer has meaning.",
+            "But this isn't the end yet.",
+            "It is merely another hardcap, waiting to be broken.",
+            "Do you regret what you've done?",
+            "Let's see how you handle the finale.",
+            "[ THE END IS NEAR ]"
+        ]
+
+        setTimeout(() => {
+            overlay.style.opacity = "1"
+        }, 50)
+
+        let currentPoints = player.univ && player.univ.points ? new Decimal(player.univ.points) : new Decimal(0)
+        let parsedGain = new Decimal(gain)
+        let totalPoints = currentPoints.add(parsedGain).toNumber()
+        
+        let targetIndex = Math.min(totalPoints, messages.length) - 1
+
+        function showMessage() {
+            if (targetIndex >= 0 && targetIndex < messages.length) {
+                text.style.opacity = "0"
+                setTimeout(() => {
+                    text.innerHTML = messages[targetIndex]
+                    text.style.opacity = "1"
+                    
+                    setTimeout(() => {
+                        overlay.style.transition = "opacity 2s ease"
+                        overlay.style.opacity = "0"
+                        setTimeout(() => {
+                            overlay.remove()
+                        }, 2000)
+                    }, 3000)
+                }, 500)
+            } else {
+                overlay.remove()
+            }
+        }
+
+        setTimeout(showMessage, 1000)
+    },
+    gainMult() { 
+        let mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { 
+        let exp = new Decimal(1)
+        return exp
+    },
+    milestones: {
+        0: {
+            requirementDescription: "<h3><span>The Original Universe (u0)</span></h3>",
+            effectDescription: "<i>You start here. It has gotten quite corrupted, hasn't it?</i><br>Nerf: None.<br>Buff: None.",
+            done() { return hasUpgrade('sup', 21)},
+            style() {
+                if (hasMilestone(this.layer, this.id) && player[this.layer].points.floor().eq(0)) {
+                    return {
+                        'background': 'linear-gradient(135deg, #2b1055 0%, #112233 100%)',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #00f5ff, inset 0px 0px 10px rgba(148, 0, 211, 0.5)',
+                        'border-color': '#00f5ff'
+                    }
+                }
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                    'background': 'linear-gradient(135deg, #2b1055 0%, #112233 100%)',
+                    'color': '#a0a0a0',
+                    'box-shadow': '0px 0px 5px rgba(0, 245, 255, 0.2)',
+                    'border-color': '#443366'
+                    }
+                }
+                return {
+                    'background': 'linear-gradient(135deg, #140d21 0%, #090e14 100%)',
+                    'color': '#a0a0a0',
+                    'box-shadow': 'none',
+                    'border-color': '#332244'
+                }
+            },
+        },
+        1: {
+            requirementDescription: "<h3><span>The Stable? Universe (u1)</span></h3>",
+            effectDescription: "<i>A universe of stability, where inflation doesn't exist. Or does it?</i><br>Nerf: You no longer have Supreme/Perfect generators, and money gain is set to 0.<br>Buff: Unlock 'The Stable? Planet' Challenge.",
+            done() { return player.univ.points.gte(1) },
+            style() {
+                if (hasMilestone(this.layer, this.id) && player[this.layer].points.floor().eq(1)) {
+                    return {
+                        'background': 'linear-gradient(135deg, #2b1055 0%, #112233 100%)',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #00f5ff, inset 0px 0px 10px rgba(148, 0, 211, 0.5)',
+                        'border-color': '#00f5ff'
+                    }
+                }
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                    'background': 'linear-gradient(135deg, #2b1055 0%, #112233 100%)',
+                    'color': '#a0a0a0',
+                    'box-shadow': '0px 0px 5px rgba(0, 245, 255, 0.2)',
+                    'border-color': '#443366'
+                    }
+                }
+                return {
+                    'background': 'linear-gradient(135deg, #140d21 0%, #090e14 100%)',
+                    'color': '#a0a0a0',
+                    'box-shadow': 'none',
+                    'border-color': '#332244'
+                }
+            },
+        },
+        2: {
+            requirementDescription: "<h3><span>The Safe Universe (u2)</span></h3>",
+            effectDescription: "<i>This universe is actually stable, with little to no inflation.</i><br>Nerf: uh.<br>Buff: uh.",
+            done() { return player.univ.points.gte(2) },
+            style() {
+                if (hasMilestone(this.layer, this.id) && player[this.layer].points.floor().eq(2)) {
+                    return {
+                        'background': 'linear-gradient(135deg, #2b1055 0%, #112233 100%)',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #00f5ff, inset 0px 0px 10px rgba(148, 0, 211, 0.5)',
+                        'border-color': '#00f5ff'
+                    }
+                }
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                    'background': 'linear-gradient(135deg, #2b1055 0%, #112233 100%)',
+                    'color': '#a0a0a0',
+                    'box-shadow': '0px 0px 5px rgba(0, 245, 255, 0.2)',
+                    'border-color': '#443366'
+                    }
+                }
+                return {
+                    'background': 'linear-gradient(135deg, #140d21 0%, #090e14 100%)',
+                    'color': '#a0a0a0',
+                    'box-shadow': 'none',
+                    'border-color': '#332244'
+                }
+            },
+        },
+    },
+    challenges: {
+        11: {
+            name() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                return "The Stable? Planet<br> (" + completions + "/2)"
+            },
+            challengeDescription() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                if (completions == 0) return "You gain a fixed 0.01 money per second."
+                if (completions == 1) return "You gain a fixed 0.001 money per second."
+                return "You gain a fixed 0 money per second."
+            },
+            completionLimit: 2,
+            goalDescription() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                if (completions == 0) return "15 money"
+                if (completions == 1) return "11 money"
+                return "Infinity money"
+            },
+            rewardDescription() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                if (completions == 0) return "Nothing... yet.<br>Next: Increase base money gain to 1 and unlock 'The Stable? Galaxy' challenge."
+                if (completions == 1) return "Increase base money gain to 1 and unlock 'The Stable? Galaxy' challenge.<br>Next: Increase base money gain to 1, unlock 'The Stable? Galaxy' challenge, and multiply money gain by 10."
+                return "Increase base money gain to 1, unlock 'The Stable? Galaxy' challenge, and multiply money gain by 10.<br>Next: You maxed this challenge!"
+            },
+            canComplete() { 
+                let completions = player[this.layer].challenges[this.id] || 0
+                if (completions == 0) return player.points.gte(15)
+                return player.points.gte(11)
+            },
+            unlocked() { return hasMilestone("univ", 1) },
+            style() {
+                if (hasChallenge(this.layer, this.id)) {
+                    return {
+                        'background': 'linear-gradient(135deg, #0b2b11 0%, #113322 100%)',
+                        'box-shadow': '0px 0px 15px #39ff14',
+                        'border-color': '#39ff14',
+                        'color': '#ffffff'
+                    }
+                }
+                return {
+                    'background': '#111111',
+                    'border-color': '#333333',
+                    'color': '#a0a0a0'
+                }
+            }
+        },
+        12: {
+            name() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                return "The Stable? Galaxy<br>(" + completions + "/1)"
+            },
+            completionLimit: 1,
+            challengeDescription: "Money doubles every second. You also don't have Absurd Generators.",
+            goalDescription: "1e100 money",
+            rewardDescription() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                if (completions == 0) return "Nothing yet...<br>Next: Unlock Absurd Generators, and 'The Stable? Universe Corruption' challenge."
+                return "Unlock Absurd Generators, and 'The Stable? Universe Corruption' challenge.<br>Next: You maxed this challenge!"
+            },
+            canComplete() { return player.points.gte("1e100") },
+            unlocked() { return hasChallenge("univ", 11) },
+            style() {
+                if (hasChallenge(this.layer, this.id)) {
+                    return {
+                        'background': 'linear-gradient(135deg, #0b2b11 0%, #113322 100%)',
+                        'box-shadow': '0px 0px 15px #39ff14',
+                        'border-color': '#39ff14',
+                        'color': '#ffffff'
+                    }
+                }
+                return {
+                    'background': '#111111',
+                    'border-color': '#333333',
+                    'color': '#a0a0a0'
+                }
+            }
+        },
+        21: {
+            name() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                return "The Stable? Universe<br> <i>Corruption</i> (" + completions + "/5)"
+            },
+            challengeDescription() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                if (completions == 0) return "Money gain ^0.5."
+                if (completions == 1) return "Money gain ^0.25."
+                if (completions == 2) return "Money gain ^0.125."
+                if (completions == 3) return "Money gain ^0.0625."
+                return "Money gain ^0.03125."
+            },
+            rewardDescription() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                if (completions == 0) return "Nothing yet...<br>Next: ^1.025 money."
+                if (completions == 1) return "Money gain ^1.025.<br>Next: ^1.05 money."
+                if (completions == 2) return "Money gain ^1.05.<br>Next: ^1.1 money."
+                if (completions == 3) return "Money gain ^1.1.<br>Next: ^1.2 money."
+                if (completions == 4) return "Money gain ^1.2.<br>Next: Unlock ???."
+                return "Money gain ^1.2 and unlock [placeholder].<br>Next: You maxed this challenge!"
+            },
+            completionLimit: 5,
+            goalDescription() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                if (completions == 0) return "1e10 money"
+                if (completions == 1) return "1e100 money"
+                if (completions == 2) return "1e1,000 money"
+                if (completions == 3) return "1e4,242 money"
+                return "1e478,343 money"
+            },
+            canComplete() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                if (completions == 0) return player.points.gte("1e10")
+                if (completions == 1) return player.points.gte("1e100")
+                if (completions == 2) return player.points.gte("1e1000")
+                if (completions == 3) return player.points.gte("1e4242")
+                return player.points.gte("1e478343")
+            },
+            unlocked() { return hasChallenge("univ", 12) },
+            style() {
+                if (hasChallenge(this.layer, this.id)) {
+                    return {
+                        'background': 'linear-gradient(135deg, #2b0b0b 0%, #331111 100%)',
+                        'box-shadow': '0px 0px 15px #ff0000',
+                        'border-color': '#ff0000',
+                        'color': '#ffffff'
+                    }
+                }
+                return {
+                    'background': '#111111',
+                    'border-color': '#333333',
+                    'color': '#a0a0a0'
+                }
+            }
+        },
+        22: {
+            name() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                return "The Stable? Black Hole<br>(" + completions + "/25)"
+            },
+            completionLimit: 25,
+            challengeDescription() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                let cap = new Decimal(1000).mul(Decimal.pow(1000, completions))
+                if (hasUpgrade('abs', 22)) {
+                    let completions = player.univ.challenges[21] || 1
+                    cap = cap.mul(Decimal.pow(2500, completions))
+                }
+                return "Money gain is capped at " + format(cap) + " (cap is x1,000 each completion). x1.01 money gain per second. Oh yeah, you also don't have Absurd Generators."
+            },
+            goalDescription() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                let goal = new Decimal(5).add(completions)
+                return format(goal) + " Prestiges"
+            },
+            canComplete() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                let goal = new Decimal(5).add(completions)
+                return player.p.points.gte(goal)
+            },
+            rewardDescription() {
+                let completions = player[this.layer].challenges[this.id] || 0
+                if (completions == 0) return "Nothing yet...<br>Next: [1 completion] Unlock two new absurd upgrades."
+                if (completions < 3) return "[1 completion] Unlock two new absurd upgrades.<br>Next: [3 completions] Unlock four new absurd upgrades."
+                if (completions < 5) return "[3 completions] Unlock four new absurd upgrades.<br>Next: [5 completions] PLACEHOLDER."
+                if (completions < 25) return "[5 completions] PLACEHOLDER.<br>Next: [25 completions] PLACEHOLDER."
+                return "[25 completions] PLACEHOLDER.<br>Next: You maxed this challenge!"
+            },
+            unlocked() { return hasUpgrade('abs', 12) },
+            style() {
+                if (hasChallenge(this.layer, this.id)) {
+                    return {
+                        'background': 'linear-gradient(135deg, #0b2b11 0%, #113322 100%)',
+                        'box-shadow': '0px 0px 15px #39ff14',
+                        'border-color': '#39ff14',
+                        'color': '#ffffff'
+                    }
+                }
+                return {
+                    'background': '#111111',
+                    'border-color': '#333333',
+                    'color': '#a0a0a0'
+                }
+            }
+        }
+    },
+    branches: ['sup'], 
+    row: 9, 
+    layerShown(){ return hasUpgrade('sup', 21) || hasMilestone('univ', 0)},
 })
 
 addLayer("terri", {
@@ -1701,9 +2120,9 @@ addLayer("per", {
         exp = new Decimal (1)
         return exp
     },
-    resetsNothing() {return hasMilestone('p',34)},
-    autoPrestige() {return hasMilestone('p',34)},
-    canBuyMax() {return hasMilestone('p',34)},
+    resetsNothing() {return hasMilestone('p',34) && !hasMilestone('univ',1)},
+    autoPrestige() {return hasMilestone('p',34) && !hasMilestone('univ',1)},
+    canBuyMax() {return hasMilestone('p',34) && !hasMilestone('univ',1)},
     autoUpgrade() {return player.p.points.gte("1.796e308")},
     effectDescription() {
         return "which is doing nothing, unfortunately, to prevent inflation.<br><br>Well, at least you can find all sorts of upgrades here!"
@@ -1879,7 +2298,7 @@ addLayer("per", {
     },
     branches:['good'],
     row: 6, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('p',34)},
+    layerShown(){return hasMilestone('p',34) && !hasMilestone('univ',1)},
 
 
 })
@@ -2079,6 +2498,8 @@ addLayer("sup", {
         let costs = [
             new Decimal("1e6"),
             new Decimal("1e9"),
+            new Decimal("(e^12500)2"),
+            new Decimal("(e^1.79e308)2"),
         ]
         let currentPoints = player[this.layer].points.toNumber()
         return costs[currentPoints]
@@ -2098,11 +2519,157 @@ addLayer("sup", {
     resetsNothing() {return hasMilestone('a',5)},
     canBuyMax() {return hasMilestone('a',5)},
     effectDescription() {
-        return "update is.. soon??"
+        return "it's almost... amazing."
+    },
+    upgrades: {
+        11: {
+            title: "The Timewall Tree- wait, that's taken?",
+            description: "Welcome back! x1e500,000,000 money. It's a style, of sorts.",
+            cost: new Decimal("1800"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+        },
+        12: {
+            title: "Is this hardcap preventing us?",
+            description: "^^5 money. Don't worry, this is the biggest you'll see for now.",
+            cost: new Decimal("1e500000003"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+        },
+        13: {
+            title: "Break Infinity",
+            description: "Unlock... something? (the hardcap is gone.)",
+            cost: new Decimal("(e^6)2"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+        },
+        14: {
+            title: "Flawed.",
+            description: "...?",
+            cost: new Decimal("3"),
+        },
+        21: {
+            title: "It is part of life.",
+            description: "Unlock the [REDACTED]",
+            cost: new Decimal("(e^1e15)2"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+        },
     },
     branches:['flw'],
     row: 9, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('a',5)},
+    layerShown(){return hasMilestone('a',5) && !hasMilestone('univ',1)},
+
+
+})
+
+addLayer("abs", {
+    name: "abs", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "λ", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#5500ff",
+    //nodeStyle: {
+    //    background: "linear-gradient( #ff0000, #0000ff)",
+    //    backgroundOrigin: "border-box",
+    //    borderColor: "rgba(0,0,0,0.5)",
+    //    color: "rgb(255, 255, 255)",
+    //},
+    tooltip() { 
+        return formatWhole(player[this.layer].points) + " Absurd Generators"; 
+    },
+    requires: new Decimal(25),
+    resource: "absurd generators", // Name of prestige currency
+    baseResource: "money", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 3,
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal (1)
+        return exp
+    },
+    resetsNothing() {return hasChallenge('univ',12)},
+    canBuyMax() {return hasChallenge('univ',12)},
+    effectDescription() {
+        return "do you like universes?"
+    },
+    upgrades: {
+        11: {
+            title: "Full Loop",
+            description: "x2 money, one more time.",
+            cost: new Decimal("2"),
+            pay() {}
+        },
+        12: {
+            title: "Challenging",
+            description: "Unlock another Stable? challenge.",
+            cost: new Decimal("3"),
+            pay() {}
+        },
+        13: {
+            title: "Black Holes are useful!",
+            description() {
+                let completions = player.univ.challenges[22] || 0
+                return "Multiply money gain based on your Stable? Black Hole challenge completions. Currently: x" + format(Decimal.pow(3, completions))
+            },
+            cost: new Decimal("2500"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+            unlocked() { return player.univ.challenges[22] >= 1 },
+            pay() {}
+        },
+        14: {
+            title: "Black Holes are useful! #2",
+            description() {
+                let completions = player.univ.challenges[22] || 0
+                return "Multiply money gain based on your Stable? Black Hole challenge completions, but this is stronger. Currently: x" + format(Decimal.pow(5, completions))
+            },
+            cost: new Decimal("25000"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+            unlocked() { return player.univ.challenges[22] >= 1 },
+            pay() {}
+        },
+        21: {
+            title: "Black Holes are useful! #3",
+            description() {
+                let completions = player.univ.challenges[22] || 0
+                return "Multiply money gain based on your Stable? Black Hole challenge completions, but this is the strongest. Currently: x" + format(Decimal.pow(10, completions))
+            },
+            cost: new Decimal("10e6"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+            unlocked() { return player.univ.challenges[22] >= 3 },
+            pay() {}
+        },
+        22: {
+            title: "Corruption is useful!",
+            description() {
+                let completions = player.univ.challenges[21] || 1
+                return "Multiply money cap in Stable? Black Hole based on your Stable? Universe Corruption challenge completions, but this upgrade thinks that the boost is always at a minimum of 1 completion's effect. Currently: x" + format(Decimal.pow(2500, completions))
+            },
+            cost: new Decimal("4"),
+            unlocked() { return player.univ.challenges[22] >= 3 },
+            pay() {}
+        }
+    },
+    branches:['sup'],
+    row: 10, // Row the layer is in on the tree (0 is the first row)
+    layerShown(){return hasChallenge('univ',12) && !inChallenge('univ',12) && !inChallenge('univ',22)},
 
 
 })
@@ -3016,7 +3583,7 @@ addLayer("plv", {
             rewardsText += "Stage 5 completion reward: You deserve a ^1 money boost, in this economy.<br>";
         }
         if (hasAchievement(this.layer, 22)) {
-            rewardsText += "Stage 6 completion reward: [soon]<br>";
+            rewardsText += "Stage 6 completion reward: hey man i kinda ran out of boosts... uhh<br>";
         }
         if (hasAchievement(this.layer, 23)) {
             rewardsText += "Stage 7 completion reward: [soon]<br>";
@@ -3104,7 +3671,7 @@ addLayer("plv", {
             name: "Stage 5 Complete",
             done() { return player.points.gte(1000) && player.a.points.gte(4) },
             tooltip: "Get 1,000 money in Ascension 4+.",
-            unlocked() { return player.a.points.gte(4)},
+            unlocked() { return player.a.points.gte(1)},
             style() {
                 if (hasAchievement(this.layer, this.id)) {
                     return {
@@ -3118,9 +3685,9 @@ addLayer("plv", {
         },
         22: {
             name: "Stage 6 Complete",
-            done() { return false },
-            tooltip: "Go touch grass",
-            unlocked() { return player.a.points.gte(6)},
+            done() { return player.points.gte("(e^1000)2") },
+            tooltip: "Reach F1,000 money.",
+            unlocked() { return player.a.points.gte(4)},
             style() {
                 if (hasAchievement(this.layer, this.id)) {
                     return {
@@ -3128,6 +3695,22 @@ addLayer("plv", {
                         'color': '#ffffff',
                         'box-shadow': '0px 0px 15px #0000ff',
                         'border-color': '#0000ff'
+                    }
+                }
+            },
+        },
+        23: {
+            name: "Stage 7 Complete",
+            done() { return false },
+            tooltip: "Uh, NO.",
+            unlocked() { return player.points.gte("(e^1000)2")},
+            style() {
+                if (hasAchievement(this.layer, this.id)) {
+                    return {
+                        'background-color': '#000000',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #aa00ff',
+                        'border-color': '#aa00ff'
                     }
                 }
             },
