@@ -797,7 +797,7 @@ addLayer("a", {
 })
 
 addLayer("univ", {
-    name: "ascension", 
+    name: "universe", 
     symbol: "U", 
     position: 1, 
     startData() { return {
@@ -983,6 +983,35 @@ addLayer("univ", {
             done() { return player.univ.points.gte(2) },
             style() {
                 if (hasMilestone(this.layer, this.id) && player[this.layer].points.floor().eq(2)) {
+                    return {
+                        'background': 'linear-gradient(135deg, #2b1055 0%, #112233 100%)',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #00f5ff, inset 0px 0px 10px rgba(148, 0, 211, 0.5)',
+                        'border-color': '#00f5ff'
+                    }
+                }
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                    'background': 'linear-gradient(135deg, #2b1055 0%, #112233 100%)',
+                    'color': '#a0a0a0',
+                    'box-shadow': '0px 0px 5px rgba(0, 245, 255, 0.2)',
+                    'border-color': '#443366'
+                    }
+                }
+                return {
+                    'background': 'linear-gradient(135deg, #140d21 0%, #090e14 100%)',
+                    'color': '#a0a0a0',
+                    'box-shadow': 'none',
+                    'border-color': '#332244'
+                }
+            },
+        },
+        3: {
+            requirementDescription: "<h3><span>The ? Universe (u3)</span></h3>",
+            effectDescription: "<i>soon.</i><br>Nerf: no.<br>Buff: no.",
+            done() { return player.univ.points.gte(3) },
+            style() {
+                if (hasMilestone(this.layer, this.id) && player[this.layer].points.floor().eq(3)) {
                     return {
                         'background': 'linear-gradient(135deg, #2b1055 0%, #112233 100%)',
                         'color': '#ffffff',
@@ -2420,7 +2449,6 @@ addLayer("flw", {
         return exp
     },
     resetsNothing() {return hasMilestone('a',3)},
-    canBuyMax() {return hasMilestone('a',3)},
     effectDescription() {
         return "i think these might be a bit buggy (flawed generator :sob:)"
     },
@@ -2429,24 +2457,28 @@ addLayer("flw", {
             title: "Inflation is... gone?",
             description: "+1 money/s, again. Applies after all additions, multiplications, exponents, and the ^0 debuff.",
             cost: new Decimal("1"),
+            canAfford() { return player[this.layer].points.gte(this.cost) },
             pay() {},
         },
         12: {
             title: "Can finally have some peace... wait",
             description: "x25 money.",
             cost: new Decimal("2"),
+            canAfford() { return player[this.layer].points.gte(this.cost) },
             pay() {},
         },
         13: {
             title: "We need more boosts, right? No, that can cause inflation, remember?",
             description: "x1e6 money.",
             cost: new Decimal("3"),
+            canAfford() { return player[this.layer].points.gte(this.cost) },
             pay() {},
         },
         14: {
             title: "First, we play. Then we wait.",
             description: "Boost money based on log(playtime). tip: should wait until it reaches ^5.",
             cost: new Decimal("4"),
+            canAfford() { return player[this.layer].points.gte(this.cost) },
             pay() {},
             effect() {
                 let timeLog = Math.log10(player.timePlayed + 1)
@@ -2460,12 +2492,14 @@ addLayer("flw", {
             title: "Heydere",
             description: "Not sure about this. ^27,953 money.",
             cost: new Decimal("5"),
+            canAfford() { return player[this.layer].points.gte(this.cost) },
             pay() {},
         },
         31: {
             title: "[TITLE CARD]",
             description: "^e9.2e18 money. Disable the ^0 debuff.",
             cost: new Decimal("6"),
+            canAfford() { return player[this.layer].points.gte(this.cost) },
             pay() {},
         },
     },
@@ -2517,7 +2551,6 @@ addLayer("sup", {
         return exp
     },
     resetsNothing() {return hasMilestone('a',5)},
-    canBuyMax() {return hasMilestone('a',5)},
     effectDescription() {
         return "it's almost... amazing."
     },
@@ -2600,21 +2633,22 @@ addLayer("abs", {
         return exp
     },
     resetsNothing() {return hasChallenge('univ',12)},
-    canBuyMax() {return hasChallenge('univ',12)},
     effectDescription() {
         return "do you like universes?"
     },
-    upgrades: {
+        upgrades: {
         11: {
             title: "Full Loop",
             description: "x2 money, one more time.",
             cost: new Decimal("2"),
+            canAfford() { return player[this.layer].points.gte(this.cost) },
             pay() {}
         },
         12: {
             title: "Challenging",
             description: "Unlock another Stable? challenge.",
             cost: new Decimal("3"),
+            canAfford() { return player[this.layer].points.gte(this.cost) },
             pay() {}
         },
         13: {
@@ -2628,6 +2662,7 @@ addLayer("abs", {
             currencyLocation() { return player },
             currencyDisplayName: "money",
             unlocked() { return player.univ.challenges[22] >= 1 },
+            canAfford() { return player.points.gte(this.cost) },
             pay() {}
         },
         14: {
@@ -2641,6 +2676,7 @@ addLayer("abs", {
             currencyLocation() { return player },
             currencyDisplayName: "money",
             unlocked() { return player.univ.challenges[22] >= 1 },
+            canAfford() { return player.points.gte(this.cost) },
             pay() {}
         },
         21: {
@@ -2654,6 +2690,7 @@ addLayer("abs", {
             currencyLocation() { return player },
             currencyDisplayName: "money",
             unlocked() { return player.univ.challenges[22] >= 3 },
+            canAfford() { return player.points.gte(this.cost) },
             pay() {}
         },
         22: {
@@ -2664,6 +2701,7 @@ addLayer("abs", {
             },
             cost: new Decimal("4"),
             unlocked() { return player.univ.challenges[22] >= 3 },
+            canAfford() { return player[this.layer].points.gte(this.cost) },
             pay() {}
         }
     },
