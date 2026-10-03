@@ -11,8 +11,8 @@ let modInfo = {
 }
 
 let VERSION = {
-	num: "1.03",
-	name: "The 'uhhh' Update",
+	num: "1.1",
+	name: "The Universe Update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -22,6 +22,11 @@ let changelog = `<h1>Changelog:</h1><br>
 	B = medium update <br>
 	C = small update <br>
 	<br>
+	<h1>v1.1</h1><br>
+		- Added Universes and challenges.<br>
+		- Added Radiation.<br>
+		- A bunch of other stuff... i forgor<br>
+		<br>
 	<h2>v1.03</h2><br>
 		- The last 2 puzzle layers, which strangely don't have puzzles.<br>
 		- Inflation goes crazy this update!<br>
@@ -183,18 +188,19 @@ function getPointGen() {
 		return new Decimal(0)
 	}
 	gain = gain.min(trueHardcapValue.sub(player.points).max(0))
-	if (hasMilestone('univ', 1) && !hasChallenge('univ', 11)) gain = new Decimal("0")
-	if (hasChallenge('univ', 11)) gain = new Decimal("1")
+	if (hasMilestone('univ', 1) && !hasChallenge('univ', 11) && (player.univ.challenges["21"] < 5)) gain = new Decimal("0")
+	if (hasChallenge('univ', 11)) gain = Number(player.univ.challenges["21"] || 0) < 5 ? new Decimal("1") : gain.add(1)
 	if (player['univ'].challenges[11] >= 2) gain = gain.mul(10)
 	if (inChallenge('univ', 11)) {
 		let comps = player['univ'].challenges[11] || 0
 		if (comps == 0) gain = new Decimal("0.01")
 		else if (comps == 1) gain = new Decimal("0.001")
-		else if (comps == 2) gain = new Decimal("0")
+		else if (comps > 1) gain = new Decimal("0")
 	}
 	if (inChallenge('univ', 12)) {
 		let basePoints = player.points.gt(0) ? player.points : new Decimal(2)
 		gain = basePoints
+    	if (gain.gt("1e1e9")) gain = new Decimal("1e1e9")
 	}
 	if (hasUpgrade('abs', 11)) gain = gain.mul(2)
 	if (hasUpgrade('abs', 13)) {
@@ -209,13 +215,17 @@ function getPointGen() {
 		let completions = player.univ.challenges[22] || 0
 		gain = gain.mul(Decimal.pow(10, completions))
 	}
+	let infComps = player['univ'].challenges[31] || 0
+	if (infComps > 0) {
+		gain = gain.mul(Decimal.pow(10, infComps))
+	}
 	if (inChallenge('univ', 21)) {
 		let completions = player['univ'].challenges[21] || 0
 		if (completions == 0) gain = gain.pow(0.5)
 		else if (completions == 1) gain = gain.pow(0.25)
 		else if (completions == 2) gain = gain.pow(0.125)
 		else if (completions == 3) gain = gain.pow(0.0625)
-		else if (completions == 4) gain = gain.pow(0.03125)
+		else if (completions == 4) gain = gain.pow(0)
 	}
 	if (hasChallenge('univ', 21)) {
 		let corruptComps = player['univ'].challenges[21] || 0
@@ -225,17 +235,77 @@ function getPointGen() {
 		else if (corruptComps >= 4) gain = gain.pow(1.2)
 	}
 	if (inChallenge('univ', 22)) {
-		let basePoints = player.points.gt(0) ? player.points : new Decimal(1.01)
-		gain = basePoints
-		
 		let completions = player['univ'].challenges[22] || 0
 		let maxCap = new Decimal(1000).mul(Decimal.pow(1000, completions))
 		if (hasUpgrade('abs', 22)) {
 			let boostCompletions = player.univ.challenges[21] || 1
 			maxCap = maxCap.mul(Decimal.pow(2500, boostCompletions))
 		}
-		if (gain.gt(maxCap)) gain = maxCap
+		if (hasUpgrade('abs', 23)) {
+			let boosterCompletions = player.univ.challenges[21] || 1
+			maxCap = maxCap.mul(Decimal.pow(25000, boosterCompletions))
+		}
+		if (hasUpgrade('abs', 24)) {
+			let boostererCompletions = player.univ.challenges[21] || 1
+			maxCap = maxCap.mul(Decimal.pow(250000, boostererCompletions))
+		}
+		if (hasUpgrade('abs', 31)) {
+			maxCap = maxCap.mul(1e10)
+		}
+		if (hasUpgrade('abs', 32)) {
+			maxCap = maxCap.mul(1e10)
+		}
+		if (hasUpgrade('abs', 33)) {
+			maxCap = maxCap.mul(1e10)
+		}
+		if (hasUpgrade('abs', 34)) {
+			maxCap = maxCap.mul(1e20)
+		}
+		if (hasUpgrade('abs', 41)) {
+			maxCap = maxCap.mul(1e30)
+		}
+		if (hasUpgrade('abs', 42)) {
+			maxCap = maxCap.mul(1e100)
+		}
+		if (hasUpgrade('abs', 43)) {
+			maxCap = maxCap.mul("1e1000")
+		}
+		if (hasUpgrade('abs', 44)) {
+			maxCap = maxCap.mul("1e10000")
+		}
+		if (hasUpgrade('abs', 51)) {
+			maxCap = maxCap.mul("1e10000000")
+		}
+		if ((player.univ.challenges && player.univ.challenges[11]) >= 3) {
+            maxCap = maxCap.pow(12)
+        }
+		if (hasUpgrade('abs', 52)) {
+			maxCap = maxCap.pow("50")
+		}
+		if (hasUpgrade('abs', 43)) {
+			gain = maxCap
+		}
+		else {
+			let basePoints = player.points.gt(0) ? player.points : new Decimal(1.01)
+			gain = basePoints
+			if (gain.gt(maxCap)) gain = maxCap
+		}
 	}
+	if (inChallenge('univ', 32)) {
+		gain = gain.sqrt()
+		let currentComps = player['univ'].challenges[32] || 0
+		if (currentComps == 1) gain = gain.sqrt().sqrt()
+		else if (currentComps > 1) gain = gain.sqrt().sqrt().sqrt()
+	}
+	if (player.rad) {
+		if (player.rad.overloadtimer > 0) {
+			gain = gain.pow(0.001)
+		}
+		else {
+			gain = gain.pow(tmp.rad.effect)
+		}
+	}
+	if (hasMilestone('univ', 2)) gain = new Decimal("0")
 	return gain
 }
 
@@ -277,7 +347,7 @@ var displayThings = [
 ]
 
 function isEndgame() {
-	return player.a.points.gte(new Decimal("6"))
+	return player.univ.points.gte(2)
 }
 
 var backgroundStyle = {
