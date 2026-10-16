@@ -105,8 +105,8 @@ var systemComponents = {
 	'overlay-head': {
 		template: `			
 		<div class="overlayThing" style="padding-bottom:7px; width: 90%; z-index: 1000; position: relative">
-		<span v-if="player.devSpeed && player.devSpeed != 1" class="overlayThing">
-			<br>Dev Speed: {{format(player.devSpeed)}}x<br>
+		<span v-if="player.devSpeed && hasMilestone('mas',5)" class="overlayThing">
+			<br>Time Flux Speed: {{format(player.devSpeed)}}x<br>
 		</span>
 		<span v-if="player.offTime !== undefined"  class="overlayThing">
 			<br>Offline Time: {{formatTime(player.offTime.remain)}}<br>
@@ -161,6 +161,11 @@ var systemComponents = {
                 <td><button class="opt" onclick="toggleOpt('offlineProd')">Offline Prod: {{ options.offlineProd?"ON":"OFF" }}</button></td>
             </tr>
             <tr>
+                <td><button class="opt" onclick="exportSaveToFile()">Export to File</button></td>
+                <td><button class="opt" onclick="importSaveFromFile()">Import from File</button></td>
+				<td><button class="opt" onclick="toggleOpt('hideMilestonePopups')">Show Milestone Popups: {{ formatOption(!options.hideMilestonePopups) }}</button></td>
+            </tr>
+            <tr>
                 <td><button class="opt" onclick="switchTheme()">Theme: {{ getThemeName() }}</button></td>
                 <td><button class="opt" onclick="adjustMSDisp()">Show Milestones: {{ MS_DISPLAYS[MS_SETTINGS.indexOf(options.msDisplay)]}}</button></td>
                 <td><button class="opt" onclick="toggleOpt('hqTree')">High-Quality Tree: {{ options.hqTree?"ON":"OFF" }}</button></td>
@@ -171,7 +176,7 @@ var systemComponents = {
 				<td><button class="opt" onclick="toggleOpt('forceTooltips'); needsCanvasUpdate = true">Shift-Click to Toggle Tooltips: {{ options.forceTooltips?"ON":"OFF" }}</button></td>
 				</tr> 
 			<tr>
-                <td><button class="opt" onclick="toggleOpt('hideMilestonePopups')">Show Milestone Popups: {{ formatOption(!options.hideMilestonePopups) }}</button></td>
+				<td><button v-if="player.sott.points.lt(1)" class="opt" onclick="player.sott.points = new Decimal(1)">Click me for a free secret!</button></td>
             </tr>
         </table>`
     },
