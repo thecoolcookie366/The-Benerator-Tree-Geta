@@ -1872,6 +1872,27 @@ addLayer("terri", {
                 }
             },
         },
+        61: {
+            title: "One Thousand Years Later...",
+            description: "This upgrade does nothing yet, but it looks cool.",
+            cost: new Decimal("1e1e3020"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+            unlocked() { 
+                return getBuyableAmount('mass', 51).gte(1) 
+            },
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#4a2c5a',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #8e44ad',
+                        'border-color': '#8e44ad'
+                    }
+                }
+            }
+        },
     },
     milestones: {
         0: {
@@ -4628,6 +4649,24 @@ addLayer("mass", {
         if (hasMilestone(this.layer, 19)) {
             layers[this.layer].clickables[11].onClick()
         }
+        if (hasMilestone(this.layer, 26)) {
+            if (layers[this.layer].clickables[21].canClick()) {
+                layers[this.layer].clickables[21].onClick()
+            }
+        }
+        if (hasMilestone(this.layer, 27)) {
+            if (layers[this.layer].clickables[31].canClick()) {
+                layers[this.layer].clickables[31].onClick()
+            }
+        }
+        if (hasMilestone(this.layer, 28)) {
+            layers[this.layer].buyables[31].buyMax()
+            layers[this.layer].buyables[32].buyMax()
+            layers[this.layer].buyables[33].buyMax()
+            layers[this.layer].buyables[41].buyMax()
+            layers[this.layer].buyables[42].buyMax()
+            layers[this.layer].buyables[43].buyMax()
+        }
     },
     baseResource: "money", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
@@ -4693,7 +4732,7 @@ addLayer("mass", {
                 "blank",
                 "upgrades",
                 "blank",
-                "buyables"
+                ["buyables", [1,2,3,4]]
             ]
         },
         "Ranks": {
@@ -4731,7 +4770,47 @@ addLayer("mass", {
                 "blank",
                 ["clickables", [3]],
                 "blank",
-                ["milestones", [25, 26, 27]] 
+                ["milestones", [25, 26, 27, 28, 29, 30, 31, 32]] 
+            ]
+        },
+        "Extenders": {
+            unlocked() { return hasMilestone('mass', 29) },
+            content: [
+                "blank",
+                ["display-text", "<h2>Layer Extenders</h2>"],
+                ["display-text", function() {
+                    let money = player.points
+                    
+                    if (money.lt("1e10000")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #d42a00;'>1e10,000 money (Awful)</b></span>"
+                    if (money.lt("1e50000")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #a95600;'>1e50,000 money (Mediocre)</b></span>"
+                    if (money.lt("1e250000")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #7e8100;'>1e250,000 money (Alright)</b></span>"
+                    if (money.lt("1e1000000")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #53ac00;'>1e1,000,000 money (Decent)</b></span>"
+                    if (money.lt("1e5000000")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #28d700;'>1e5,000,000 money (Good)</b></span>"
+                    if (money.lt("1e25000000")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #00ff00;'>1e25,000,000 money (Perfect)</b></span>"
+                    if (money.lt("1e1e8")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #00aa55;'>1e100,000,000 money (Exquisite)</b></span>"
+                    if (money.lt("1e5e8")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #0055aa;'>1e500,000,000 money (Flawless)</b></span>"
+                    if (money.lt("1e2.5e9")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #0000ff;'>1e2,500,000,000 money (Supreme)</b></span>"
+                    if (money.lt("1e1e10")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #5500ff;'>1e10,000,000,000 money (Absurd)</b></span>"
+                    if (money.lt("1e5e10")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #aa00ff;'>1e50,000,000,000 money (Ultra)</b></span>"
+                    if (money.lt("1e2.5e11")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #ff00ff;'>1e250,000,000,000 money (Hyper)</b></span>"
+                    if (money.lt("1e1e12")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #ff69c3;'>1e1,000,000,000,000 money (Super)</b></span>"
+                    if (money.lt("1e5e12")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #988fff;'>1e5,000,000,000,000 money (Insane)</b></span>"
+                    if (money.lt("1e2.5e13")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #74fff3;'>1e25,000,000,000,000 money (Crazy)</b></span>"
+                    if (money.lt("1e1e14")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #02ffaf;'>1e100,000,000,000,000 money (Omega)</b></span>"
+                    if (money.lt("1e5e14")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #73ff00;'>1e500,000,000,000,000 money (Astonishing)</b></span>"
+                    if (money.lt("1e2.5e15")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #ff7d00;'>1e2,500,000,000,000,000 money (Phenomenal)</b></span>"
+                    if (money.lt("1e1e16")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #ff1491;'>1e10,000,000,000,000,000 money (Ludicrous)</b></span>"
+                    if (money.lt("1e5e16")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #969696;'>1e50,000,000,000,000,000 money (Illegal)</b></span>"
+                    if (money.lt("1e2.5e17")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #fcffc3;'>1e250,000,000,000,000,000 money (Based)</b></span>"
+                    if (money.lt("1e1e18")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #2332ff;'>1e1,000,000,000,000,000,000 money (Overclocked)</b></span>"
+                    if (money.lt("1e5e18")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #d2be4b;'>1e5,000,000,000,000,000,000 money (Sigma)</b></span>"
+                    if (money.lt("1e2.5e19")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #f0b4ff;'>1e25,000,000,000,000,000,000 money (Goated)</b></span>"
+                    if (money.lt("1e1e20")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #ffffff;'>1e100,000,000,000,000,000,000 money (Peak)</b></span>"
+                    
+                    return "<span style='font-size: 14px; color: #62189f;'>All matrix extenders successfully initialized.</span>"
+                }],
+                "blank",
+                ["buyables", [5, 6, 7, 8, 9, 10, 11, 12]]
             ]
         },
     },
@@ -4790,7 +4869,7 @@ addLayer("mass", {
 
                 if (!hasMilestone(this.layer, 13)) {
                     player[this.layer].points = new Decimal(0)
-                    player[this.layer].upgrades = []
+                    player.points = new Decimal(0)
                 }
             }
         },
@@ -4829,16 +4908,18 @@ addLayer("mass", {
             },
             onClick() {
                 player[this.layer].tier = player[this.layer].tier.add(1)
-                player[this.layer].rank = new Decimal(0)
-                player[this.layer].points = new Decimal(0)
-                player.points = new Decimal(0)
-                player[this.layer].milestones = player[this.layer].milestones.filter(id => Number(id) >= 9)
-                player[this.layer].buyables[11] = new Decimal(0)
-                player[this.layer].buyables[12] = new Decimal(0)
-                player[this.layer].buyables[13] = new Decimal(0)
-                player[this.layer].buyables[21] = new Decimal(0)
-                player[this.layer].buyables[22] = new Decimal(0)
-                player[this.layer].buyables[23] = new Decimal(0)
+                if (!hasMilestone(this.layer, 26)) {
+                    player[this.layer].rank = new Decimal(0)
+                    player[this.layer].points = new Decimal(0)
+                    player.points = new Decimal(0)
+                    player[this.layer].milestones = player[this.layer].milestones.filter(id => Number(id) >= 9)
+                    player[this.layer].buyables[11] = new Decimal(0)
+                    player[this.layer].buyables[12] = new Decimal(0)
+                    player[this.layer].buyables[13] = new Decimal(0)
+                    player[this.layer].buyables[21] = new Decimal(0)
+                    player[this.layer].buyables[22] = new Decimal(0)
+                    player[this.layer].buyables[23] = new Decimal(0)
+                }
             }
         },
         31: {
@@ -4859,11 +4940,11 @@ addLayer("mass", {
                 }
             },
             display() {
-                let reqTier = player[this.layer].tetr.mul(3).add(27)
+                let reqTier = player[this.layer].tetr.mul(player[this.layer].tetr.add(player[this.layer].tetr.add(1))).add(27)
                 return "Reset your Tiers, Ranks, mass and money to Tetr Up.<br><br>Req: Tier " + formatWhole(reqTier)
             },
             canClick() {
-                let reqTier = player[this.layer].tetr.mul(3).add(27)
+                let reqTier = player[this.layer].tetr.mul(player[this.layer].tetr.add(player[this.layer].tetr.add(1))).add(27)
                 return player[this.layer].tier.gte(reqTier)
             },
             onClick() {
@@ -4904,7 +4985,6 @@ addLayer("mass", {
                     "height": "140px",
                     "border-radius": "12px",
                     "font-size": "13px",
-                    
                     "background": "linear-gradient(135deg, #ff9999, #ff6666)",
                     "color": "#111111",
                     "border": "2px solid #cc5252",
@@ -4921,12 +5001,15 @@ addLayer("mass", {
                 let costText = formatWhole(cost) + " g"
                 let mltThreshold = Decimal.pow(10, 1e9)
                 
-                if (cost.gte(mltThreshold)) {
+                if (amount.gte(1000000)) {
+                    costText = "MAX"
+                }
+                else if (cost.gte(mltThreshold)) {
                     let excessMass = cost.div(mltThreshold)
                     let slowedMlt = excessMass.log(2048).add(1)
                     costText = format(slowedMlt) + " mlt"
                 }
-                else if (cost.gte(1e56)) costText = format(cost.div(1e56)) + " uni"
+                else if (cost.gte("1e56")) costText = format(cost.div("1e56")) + " uni"
                 else if (cost.gte(1e6)) costText = format(cost.div(1e6)) + " tons"
                 else if (cost.gte(1000)) costText = format(cost.div(1000)) + " kg"
                 
@@ -4935,18 +5018,23 @@ addLayer("mass", {
                     "effect: multiplies money by <b>x" + formatWhole(effect) + "</b>"
             },
             canAfford() {
-                return player[this.layer].points.gte(this.cost(getBuyableAmount(this.layer, this.id)))
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1000000)) return false
+                return player[this.layer].points.gte(this.cost(amount))
             },
             buy() {
-                let cost = this.cost(getBuyableAmount(this.layer, this.id))
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1000000)) return
+                let cost = this.cost(amount)
                 player[this.layer].points = player[this.layer].points.sub(cost)
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                setBuyableAmount(this.layer, this.id, amount.add(1))
             },
             buyMax() {
                 if (!this.canAfford()) return
                 let mass = player[this.layer].points
                 let amount = getBuyableAmount(this.layer, this.id)
-                while (mass.gte(this.cost(amount))) {
+                
+                while (mass.gte(this.cost(amount)) && amount.lt(1000000)) {
                     mass = mass.sub(this.cost(amount))
                     amount = amount.add(1)
                 }
@@ -4966,7 +5054,6 @@ addLayer("mass", {
                     "height": "140px",
                     "border-radius": "12px",
                     "font-size": "13px",
-                    
                     "background": "linear-gradient(135deg, #ffcc99, #ff9966)",
                     "color": "#111111",
                     "border": "2px solid #e67e22",
@@ -4983,12 +5070,15 @@ addLayer("mass", {
                 let costText = formatWhole(cost) + " g"
                 let mltThreshold = Decimal.pow(10, 1e9)
                 
-                if (cost.gte(mltThreshold)) {
+                if (amount.gte(1000000)) {
+                    costText = "MAX"
+                }
+                else if (cost.gte(mltThreshold)) {
                     let excessMass = cost.div(mltThreshold)
                     let slowedMlt = excessMass.log(2048).add(1)
                     costText = format(slowedMlt) + " mlt"
                 }
-                else if (cost.gte(1e56)) costText = format(cost.div(1e56)) + " uni"
+                else if (cost.gte("1e56")) costText = format(cost.div("1e56")) + " uni"
                 else if (cost.gte(1e6)) costText = format(cost.div(1e6)) + " tons"
                 else if (cost.gte(1000)) costText = format(cost.div(1000)) + " kg"
                 
@@ -4997,18 +5087,23 @@ addLayer("mass", {
                     "effect: multiplies money by <b>x" + formatWhole(effect) + "</b>"
             },
             canAfford() {
-                return player[this.layer].points.gte(this.cost(getBuyableAmount(this.layer, this.id)))
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1000000)) return false
+                return player[this.layer].points.gte(this.cost(amount))
             },
             buy() {
-                let cost = this.cost(getBuyableAmount(this.layer, this.id))
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1000000)) return
+                let cost = this.cost(amount)
                 player[this.layer].points = player[this.layer].points.sub(cost)
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                setBuyableAmount(this.layer, this.id, amount.add(1))
             },
             buyMax() {
                 if (!this.canAfford()) return
                 let mass = player[this.layer].points
                 let amount = getBuyableAmount(this.layer, this.id)
-                while (mass.gte(this.cost(amount))) {
+                
+                while (mass.gte(this.cost(amount)) && amount.lt(1000000)) {
                     mass = mass.sub(this.cost(amount))
                     amount = amount.add(1)
                 }
@@ -5028,7 +5123,6 @@ addLayer("mass", {
                     "height": "140px",
                     "border-radius": "12px",
                     "font-size": "13px",
-                    
                     "background": "linear-gradient(135deg, #fff3cd, #ffe066)",
                     "color": "#111111",
                     "border": "2px solid #f1c40f",
@@ -5045,12 +5139,15 @@ addLayer("mass", {
                 let costText = formatWhole(cost) + " g"
                 let mltThreshold = Decimal.pow(10, 1e9)
                 
-                if (cost.gte(mltThreshold)) {
+                if (amount.gte(1000000)) {
+                    costText = "MAX"
+                }
+                else if (cost.gte(mltThreshold)) {
                     let excessMass = cost.div(mltThreshold)
                     let slowedMlt = excessMass.log(2048).add(1)
                     costText = format(slowedMlt) + " mlt"
                 }
-                else if (cost.gte(1e56)) costText = format(cost.div(1e56)) + " uni"
+                else if (cost.gte("1e56")) costText = format(cost.div("1e56")) + " uni"
                 else if (cost.gte(1e6)) costText = format(cost.div(1e6)) + " tons"
                 else if (cost.gte(1000)) costText = format(cost.div(1000)) + " kg"
                 
@@ -5059,18 +5156,23 @@ addLayer("mass", {
                     "effect: multiplies money by <b>x" + formatWhole(effect) + "</b>"
             },
             canAfford() {
-                return player[this.layer].points.gte(this.cost(getBuyableAmount(this.layer, this.id)))
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1000000)) return false
+                return player[this.layer].points.gte(this.cost(amount))
             },
             buy() {
-                let cost = this.cost(getBuyableAmount(this.layer, this.id))
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1000000)) return
+                let cost = this.cost(amount)
                 player[this.layer].points = player[this.layer].points.sub(cost)
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                setBuyableAmount(this.layer, this.id, amount.add(1))
             },
             buyMax() {
                 if (!this.canAfford()) return
                 let mass = player[this.layer].points
                 let amount = getBuyableAmount(this.layer, this.id)
-                while (mass.gte(this.cost(amount))) {
+                
+                while (mass.gte(this.cost(amount)) && amount.lt(1000000)) {
                     mass = mass.sub(this.cost(amount))
                     amount = amount.add(1)
                 }
@@ -5090,7 +5192,6 @@ addLayer("mass", {
                     "height": "140px",
                     "border-radius": "12px",
                     "font-size": "13px",
-                    
                     "background": "linear-gradient(135deg, #d4edda, #c3e6cb)",
                     "color": "#111111",
                     "border": "2px solid #28a745",
@@ -5107,12 +5208,15 @@ addLayer("mass", {
                 let costText = formatWhole(cost) + " g"
                 let mltThreshold = Decimal.pow(10, 1e9)
                 
-                if (cost.gte(mltThreshold)) {
+                if (amount.gte(1000000)) {
+                    costText = "MAX"
+                }
+                else if (cost.gte(mltThreshold)) {
                     let excessMass = cost.div(mltThreshold)
                     let slowedMlt = excessMass.log(2048).add(1)
                     costText = format(slowedMlt) + " mlt"
                 }
-                else if (cost.gte(1e56)) costText = format(cost.div(1e56)) + " uni"
+                else if (cost.gte("1e56")) costText = format(cost.div("1e56")) + " uni"
                 else if (cost.gte(1e6)) costText = format(cost.div(1e6)) + " tons"
                 else if (cost.gte(1000)) costText = format(cost.div(1000)) + " kg"
                 
@@ -5121,18 +5225,23 @@ addLayer("mass", {
                     "effect: multiplies money by <b>x" + formatWhole(effect) + "</b>"
             },
             canAfford() {
-                return player[this.layer].points.gte(this.cost(getBuyableAmount(this.layer, this.id)))
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1000000)) return false
+                return player[this.layer].points.gte(this.cost(amount))
             },
             buy() {
-                let cost = this.cost(getBuyableAmount(this.layer, this.id))
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1000000)) return
+                let cost = this.cost(amount)
                 player[this.layer].points = player[this.layer].points.sub(cost)
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                setBuyableAmount(this.layer, this.id, amount.add(1))
             },
             buyMax() {
                 if (!this.canAfford()) return
                 let mass = player[this.layer].points
                 let amount = getBuyableAmount(this.layer, this.id)
-                while (mass.gte(this.cost(amount))) {
+                
+                while (mass.gte(this.cost(amount)) && amount.lt(1000000)) {
                     mass = mass.sub(this.cost(amount))
                     amount = amount.add(1)
                 }
@@ -5152,7 +5261,6 @@ addLayer("mass", {
                     "height": "140px",
                     "border-radius": "12px",
                     "font-size": "13px",
-                    
                     "background": "linear-gradient(135deg, #cce5ff, #b8daff)",
                     "color": "#111111",
                     "border": "2px solid #004085",
@@ -5169,12 +5277,15 @@ addLayer("mass", {
                 let costText = formatWhole(cost) + " g"
                 let mltThreshold = Decimal.pow(10, 1e9)
                 
-                if (cost.gte(mltThreshold)) {
+                if (amount.gte(1000000)) {
+                    costText = "MAX"
+                }
+                else if (cost.gte(mltThreshold)) {
                     let excessMass = cost.div(mltThreshold)
                     let slowedMlt = excessMass.log(2048).add(1)
                     costText = format(slowedMlt) + " mlt"
                 }
-                else if (cost.gte(1e56)) costText = format(cost.div(1e56)) + " uni"
+                else if (cost.gte("1e56")) costText = format(cost.div("1e56")) + " uni"
                 else if (cost.gte(1e6)) costText = format(cost.div(1e6)) + " tons"
                 else if (cost.gte(1000)) costText = format(cost.div(1000)) + " kg"
                 
@@ -5183,18 +5294,23 @@ addLayer("mass", {
                     "effect: multiplies money by <b>x" + formatWhole(effect) + "</b>"
             },
             canAfford() {
-                return player[this.layer].points.gte(this.cost(getBuyableAmount(this.layer, this.id)))
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1000000)) return false
+                return player[this.layer].points.gte(this.cost(amount))
             },
             buy() {
-                let cost = this.cost(getBuyableAmount(this.layer, this.id))
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1000000)) return
+                let cost = this.cost(amount)
                 player[this.layer].points = player[this.layer].points.sub(cost)
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                setBuyableAmount(this.layer, this.id, amount.add(1))
             },
             buyMax() {
                 if (!this.canAfford()) return
                 let mass = player[this.layer].points
                 let amount = getBuyableAmount(this.layer, this.id)
-                while (mass.gte(this.cost(amount))) {
+                
+                while (mass.gte(this.cost(amount)) && amount.lt(1000000)) {
                     mass = mass.sub(this.cost(amount))
                     amount = amount.add(1)
                 }
@@ -5214,7 +5330,6 @@ addLayer("mass", {
                     "height": "140px",
                     "border-radius": "12px",
                     "font-size": "13px",
-                    
                     "background": "linear-gradient(135deg, #f8d7da, #f5c6cb)",
                     "color": "#111111",
                     "border": "2px solid #721c24",
@@ -5231,12 +5346,15 @@ addLayer("mass", {
                 let costText = formatWhole(cost) + " g"
                 let mltThreshold = Decimal.pow(10, 1e9)
                 
-                if (cost.gte(mltThreshold)) {
+                if (amount.gte(1000000)) {
+                    costText = "MAX"
+                }
+                else if (cost.gte(mltThreshold)) {
                     let excessMass = cost.div(mltThreshold)
                     let slowedMlt = excessMass.log(2048).add(1)
                     costText = format(slowedMlt) + " mlt"
                 }
-                else if (cost.gte(1e56)) costText = format(cost.div(1e56)) + " uni"
+                else if (cost.gte("1e56")) costText = format(cost.div("1e56")) + " uni"
                 else if (cost.gte(1e6)) costText = format(cost.div(1e6)) + " tons"
                 else if (cost.gte(1000)) costText = format(cost.div(1000)) + " kg"
                 
@@ -5245,18 +5363,23 @@ addLayer("mass", {
                     "effect: multiplies money by <b>x" + formatWhole(effect) + "</b>"
             },
             canAfford() {
-                return player[this.layer].points.gte(this.cost(getBuyableAmount(this.layer, this.id)))
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1000000)) return false
+                return player[this.layer].points.gte(this.cost(amount))
             },
             buy() {
-                let cost = this.cost(getBuyableAmount(this.layer, this.id))
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1000000)) return
+                let cost = this.cost(amount)
                 player[this.layer].points = player[this.layer].points.sub(cost)
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                setBuyableAmount(this.layer, this.id, amount.add(1))
             },
             buyMax() {
                 if (!this.canAfford()) return
                 let mass = player[this.layer].points
                 let amount = getBuyableAmount(this.layer, this.id)
-                while (mass.gte(this.cost(amount))) {
+                
+                while (mass.gte(this.cost(amount)) && amount.lt(1000000)) {
                     mass = mass.sub(this.cost(amount))
                     amount = amount.add(1)
                 }
@@ -5534,6 +5657,143 @@ addLayer("mass", {
                 setBuyableAmount(this.layer, this.id, amount)
             }
         },
+        51: {
+            title: "", 
+            unlocked() { return hasMilestone('mass', 29) },
+            cost(x) {
+                return new Decimal(5)
+            },
+            style() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                let isBought = amount.gt(0)
+                
+                let baseStyle = {
+                    "width": "650px",
+                    "height": "260px",
+                    "border-radius": "8px",
+                    "font-size": "14px",
+                    "cursor": "pointer",
+                    "padding": "20px",
+                    "display": "flex",
+                    "align-items": "center",
+                    "justify-content": "space-between",
+                    "transition": "all 0.3s ease",
+                    "position": "relative"
+                }
+                
+                if (isBought) {
+                    return Object.assign(baseStyle, {
+                        "background": "#ff0000",
+                        "color": "#000000",
+                        "border": "3px solid #ff0000",
+                        "box-shadow": "0px 0px 25px rgba(255, 0, 0, 0.5)"
+                    })
+                }
+                else {
+                    return Object.assign(baseStyle, {
+                        "background": "#000000",
+                        "color": "#ff0000",
+                        "border": "3px solid #ff0000",
+                        "box-shadow": "0px 0px 15px rgba(255, 0, 0, 0.2)"
+                    })
+                }
+            },
+            display() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                let cost = this.cost(amount)
+                
+                let leftSide = "<div style='font-size: 72px; font-weight: bold; font-family: serif; position: absolute; left: 25px;'>α</div>"
+                
+                let rightSide = "<div style='text-align: center; width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-left: 50px; padding-right: 50px;'>" +
+                    "<h1 style='font-size: 22px; margin-bottom: 5px;'>Terrible Generator Extender</h1><br>" +
+                    "<div style='text-align: left;'>" +
+                    "• Unlock 12 new Terrible Upgrades.<br>" +
+                    "• Unlock Terrible Prestige." +
+                    "</div><br><br>" +
+                    "requires Tetr " + formatWhole(cost) +
+                    "</div>"
+                    
+                return leftSide + rightSide
+            },
+            canAfford() {
+                return player[this.layer].tetr.gte(this.cost(getBuyableAmount(this.layer, this.id)))
+            },
+            buy() {
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if (!this.canAfford()) return
+                setBuyableAmount(this.layer, this.id, new Decimal(1))
+            }
+        },
+        61: {
+            title: "", 
+            unlocked() { return player.points.gte("1e10000") },
+            cost(x) {
+                return new Decimal("1e100000")
+            },
+            style() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                let isBought = amount.gt(0)
+                
+                let baseStyle = {
+                    "width": "650px",
+                    "height": "260px",
+                    "border-radius": "8px",
+                    "font-size": "14px",
+                    "cursor": "pointer",
+                    "padding": "20px",
+                    "display": "flex",
+                    "align-items": "center",
+                    "justify-content": "space-between",
+                    "transition": "all 0.3s ease",
+                    "position": "relative",
+                    "margin-top": "20px"
+                }
+                
+                if (isBought) {
+                    return Object.assign(baseStyle, {
+                        "background": "#d42a00",
+                        "color": "#000000",
+                        "border": "3px solid #d42a00",
+                        "box-shadow": "0px 0px 25px rgba(212, 42, 0, 0.5)"
+                    })
+                }
+                else {
+                    return Object.assign(baseStyle, {
+                        "background": "#000000",
+                        "color": "#d42a00",
+                        "border": "3px solid #d42a00",
+                        "box-shadow": "0px 0px 15px rgba(212, 42, 0, 0.2)"
+                    })
+                }
+            },
+            display() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                let cost = this.cost(amount)
+                let leftSide = "<div style='font-size: 72px; font-weight: bold; font-family: serif; position: absolute; left: 25px;'>β</div>"
+                let rightSide = "<div style='text-align: center; width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-left: 50px; padding-right: 50px;'>" +
+                    "<h1 style='font-size: 22px; margin-bottom: 5px;'>Awful Generator Extender</h1><br>" +
+                    "<div style='text-align: left;'>" +
+                    "• unlock something<br>" +
+                    "• unlock something else, idk" +
+                    "</div><br><br>" +
+                    "requires " + format(cost) + " money" +
+                    "</div>"
+                    
+                return leftSide + rightSide
+            },
+            canAfford() {
+                return player.points.gte(this.cost(getBuyableAmount(this.layer, this.id)))
+            },
+            buy() {
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if (!this.canAfford()) return
+                setBuyableAmount(this.layer, this.id, new Decimal(1))
+            }
+        },
     },
     milestones: {
         0: {
@@ -5585,9 +5845,37 @@ addLayer("mass", {
             done() { return player[this.layer].rank.gte(58) }
         },
         9: {
-            requirementDescription: "Rank 61",
+            requirementDescription: "Rank 61 [PERMANENT]",
             effectDescription: "Unlock Tiers.",
-            done() { return player[this.layer].rank.gte(61) }
+            done() { return player[this.layer].rank.gte(61) },
+            style() {
+                if (hasMilestone(this.layer, 9)) {
+                    if (!document.getElementById("red-milestone-style")) {
+                        let styleSheet = document.createElement("style")
+                        styleSheet.id = "red-milestone-style"
+                        styleSheet.innerText = `
+                            @keyframes redshift {
+                                0% { background-position: 0% 50%; }
+                                50% { background-position: 100% 50%; }
+                                100% { background-position: 0% 50%; }
+                            }
+                        `
+                        document.head.appendChild(styleSheet)
+                    }
+                    
+                    return {
+                        "background": "linear-gradient(45deg, #ff3333, #cc0000, #ff6666, #990000, #ff4d4d)",
+                        "background-size": "300% 300%",
+                        "animation": "redshift 4s ease infinite",
+                        "color": "#ffffff",
+                        "font-weight": "bold",
+                        "border": "2px solid #ff9999",
+                        "box-shadow": "0px 0px 15px rgba(255, 51, 51, 0.6), inset 0px 1px 3px rgba(255, 255, 255, 0.4)",
+                        "transition": "all 0.5s ease"
+                    }
+                }
+                return {}
+            }
         },
         10: {
             requirementDescription: "Tier 1",
@@ -5613,9 +5901,37 @@ addLayer("mass", {
             done() { return player[this.layer].tier.gte(3) }
         },
         13: {
-            requirementDescription: "Tier 4",
+            requirementDescription: "Tier 4 [PERMANENT]",
             effectDescription: "Automatically gain mass and Ranks reset nothing.",
-            done() { return player[this.layer].tier.gte(4) }
+            done() { return player[this.layer].tier.gte(4) },
+            style() {
+                if (hasMilestone(this.layer, 13)) {
+                    if (!document.getElementById("red-milestone-style")) {
+                        let styleSheet = document.createElement("style")
+                        styleSheet.id = "red-milestone-style"
+                        styleSheet.innerText = `
+                            @keyframes redshift {
+                                0% { background-position: 0% 50%; }
+                                50% { background-position: 100% 50%; }
+                                100% { background-position: 0% 50%; }
+                            }
+                        `
+                        document.head.appendChild(styleSheet)
+                    }
+                    
+                    return {
+                        "background": "linear-gradient(45deg, #ff3333, #cc0000, #ff6666, #990000, #ff4d4d)",
+                        "background-size": "300% 300%",
+                        "animation": "redshift 4s ease infinite",
+                        "color": "#ffffff",
+                        "font-weight": "bold",
+                        "border": "2px solid #ff9999",
+                        "box-shadow": "0px 0px 15px rgba(255, 51, 51, 0.6), inset 0px 1px 3px rgba(255, 255, 255, 0.4)",
+                        "transition": "all 0.5s ease"
+                    }
+                }
+                return {}
+            }
         },
         14: {
             requirementDescription: "Tier 5",
@@ -5628,9 +5944,37 @@ addLayer("mass", {
             done() { return player[this.layer].tier.gte(7) }
         },
         16: {
-            requirementDescription: "Tier 8",
+            requirementDescription: "Tier 8 [PERMANENT]",
             effectDescription: "Automate the rank buyables.",
-            done() { return player[this.layer].tier.gte(8) }
+            done() { return player[this.layer].tier.gte(8) },
+            style() {
+                if (hasMilestone(this.layer, 16)) {
+                    if (!document.getElementById("red-milestone-style")) {
+                        let styleSheet = document.createElement("style")
+                        styleSheet.id = "red-milestone-style"
+                        styleSheet.innerText = `
+                            @keyframes redshift {
+                                0% { background-position: 0% 50%; }
+                                50% { background-position: 100% 50%; }
+                                100% { background-position: 0% 50%; }
+                            }
+                        `
+                        document.head.appendChild(styleSheet)
+                    }
+                    
+                    return {
+                        "background": "linear-gradient(45deg, #ff3333, #cc0000, #ff6666, #990000, #ff4d4d)",
+                        "background-size": "300% 300%",
+                        "animation": "redshift 4s ease infinite",
+                        "color": "#ffffff",
+                        "font-weight": "bold",
+                        "border": "2px solid #ff9999",
+                        "box-shadow": "0px 0px 15px rgba(255, 51, 51, 0.6), inset 0px 1px 3px rgba(255, 255, 255, 0.4)",
+                        "transition": "all 0.5s ease"
+                    }
+                }
+                return {}
+            }
         },
         17: {
             requirementDescription: "Tier 9",
@@ -5643,9 +5987,37 @@ addLayer("mass", {
             done() { return player[this.layer].rank.gte(116) }
         },
         19: {
-            requirementDescription: "Tier 10",
+            requirementDescription: "Tier 10 [PERMANENT]",
             effectDescription: "Automatically increase your Rank.",
-            done() { return player[this.layer].tier.gte(10) }
+            done() { return player[this.layer].tier.gte(10) },
+            style() {
+                if (hasMilestone(this.layer, 19)) {
+                    if (!document.getElementById("red-milestone-style")) {
+                        let styleSheet = document.createElement("style")
+                        styleSheet.id = "red-milestone-style"
+                        styleSheet.innerText = `
+                            @keyframes redshift {
+                                0% { background-position: 0% 50%; }
+                                50% { background-position: 100% 50%; }
+                                100% { background-position: 0% 50%; }
+                            }
+                        `
+                        document.head.appendChild(styleSheet)
+                    }
+                    
+                    return {
+                        "background": "linear-gradient(45deg, #ff3333, #cc0000, #ff6666, #990000, #ff4d4d)",
+                        "background-size": "300% 300%",
+                        "animation": "redshift 4s ease infinite",
+                        "color": "#ffffff",
+                        "font-weight": "bold",
+                        "border": "2px solid #ff9999",
+                        "box-shadow": "0px 0px 15px rgba(255, 51, 51, 0.6), inset 0px 1px 3px rgba(255, 255, 255, 0.4)",
+                        "transition": "all 0.5s ease"
+                    }
+                }
+                return {}
+            }
         },
         20: {
             requirementDescription: "Tier 12",
@@ -5668,9 +6040,187 @@ addLayer("mass", {
             done() { return player[this.layer].rank.gte(225) }
         },
         24: {
-            requirementDescription: "Tier 27",
+            requirementDescription: "Tier 27 [PERMANENT]",
             effectDescription: "Unlock Tetrs.",
-            done() { return player[this.layer].tier.gte(27) }
+            done() { return player[this.layer].tier.gte(27) },
+            style() {
+                if (hasMilestone(this.layer, 24)) {
+                    if (!document.getElementById("red-milestone-style")) {
+                        let styleSheet = document.createElement("style")
+                        styleSheet.id = "red-milestone-style"
+                        styleSheet.innerText = `
+                            @keyframes redshift {
+                                0% { background-position: 0% 50%; }
+                                50% { background-position: 100% 50%; }
+                                100% { background-position: 0% 50%; }
+                            }
+                        `
+                        document.head.appendChild(styleSheet)
+                    }
+                    
+                    return {
+                        "background": "linear-gradient(45deg, #ff3333, #cc0000, #ff6666, #990000, #ff4d4d)",
+                        "background-size": "300% 300%",
+                        "animation": "redshift 4s ease infinite",
+                        "color": "#ffffff",
+                        "font-weight": "bold",
+                        "border": "2px solid #ff9999",
+                        "box-shadow": "0px 0px 15px rgba(255, 51, 51, 0.6), inset 0px 1px 3px rgba(255, 255, 255, 0.4)",
+                        "transition": "all 0.5s ease"
+                    }
+                }
+                return {}
+            }
+        },
+        25: {
+            requirementDescription: "Tetr 1",
+            effectDescription: "^2 money.",
+            done() { return player[this.layer].tetr.gte(1) },
+        },
+        26: {
+            requirementDescription: "Tetr 2 [PERMANENT]",
+            effectDescription: "Automatically increase your tier and tiers reset nothing.",
+            done() { return player[this.layer].tetr.gte(2) },
+            style() {
+                if (hasMilestone(this.layer, 26)) {
+                    if (!document.getElementById("red-milestone-style")) {
+                        let styleSheet = document.createElement("style")
+                        styleSheet.id = "red-milestone-style"
+                        styleSheet.innerText = `
+                            @keyframes redshift {
+                                0% { background-position: 0% 50%; }
+                                50% { background-position: 100% 50%; }
+                                100% { background-position: 0% 50%; }
+                            }
+                        `
+                        document.head.appendChild(styleSheet)
+                    }
+                    
+                    return {
+                        "background": "linear-gradient(45deg, #ff3333, #cc0000, #ff6666, #990000, #ff4d4d)",
+                        "background-size": "300% 300%",
+                        "animation": "redshift 4s ease infinite",
+                        "color": "#ffffff",
+                        "font-weight": "bold",
+                        "border": "2px solid #ff9999",
+                        "box-shadow": "0px 0px 15px rgba(255, 51, 51, 0.6), inset 0px 1px 3px rgba(255, 255, 255, 0.4)",
+                        "transition": "all 0.5s ease"
+                    }
+                }
+                return {}
+            }
+        },
+        27: {
+            requirementDescription: "Tetr 3 [PERMANENT]",
+            effectDescription: "Automatically increase your tetr. IT WILL STILL RESET!!",
+            done() { return player[this.layer].tetr.gte(3) },
+            style() {
+                if (hasMilestone(this.layer, 27)) {
+                    if (!document.getElementById("red-milestone-style")) {
+                        let styleSheet = document.createElement("style")
+                        styleSheet.id = "red-milestone-style"
+                        styleSheet.innerText = `
+                            @keyframes redshift {
+                                0% { background-position: 0% 50%; }
+                                50% { background-position: 100% 50%; }
+                                100% { background-position: 0% 50%; }
+                            }
+                        `
+                        document.head.appendChild(styleSheet)
+                    }
+                    return {
+                        "background": "linear-gradient(45deg, #ff3333, #cc0000, #ff6666, #990000, #ff4d4d)",
+                        "background-size": "300% 300%",
+                        "animation": "redshift 4s ease infinite",
+                        "color": "#ffffff",
+                        "font-weight": "bold",
+                        "border": "2px solid #ff9999",
+                        "box-shadow": "0px 0px 15px rgba(255, 51, 51, 0.6), inset 0px 1px 3px rgba(255, 255, 255, 0.4)",
+                        "transition": "all 0.5s ease"
+                    }
+                }
+                return {}
+            }
+        },
+        28: {
+            requirementDescription: "Tetr 4 [PERMANENT]",
+            effectDescription: "Automate the tier buyables.",
+            done() { return player[this.layer].tetr.gte(4) },
+            style() {
+                if (hasMilestone(this.layer, 28)) {
+                    if (!document.getElementById("red-milestone-style")) {
+                        let styleSheet = document.createElement("style")
+                        styleSheet.id = "red-milestone-style"
+                        styleSheet.innerText = `
+                            @keyframes redshift {
+                                0% { background-position: 0% 50%; }
+                                50% { background-position: 100% 50%; }
+                                100% { background-position: 0% 50%; }
+                            }
+                        `
+                        document.head.appendChild(styleSheet)
+                    }
+                    return {
+                        "background": "linear-gradient(45deg, #ff3333, #cc0000, #ff6666, #990000, #ff4d4d)",
+                        "background-size": "300% 300%",
+                        "animation": "redshift 4s ease infinite",
+                        "color": "#ffffff",
+                        "font-weight": "bold",
+                        "border": "2px solid #ff9999",
+                        "box-shadow": "0px 0px 15px rgba(255, 51, 51, 0.6), inset 0px 1px 3px rgba(255, 255, 255, 0.4)",
+                        "transition": "all 0.5s ease"
+                    }
+                }
+                return {}
+            }
+        },
+        29: {
+            requirementDescription: "Tetr 5 [PERMANENT+]",
+            effectDescription: "Unlock Layer Extenders... the most powerful feature in the game.",
+            done() { return player[this.layer].tetr.gte(5) },
+            style() {
+                if (hasMilestone(this.layer, 29)) {
+                    if (!document.getElementById("blue-milestone-style")) {
+                        let styleSheet = document.createElement("style")
+                        styleSheet.id = "blue-milestone-style"
+                        styleSheet.innerText = `
+                            @keyframes blueshift {
+                                0% { background-position: 0% 50%; }
+                                50% { background-position: 100% 50%; }
+                                100% { background-position: 0% 50%; }
+                            }
+                        `
+                        document.head.appendChild(styleSheet)
+                    }
+                    
+                    return {
+                        "background": "linear-gradient(45deg, #2563eb, #1d4ed8, #3b82f6, #1e3a8a, #6366f1)",
+                        "background-size": "300% 300%",
+                        "animation": "blueshift 4s ease infinite",
+                        "color": "#ffffff", 
+                        "font-weight": "bold",
+                        "border": "2px solid #93c5fd",
+                        "box-shadow": "0px 0px 15px rgba(37, 99, 235, 0.7), inset 0px 1px 3px rgba(255, 255, 255, 0.4)",
+                        "transition": "all 0.5s ease"
+                    }
+                }
+                return {}
+            }
+        },
+        30: {
+            requirementDescription: "Tetr 9,443",
+            effectDescription: "Soon?",
+            done() { return player[this.layer].tetr.gte(9443) },
+        },
+        31: {
+            requirementDescription: "Tetr 123,456,789",
+            effectDescription: "Soon?",
+            done() { return player[this.layer].tetr.gte(123456789) },
+        },
+        32: {
+            requirementDescription: "Tetr ♾",
+            effectDescription: "Soon?",
+            done() { return player[this.layer].tetr.gte(Infinity) },
         },
     },
     resetsNothing() {return hasUpgrade('ult',12)},

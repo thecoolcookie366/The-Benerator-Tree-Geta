@@ -327,7 +327,8 @@ function getPointGen() {
 	if (hasMilestone('mass', 21)) gain = gain.mul("1e50")
 	if (hasMilestone('mass', 22)) gain = gain.mul(Decimal.pow(1632899, getBuyableAmount('mass', 43)))
 	if (hasMilestone('mass', 23)) gain = gain.mul("1e111")
-	if (player.mass.tetr.gte(1)) gain = new Decimal (0)
+	if (hasMilestone('mass', 25)) gain = gain.add(0.99)
+	if (hasMilestone('mass', 25)) gain = gain.pow(2)
 	return gain
 }
 
