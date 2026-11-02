@@ -10764,6 +10764,7 @@ addLayer("sott", {
         31: { name: "Really Out of Place [208]", done() { return player.sott.points.gte(2) }, goalTooltip() { return "Hint: Same as Out of Place, but a bit harder to find." }, doneTooltip() { return "Press the glitched button in the ??? tab in Extra. Linked with Out of Place [104], which means getting this also gives that secret." } },
         41: { name: "Endgaming [321]", done() { return player.univ.points.gte(2) }, goalTooltip() { return "Hint: Should be obvious." }, doneTooltip() { return "Reach the endgame. Probably the only secret that's not secret." } },
         111: { name: "Praised [993]", done() { return false }, goalTooltip() { return "Hint: Hard reset with the developer." }, doneTooltip() { return "Do the hard reset sequence and complete the gwa praising." } },
+        112: { name: "Matrix [996]", done() { return false }, goalTooltip() { return "Hint: Hard reset with the <i>other</i> developer." }, doneTooltip() { return "Complete Bitshrub's Secret Trials." } },
         121: { name: "Cookie-ing Around [1,000]", done() { return false }, goalTooltip() { return "Hint: Start in CMG." }, doneTooltip() { return "..." } },
 
         1001: { name: "Logically Stupid [47]", done() { return hasAchievement('sott',12) }, goalTooltip() { return "this acts as a decoy" }, doneTooltip() { return "to give the popup" } },
@@ -11001,4 +11002,183 @@ addLayer("sss", {
         11: { name: "gwa", done() { return player.sss.points.gte(1048576) }, goalTooltip() { return "Hint: Praise the being that says 'gwa' 1,048,576 times." }, doneTooltip() { return "???" } }
     },
     layerShown(){return player.sss.points.gte(1) && player.sss.points.lte(1.796e308)}
+})
+
+addLayer("bst1", {
+    name: "Bitshrub's Secret Trials (pt. 1)",
+    symbol: "B1",
+    position: 6,
+    row: "side",
+    startData() { return {
+        unlocked: true,
+        points: new Decimal(0),
+    }},
+    layerShown(){return player.bst1.points.gte(1)},
+    resource: "",
+    tooltip() {
+        return "I: Game of Numbers"
+    },
+    nodeStyle: {
+        background: "linear-gradient(#000000, #00ff00)",
+        backgroundOrigin: "border-box",
+        borderColor: "rgba(255,255,255,0.3)",
+        color: "#0f0"
+    },
+    tabFormat: [
+        "main-display",
+        "blank",
+        ["clickables", [1]],
+        "blank",
+        ["clickables", [2,3,4,5,6]],
+        "blank",
+        "achievements"
+    ],
+    clickables: {
+        11: {
+            title: "RESET",
+            canClick() {return !player.bst1.points.eq(1)},
+            onClick() {player.bst1.points = new Decimal(1)},
+            style: { backgroundColor: "#ffffff", margin: "0.5px" },
+        },
+        21: {
+            title: "+1",
+            canClick() {return true},
+            onClick() {player.bst1.points = player.bst1.points.add(1)},
+            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
+        },
+        22: {
+            unlocked() {return hasAchievement("bst1", 21)},
+            title: "+96",
+            canClick() {return true},
+            onClick() {player.bst1.points = player.bst1.points.add(96)},
+            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
+        },
+        23: {
+            unlocked() {return hasAchievement("bst1", 24)},
+            title: "+101",
+            canClick() {return true},
+            onClick() {player.bst1.points = player.bst1.points.add(101)},
+            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
+        },
+        24: {
+            unlocked() {return hasAchievement("bst1", 11)},
+            title: "x2",
+            canClick() {return true},
+            onClick() {player.bst1.points = player.bst1.points.times(2)},
+            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
+        },
+        25: {
+            unlocked() {return hasAchievement("bst1", 12)},
+            title: "x5",
+            canClick() {return true},
+            onClick() {player.bst1.points = player.bst1.points.times(5)},
+            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
+        },
+        31: {
+            unlocked() {return hasAchievement("bst1", 13)},
+            title: "x100",
+            canClick() {return true},
+            onClick() {player.bst1.points = player.bst1.points.times(100)},
+            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
+        },
+        32: {
+            unlocked() {return hasAchievement("bst1", 22)},
+            title: "x3",
+            canClick() {return true},
+            onClick() {player.bst1.points = player.bst1.points.times(3)},
+            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
+        },
+        33: {
+            unlocked() {return hasAchievement("bst1", 23)},
+            title: "x7",
+            canClick() {return true},
+            onClick() {player.bst1.points = player.bst1.points.times(7)},
+            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
+        },
+        41: {
+            unlocked() {return hasAchievement("bst1", 14)},
+            title: "^2",
+            canClick() {return true},
+            onClick() {player.bst1.points = player.bst1.points.pow(2)},
+            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
+        },
+        51: {
+            unlocked() {return hasAchievement("bst1", 14)},
+            title: "/2",
+            canClick() {return true},
+            onClick() {player.bst1.points = player.bst1.points.div(2)},
+            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
+        },
+        52: {
+            unlocked() {return hasAchievement("bst1", 31)},
+            title: "/3",
+            canClick() {return true},
+            onClick() {player.bst1.points = player.bst1.points.div(3)},
+            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
+        },
+    },
+    achievements: {
+        11: {
+            name: "The First Trial Begins",
+            done() {return player.bst1.points.eq(100)},
+            goalTooltip() {return "Get some numbers."},
+            doneTooltip() {return "Get 100. Reward: x2 button."}
+        },
+        12: {
+            unlocked() {return hasAchievement("bst1", 11)},
+            name: "Big Numbers",
+            done() {return player.bst1.points.eq(1e6)},
+            goalTooltip() {return "Hint: 2^6 * 5^6."},
+            doneTooltip() {return "Get 1,000,000. Reward: x5 button."}
+        },
+        13: {
+            unlocked() {return hasAchievement("bst1", 12)},
+            name: "Googology Time",
+            done() {return player.bst1.points.eq(1e100)},
+            goalTooltip() {return "Hint: Milton Sirotta"},
+            doneTooltip() {return "Get 1e100. Reward: x100 button."}
+        },
+        14: {
+            unlocked() {return hasAchievement("bst1", 12)},
+            name: "Infinite possibilities",
+            done() {return player.bst1.points.gte(Decimal.pow(2, 1024))},
+            goalTooltip() {return "This should be fairly obvious"},
+            doneTooltip() {return "Get 1.79e308. Reward: ^2 button AND /2 button."}
+        },
+        21: {
+            unlocked() {return hasAchievement("bst1", 11)},
+            name: "Praise for our lord is here",
+            done() {return player.bst1.points.eq(96)},
+            goalTooltip() {return "Get the exact Number of the Gwa."},
+            doneTooltip() {return "Get 96. Reward: +96 button."}
+        },
+        22: {
+            unlocked() {return hasAchievement("bst1", 21)},
+            name: "Cool",
+            done() {return player.bst1.points.eq(366)},
+            goalTooltip() {return "Cookie's number."},
+            doneTooltip() {return "Get 366. Reward: x3 button."}
+        },
+        23: {
+            unlocked() {return hasAchievement("bst1", 22)},
+            name: "Nice number?",
+            done() {return player.bst1.points.eq(69)},
+            goalTooltip() {return "IDK"},
+            doneTooltip() {return "Get 69. Reward: x7 button."}
+        },
+        24: {
+            unlocked() {return hasAchievement("bst1", 23)},
+            name: "Unrounded Evil",
+            done() {return player.bst1.points.eq(101)},
+            goalTooltip() {return "room of doom..."},
+            doneTooltip() {return "Get 101. Reward: +101 button."}
+        },
+        31: {
+            unlocked() {return hasAchievement("bst1", 14)},
+            name: "Backwards?",
+            done() {return player.bst1.points.eq(1/1024)},
+            goalTooltip() {return "small number."},
+            doneTooltip() {return "Get 1/1024. Reward: /3 button."}
+        },
+    },
 })
