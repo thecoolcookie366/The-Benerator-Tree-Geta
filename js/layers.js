@@ -11025,6 +11025,10 @@ addLayer("bst1", {
         color: "#0f0"
     },
     tabFormat: [
+        ["bar", "goal"],
+        "blank",
+        ["bar", "timegoal"],
+        "blank",
         "main-display",
         "blank",
         ["clickables", [1]],
@@ -11033,6 +11037,45 @@ addLayer("bst1", {
         "blank",
         "achievements"
     ],
+    bars: {
+        goal: {
+            direction: RIGHT,
+            width: 250,
+            height: 50,
+            progress() { 
+                if (player[this.layer].points.lt(10)) return 0
+                let currentLog = player[this.layer].points.log10()
+                let currentLogLog = currentLog.log10()
+                let goalLogLog = 308.2547155599167
+                return currentLogLog.div(goalLogLog)
+            },
+            display() { 
+                return format(player[this.layer].points) + " / e1.798e308"
+            },
+            baseStyle: { "background-color": "#111111" },
+            fillStyle: { "background-color": "#ffaa00" },
+            borderStyle: { "border": "2px solid #ffffff" },
+            textStyle: { "color": "#ffffff" },
+        },
+        timegoal: {
+            direction: UP,
+            width: 500,
+            height: 25,
+            progress() { 
+                if (player.timePlayed < 1) return 0
+                let currentLog = Math.log10(player.timePlayed)
+                let goalLog = Math.log10(31536000)
+                return currentLog / goalLog
+            },
+            display() { 
+                return formatTime(player.timePlayed) + " / " + formatTime(31536000)
+            },
+            baseStyle: { "background-color": "#111111" },
+            fillStyle: { "background-color": "#00aaee" },
+            borderStyle: { "border": "2px solid #ffffff" },
+            textStyle: { "color": "#ffffff" },
+        },
+    },
     clickables: {
         11: {
             title: "RESET",
