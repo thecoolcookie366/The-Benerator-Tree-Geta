@@ -396,6 +396,10 @@ function hardReset(resetOptions) {
 		player.sss.points = new Decimal (1)
 		return
 	}
+	if (input === "bitshrub0") {
+		player.bst1.points = new Decimal(1)
+		return
+	}
 	if (input === "1.2") {
 		if (player && player.sott && player.sott.achievements) {
 			if (!player.sott.achievements.includes(13)) {
