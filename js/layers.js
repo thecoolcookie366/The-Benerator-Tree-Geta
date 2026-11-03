@@ -11055,7 +11055,7 @@ addLayer("bst1", {
             baseStyle: { "background-color": "#111111" },
             fillStyle: { "background": "linear-gradient(to right, #ffaa00, #ffff00, #0000ff, #ff00ff, #00ff00, #808080, #00aaff, #ffffff)" },
             borderStyle: { "border": "2px solid #ffffff" },
-            textStyle: { "color": "#000080" },
+            textStyle: { "color": "#0044ff" },
         },
     },
     clickables: {
