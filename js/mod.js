@@ -340,6 +340,11 @@ function addedPlayerData() {
 	}
 }
 
+function upgradeFactorial(numberOfUpgrades) {
+	let gain = new Decimal(1)
+	for (i=1; i<=numberOfUpgrades; i++) {gain = gain.times(i)}
+	return gain
+}
 var displayThings = [
     function() {
         let noticeText = []

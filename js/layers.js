@@ -11006,42 +11006,43 @@ addLayer("sss", {
 
 addLayer("bst1", {
     name: "Bitshrub's Secret Trials (pt. 1)",
-    symbol: "B1",
+    symbol: "B",
     position: 6,
     row: "side",
     startData() { return {
         unlocked: true,
         points: new Decimal(0),
     }},
-    layerShown(){return player.bst1.points.gte(1)},
-    resource: "",
+    update(diff) {
+        let gain = new Decimal(0)
+        if (hasUpgrade('bst1', 11)) gain = upgradeFactorial(player[this.layer].upgrades.length)
+        player.bst1.points = player.bst1.points.add(gain.times(diff))
+    },
+    layerShown() {return (player.bst1.points.gte(1) || player[this.layer].unlocked)},
+    resource: "First Numbers",
     tooltip() {
-        return "I: Game of Numbers"
+        return "I: Game of Increments"
     },
     nodeStyle: {
-        background: "linear-gradient(#000000, #00ff00)",
+        background: "linear-gradient(#000000, #00ff00aa)",
         backgroundOrigin: "border-box",
         borderColor: "rgba(255,255,255,0.3)",
         color: "#0f0"
     },
+    effectDescription() {return "NB: Random Upgrades courtesy of Winner"},
     tabFormat: [
-        ["bar", "goal"],
-        "blank",
-        ["bar", "timegoal"],
-        "blank",
         "main-display",
         "blank",
-        ["clickables", [1]],
+        ["bar", "goal"],
         "blank",
-        ["clickables", [2,3,4,5,6]],
-        "blank",
-        "achievements"
+        "clickables",
+        "upgrades",
     ],
     bars: {
         goal: {
             direction: RIGHT,
-            width: 250,
-            height: 50,
+            width: 700,
+            height: 30,
             progress() { 
                 if (player[this.layer].points.lt(10)) return 0
                 let currentLog = player[this.layer].points.log10()
@@ -11050,178 +11051,39 @@ addLayer("bst1", {
                 return currentLogLog.div(goalLogLog)
             },
             display() { 
-                return format(player[this.layer].points) + " / e1.798e308"
+                return format(player[this.layer].points) + " / e1.796e308"
             },
             baseStyle: { "background-color": "#111111" },
             fillStyle: { "background-color": "#ffaa00" },
             borderStyle: { "border": "2px solid #ffffff" },
             textStyle: { "color": "#ffffff" },
         },
-        timegoal: {
-            direction: UP,
-            width: 500,
-            height: 25,
-            progress() { 
-                if (player.timePlayed < 1) return 0
-                let currentLog = Math.log10(player.timePlayed)
-                let goalLog = Math.log10(31536000)
-                return currentLog / goalLog
-            },
-            display() { 
-                return formatTime(player.timePlayed) + " / " + formatTime(31536000)
-            },
-            baseStyle: { "background-color": "#111111" },
-            fillStyle: { "background-color": "#00aaee" },
-            borderStyle: { "border": "2px solid #ffffff" },
-            textStyle: { "color": "#ffffff" },
-        },
     },
     clickables: {
         11: {
-            title: "RESET",
-            canClick() {return !player.bst1.points.eq(1)},
-            onClick() {player.bst1.points = new Decimal(1)},
-            style: { backgroundColor: "#ffffff", margin: "0.5px" },
-        },
-        21: {
-            title: "+1",
-            canClick() {return true},
-            onClick() {player.bst1.points = player.bst1.points.add(1)},
-            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
-        },
-        22: {
-            unlocked() {return hasAchievement("bst1", 21)},
-            title: "+96",
-            canClick() {return true},
-            onClick() {player.bst1.points = player.bst1.points.add(96)},
-            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
-        },
-        23: {
-            unlocked() {return hasAchievement("bst1", 24)},
-            title: "+101",
-            canClick() {return true},
-            onClick() {player.bst1.points = player.bst1.points.add(101)},
-            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
-        },
-        24: {
-            unlocked() {return hasAchievement("bst1", 11)},
-            title: "x2",
-            canClick() {return true},
-            onClick() {player.bst1.points = player.bst1.points.times(2)},
-            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
-        },
-        25: {
-            unlocked() {return hasAchievement("bst1", 12)},
-            title: "x5",
-            canClick() {return true},
-            onClick() {player.bst1.points = player.bst1.points.times(5)},
-            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
-        },
-        31: {
-            unlocked() {return hasAchievement("bst1", 13)},
-            title: "x100",
-            canClick() {return true},
-            onClick() {player.bst1.points = player.bst1.points.times(100)},
-            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
-        },
-        32: {
-            unlocked() {return hasAchievement("bst1", 22)},
-            title: "x3",
-            canClick() {return true},
-            onClick() {player.bst1.points = player.bst1.points.times(3)},
-            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
-        },
-        33: {
-            unlocked() {return hasAchievement("bst1", 23)},
-            title: "x7",
-            canClick() {return true},
-            onClick() {player.bst1.points = player.bst1.points.times(7)},
-            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
-        },
-        41: {
-            unlocked() {return hasAchievement("bst1", 14)},
-            title: "^2",
-            canClick() {return true},
-            onClick() {player.bst1.points = player.bst1.points.pow(2)},
-            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
-        },
-        51: {
-            unlocked() {return hasAchievement("bst1", 14)},
-            title: "/2",
-            canClick() {return true},
-            onClick() {player.bst1.points = player.bst1.points.div(2)},
-            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
-        },
-        52: {
-            unlocked() {return hasAchievement("bst1", 31)},
-            title: "/3",
-            canClick() {return true},
-            onClick() {player.bst1.points = player.bst1.points.div(3)},
-            style: { backgroundColor: "#00ff00cc", margin: "0.5px" },
+            title: "BEGIN THE TRIALS",
+            unlocked() {return player[this.layer].points.lt(1)},
+            canClick: true,
+            onClick() {
+                player[this.layer].points = player[this.layer].points.add(1)
+            },
         },
     },
-    achievements: {
+    upgrades: {
         11: {
-            name: "The First Trial Begins",
-            done() {return player.bst1.points.eq(100)},
-            goalTooltip() {return "Get some numbers."},
-            doneTooltip() {return "Get 100. Reward: x2 button."}
-        },
-        12: {
-            unlocked() {return hasAchievement("bst1", 11)},
-            name: "Big Numbers",
-            done() {return player.bst1.points.eq(1e6)},
-            goalTooltip() {return "Hint: 2^6 * 5^6."},
-            doneTooltip() {return "Get 1,000,000. Reward: x5 button."}
-        },
-        13: {
-            unlocked() {return hasAchievement("bst1", 12)},
-            name: "Googology Time",
-            done() {return player.bst1.points.eq(1e100)},
-            goalTooltip() {return "Hint: Milton Sirotta"},
-            doneTooltip() {return "Get 1e100. Reward: x100 button."}
-        },
-        14: {
-            unlocked() {return hasAchievement("bst1", 12)},
-            name: "Infinite possibilities",
-            done() {return player.bst1.points.gte(Decimal.pow(2, 1024))},
-            goalTooltip() {return "This should be fairly obvious"},
-            doneTooltip() {return "Get 1.79e308. Reward: ^2 button AND /2 button."}
+            title: "Oh, you're in for it now. Here comes the randomness...",
+            description: "start generating First Numbers/second.",
+            cost: new Decimal(1),
+            effect() { return upgradeFactorial(player[this.layer].upgrades.length) },
+            effectDisplay() {
+                return format(player[this.layer].upgrades.length) + "/s"
+            },
         },
         21: {
-            unlocked() {return hasAchievement("bst1", 11)},
-            name: "Praise for our lord is here",
-            done() {return player.bst1.points.eq(96)},
-            goalTooltip() {return "Get the exact Number of the Gwa."},
-            doneTooltip() {return "Get 96. Reward: +96 button."}
-        },
-        22: {
-            unlocked() {return hasAchievement("bst1", 21)},
-            name: "Cool",
-            done() {return player.bst1.points.eq(366)},
-            goalTooltip() {return "Cookie's number."},
-            doneTooltip() {return "Get 366. Reward: x3 button."}
-        },
-        23: {
-            unlocked() {return hasAchievement("bst1", 22)},
-            name: "Nice number?",
-            done() {return player.bst1.points.eq(69)},
-            goalTooltip() {return "IDK"},
-            doneTooltip() {return "Get 69. Reward: x7 button."}
-        },
-        24: {
-            unlocked() {return hasAchievement("bst1", 23)},
-            name: "Unrounded Evil",
-            done() {return player.bst1.points.eq(101)},
-            goalTooltip() {return "room of doom..."},
-            doneTooltip() {return "Get 101. Reward: +101 button."}
-        },
-        31: {
-            unlocked() {return hasAchievement("bst1", 14)},
-            name: "Backwards?",
-            done() {return player.bst1.points.eq(1/1024)},
-            goalTooltip() {return "small number."},
-            doneTooltip() {return "Get 1/1024. Reward: /3 button."}
+            unlocked() {return hasUpgrade("bst1", 11)},
+            title: "Random Upgrade I: Wowie",
+            description: "x2 to First Number generation.",
+            cost: new Decimal(10),
         },
     },
 })
