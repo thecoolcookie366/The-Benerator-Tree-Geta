@@ -11029,7 +11029,7 @@ addLayer("bst1", {
         borderColor: "rgba(255,255,255,0.3)",
         color: "#0f0"
     },
-    effectDescription() {return "NB: Random Upgrades courtesy of Winner"},
+    effectDescription() {return "NB: \"Random upgrades\" courtesy of Winner"},
     tabFormat: [
         "main-display",
         "blank",
@@ -11046,17 +11046,16 @@ addLayer("bst1", {
             progress() { 
                 if (player[this.layer].points.lt(10)) return 0
                 let currentLog = player[this.layer].points.log10()
-                let currentLogLog = currentLog.log10()
-                let goalLogLog = 308.2547155599167
-                return currentLogLog.div(goalLogLog)
+                let goalLog = 308.2547155599167
+                return currentLog.div(goalLog)
             },
             display() { 
-                return format(player[this.layer].points) + " / e1.796e308"
+                return format(player[this.layer].points) + " / 1.796e308"
             },
             baseStyle: { "background-color": "#111111" },
-            fillStyle: { "background-color": "#ffaa00" },
+            fillStyle: { "background": "linear-gradient(to right, #ffaa00, #ffff00, #0000ff, #ff00ff, #00ff00, #808080, #00aaff, #ffffff)" },
             borderStyle: { "border": "2px solid #ffffff" },
-            textStyle: { "color": "#ffffff" },
+            textStyle: { "color": "#000080" },
         },
     },
     clickables: {
@@ -11076,14 +11075,152 @@ addLayer("bst1", {
             cost: new Decimal(1),
             effect() { return upgradeFactorial(player[this.layer].upgrades.length) },
             effectDisplay() {
-                return format(player[this.layer].upgrades.length) + "/s"
+                return format(upgradeEffect([this.layer], [this.id])) + "/s"
             },
         },
         21: {
             unlocked() {return hasUpgrade("bst1", 11)},
-            title: "Random Upgrade I: Wowie",
+            title: "Random upgrade I: Wowie",
             description: "x2 to First Number generation.",
             cost: new Decimal(10),
+        },
+        22: {
+            unlocked() {return hasUpgrade("bst1", 21)},
+            title: "Random upgrade II:Mwndkalxlaclaixj",
+            description: "x3 to First Number generation.",
+            cost: new Decimal(22),
+        },
+        23: {
+            unlocked() {return hasUpgrade("bst1", 22)},
+            title: "Random upgrade III:How are you, Player, Like the upgrades?",
+            description: "x4 to First Number generation.",
+            cost: new Decimal(72),
+        },
+        24: {
+            unlocked() {return hasUpgrade("bst1", 23)},
+            title: "Random upgrade IV:Two in a day",
+            description: "x5 to First Number generation.",
+            cost: new Decimal(312),
+        },
+        25: {
+            unlocked() {return hasUpgrade("bst1", 24)},
+            title: "Random upgrade V:Who missed the upgrade",
+            description: "x6 to First Number generation.",
+            cost: new Decimal(1680),
+        },
+        31: {
+            unlocked() {return hasUpgrade("bst1", 25)},
+            title: "Random upgrade VI:6 to the power of 9",
+            description: "x7 to First Number generation.",
+            cost: new Decimal(18000),
+        },
+        32: {
+            unlocked() {return hasUpgrade("bst1", 31)},
+            title: "Random upgrade VII:Despair will Hate this upgrade",
+            description: "x8 to First Number generation.",
+            cost: new Decimal(131040),
+        },
+        33: {
+            unlocked() {return hasUpgrade("bst1", 32)},
+            title: "Random upgrade VIII:Infinity will like this upgrade",
+            description: "x9 to First Number generation.",
+            cost: new Decimal(1088640),
+        },
+        34: {
+            unlocked() {return hasUpgrade("bst1", 33)},
+            title: "Random upgrade IX:9th Timewalls",
+            description: "x10 to First Number generation.",
+            cost: new Decimal(10255840),
+        },
+        35: {
+            unlocked() {return hasUpgrade("bst1", 34)},
+            title: "Random upgrade X: Roman Number 10",
+            description: "x11 to First Number generation.",
+            cost: new Decimal(106221200),
+        },
+        41: {
+            unlocked() {return hasUpgrade("bst1", 35)},
+            title: "Random upgrade XI:How many?",
+            description: "x12 to First Number generation.",
+            cost: new Decimal(1596672000),
+        },
+        42: {
+            unlocked() {return hasUpgrade("bst1", 41)},
+            title: "Random upgrade XII:Anti-CTNB",
+            description: "x13 to First Number generation.",
+            cost: new Decimal(19639065600),
+        },
+        43: {
+            unlocked() {return hasUpgrade("bst1", 42)},
+            title: "Random upgrade XIII:I ran out of upgrade lol",
+            description: "x14 to First Number generation.",
+            cost: new Decimal(261534873600),
+        },
+        44: {
+            unlocked() {return hasUpgrade("bst1", 43)},
+            title: "Random upgrade XIV:L and W",
+            description: "x15 to First Number generation.",
+            cost: new Decimal(3.7486665e+12),
+        },
+        45: {
+            unlocked() {return hasUpgrade("bst1", 44)},
+            title: "Random upgrade XV:Watch TPOT",
+            description: "x16 to First Number generation.",
+            cost: new Decimal(5.7537672e+13),
+        },
+        51: {
+            unlocked() {return hasUpgrade("bst1", 45)},
+            title: "Random upgrade XVI:This will have 100 Upgrades",
+            description: "x17 to First Number generation.",
+            cost: new Decimal(1.1507534e+15),
+        },
+        52: {
+            unlocked() {return hasUpgrade("bst1", 51)},
+            title: "Random upgrade XVII:Inanimate Battle for Animatic For The",
+            description: "x18 to First Number generation.",
+            cost: new Decimal(1.9918496e+16),
+        },
+        53: {
+            unlocked() {return hasUpgrade("bst1", 52)},
+            title: "Random upgrade XVIII:Friendly Upgrade",
+            description: "x19 to First Number generation.",
+            cost: new Decimal(3.649353e+17),
+        },
+        54: {
+            unlocked() {return hasUpgrade("bst1", 53)},
+            title: "Random upgrade XIX:Welcome to Nowhere",
+            description: "x20 to First Number generation.",
+            cost: new Decimal(7.0554158e+18),
+        },
+        55: {
+            unlocked() {return hasUpgrade("bst1", 54)},
+            title: "Random upgrade XX:20th Upgrade",
+            description: "x21 to First Number generation.",
+            cost: new Decimal(1.4354122e+20),
+        },
+        61: {
+            unlocked() {return hasUpgrade("bst1", 55)},
+            title: "Random upgrade XXI:Think about 2763 breads",
+            description: "x22 to First Number generation.",
+            cost: new Decimal(3.576366e+21),
+        },
+        62: {
+            unlocked() {return hasUpgrade("bst1", 61)},
+            title: "Random upgrade XXII:Black Hole... Black Hole!",
+            description: "x23 to First Number generation.",
+            cost: new Decimal(7.9804052e+22),
+        },
+        63: {
+            unlocked() {return hasUpgrade("bst1", 62)},
+            title: "Random upgrade XXIII: Black Hole Save Me! what is happening?!",
+            description: "x24 to First Number generation.",
+            cost: new Decimal(1.8613452e+24),
+        },
+        211: {
+            unlocked() {return hasUpgrade("bst1", 205)},
+            title: "No more random upgrades? Then WHAT IS THIS",
+            description: "x102 to First Number generation.",
+            cost: new Decimal(2.922044e+162),
         },
     },
 })
