@@ -11061,7 +11061,7 @@ addLayer("bst1", {
     clickables: {
         11: {
             title: "BEGIN THE TRIALS",
-            unlocked() {return player[this.layer].points.lt(1)},
+            unlocked() {return (player[this.layer].points.lt(1) || !hasUpgrade("bst1", 11))},
             canClick: true,
             onClick() {
                 player[this.layer].points = player[this.layer].points.add(1)
