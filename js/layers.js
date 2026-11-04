@@ -11018,7 +11018,7 @@ addLayer("bst1", {
         if (hasUpgrade('bst1', 11)) gain = upgradeFactorial(player[this.layer].upgrades.length)
         player.bst1.points = player.bst1.points.add(gain.times(diff))
     },
-    layerShown() {return (player.bst1.points.gte(1) || player[this.layer].unlocked)},
+    layerShown() {return (player.bst1.points.gte(1) && player[this.layer].unlocked)},
     resource: "First Numbers",
     tooltip() {
         return "I: Game of Increments"
