@@ -11012,16 +11012,32 @@ addLayer("bst1", {
     startData() { return {
         unlocked: true,
         points: new Decimal(0),
+        secondPoints: new Decimal(0),
+        cooldown: new Decimal(0),
     }},
+    tabFormat: {
+        "I: Game of Increments": { 
+            buttonStyle: { "background-color": "#000000", "color": "#ffaaaa", "border": "2px solid #800000", "font-weight": "bold" },
+            content: ["main-display", "blank", ["bar", "goal1"], "blank", ["clickables", [1]], ["upgrades", [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34]],] 
+        },
+        "II: Game of Randomness": {
+            unlocked() {return hasUpgrade("bst1", 345)}, 
+            buttonStyle: { "background-color": "#000000", "color": "#ffaa80", "border": "2px solid #806000", "font-weight": "bold" },
+            content: [["display-text", function() {return "You have <h2 style='color: #ffaa00; display: inline;'>" + format(player.bst1.secondPoints) + "</h2> Second Numbers, and there's still a whole lot coming..." }], "blank", ["clickables", [2]], ["upgrades", [35]],], 
+        },
+    },
     update(diff) {
+        if (player.bst1.cooldown > 0) {
+            player.bst1.cooldown = Math.max(0, player.bst1.cooldown - diff)
+        }
         let gain = new Decimal(0)
         if (hasUpgrade('bst1', 11)) gain = upgradeFactorial(player[this.layer].upgrades.length)
         player.bst1.points = player.bst1.points.add(gain.times(diff))
     },
-    layerShown() {return (player.bst1.points.gte(1) && player[this.layer].unlocked)},
+    layerShown() {return (player.bst1.points.gte(1) || player[this.layer].unlocked)},
     resource: "First Numbers",
     tooltip() {
-        return "I: Game of Increments"
+        return "MY TORMENT..."
     },
     nodeStyle: {
         background: "linear-gradient(#000000, #00ff00aa)",
@@ -11030,24 +11046,16 @@ addLayer("bst1", {
         color: "#0f0"
     },
     effectDescription() {return "NB: \"Random upgrades\" courtesy of Winner"},
-    tabFormat: [
-        "main-display",
-        "blank",
-        ["bar", "goal"],
-        "blank",
-        "clickables",
-        "upgrades",
-    ],
     bars: {
-        goal: {
+        goal1: {
             direction: RIGHT,
             width: 700,
             height: 30,
             progress() { 
                 if (player[this.layer].points.lt(10)) return 0
                 let currentLog = player[this.layer].points.log10()
-                let goalLog = 308.2547155599167
-                return currentLog.div(goalLog)
+                let goal1Log = 308.2547155599167
+                return currentLog.div(goal1Log)
             },
             display() { 
                 return format(player[this.layer].points) + " / 1.796e308"
@@ -11061,12 +11069,28 @@ addLayer("bst1", {
     clickables: {
         11: {
             title: "BEGIN THE TRIALS",
-            unlocked() {return (player[this.layer].points.lt(1) || !hasUpgrade("bst1", 11))},
+            unlocked() {return (player[this.layer].points.lt(1) && !hasUpgrade("bst1", 11))},
             canClick: true,
             onClick() {
                 player[this.layer].points = player[this.layer].points.add(1)
             },
         },
+        21 : {
+            title: "Random Time",
+            display() { 
+                if (player.bst1.cooldown > 0) {
+                    return `cooldown: ${format(player.bst1.cooldown)}s`
+                }
+                return "Ran#!"
+            },
+            canClick() { 
+                return player.bst1.cooldown <= 0
+            },
+            onClick() {
+                player.bst1.secondPoints = player.bst1.secondPoints.add(Math.random())
+                player.bst1.cooldown = 1
+            }
+        }
     },
     upgrades: {
         11: {
@@ -11221,6 +11245,12 @@ addLayer("bst1", {
             title: "No more random upgrades? Then WHAT IS THIS",
             description: "x102 to First Number generation.",
             cost: new Decimal(2.922044e+162),
+        },
+        345: {
+            unlocked() {return hasUpgrade("bst1", 344)},
+            title: "FINALLY",
+            description: "Unlock II: Game of Randomness",
+            cost: Decimal.pow(2, 1024),
         },
     },
 })
