@@ -11010,7 +11010,7 @@ addLayer("bst1", {
     position: 6,
     row: "side",
     startData() { return {
-        unlocked: true,
+        unlocked: false,
         points: new Decimal(0),
         secondPoints: new Decimal(0),
         cooldown: new Decimal(0),

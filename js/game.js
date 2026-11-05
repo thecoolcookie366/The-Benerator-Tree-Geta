@@ -398,6 +398,7 @@ function hardReset(resetOptions) {
 	}
 	if (input === "bitshrub0") {
 		player.bst1.points = new Decimal(1)
+		player.bst1.unlocked = true
 		return
 	}
 	if (input === "1.2") {
