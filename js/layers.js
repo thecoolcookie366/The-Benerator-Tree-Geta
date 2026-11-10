@@ -1657,7 +1657,7 @@ addLayer("terri", {
     resetsNothing() {return hasMilestone('p',1)},
     autoPrestige() {return hasMilestone('p',1)},
     canBuyMax() {return hasMilestone('p',1)},
-    autoUpgrade() {return hasMilestone('a', 0)},
+    // autoUpgrade() {return hasMilestone('a', 0)},
     effect() {
         return player[this.layer].points.pow(0.5)
     },
@@ -1678,7 +1678,7 @@ addLayer("terri", {
         if (player.terri.points.gte(9.0071993e15)) Gen = new Decimal(0)
         if (hasUpgrade("terri", 62)) Gen = Gen.times(player.terri.points.log2())
         return Gen
-    },
+    }, 
     upgrades: {
         11: {
             title: "This is terrible!",
