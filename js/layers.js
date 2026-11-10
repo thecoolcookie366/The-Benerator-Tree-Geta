@@ -1657,7 +1657,7 @@ addLayer("terri", {
     resetsNothing() {return hasMilestone('p',1)},
     autoPrestige() {return hasMilestone('p',1)},
     canBuyMax() {return hasMilestone('p',1)},
-    // autoUpgrade() {return hasMilestone('a', 0)},
+    autoUpgrade() {return hasMilestone('a', 0)},
     effect() {
         return player[this.layer].points.pow(0.5)
     },
@@ -1676,7 +1676,7 @@ addLayer("terri", {
         if (player.terri.points.gte(1e6) && (!hasUpgrade('dia',14) && (!hasUpgrade("terri", 61)))) Gen = new Decimal(0)
         if (player.terri.points.gte(1e9) && (!hasUpgrade('alr',14) && (!hasUpgrade("terri", 61)))) Gen = new Decimal(0)
         if (player.terri.points.gte(9.0071993e15)) Gen = new Decimal(0)
-        if (hasUpgrade("terri", 62)) Gen = Gen.mul(player.terri.points.log2())
+        if (hasUpgrade("terri", 62)) Gen = Gen.mul(player.terri.points.max(2).log2())
         return Gen
     }, 
     upgrades: {
@@ -1899,8 +1899,6 @@ addLayer("terri", {
             title: "ONWARD TO YOUR DESTINY, MY FRIEND",
             description: "Multiply base terrible generator gain by log2(terrible generators).",
             cost: new Decimal(1100000),
-            currencyLocation() { return player },
-            currencyDisplayName: "terrible generators",
             unlocked() { 
                 return hasUpgrade("terri", 61)
             },
@@ -1919,8 +1917,6 @@ addLayer("terri", {
             title: "Wow this is so useful",
             description: "Money gain boosts itself.",
             cost: new Decimal(5e6),
-            currencyLocation() { return player },
-            currencyDisplayName: "terrible generators",
             unlocked() { 
                 return hasUpgrade("terri", 62)
             },
@@ -1960,8 +1956,6 @@ addLayer("terri", {
             title: "I CAN HAS THE POWER",
             description: "Terrible and awful generator milestones actually work now!!",
             cost: new Decimal("1e9"),
-            currencyLocation() { return player },
-            currencyDisplayName: "terrible generators",
             unlocked() { 
                 return hasUpgrade("terri", 64)
             },
@@ -2001,8 +1995,6 @@ addLayer("terri", {
             title: "I fear for my life",
             description: "Multiply money by log2(money), then x1e308",
             cost: new Decimal("2e9"),
-            currencyLocation() { return player },
-            currencyDisplayName: "terrible generators",
             unlocked() { 
                 return hasUpgrade("terri", 72)
             },

@@ -329,10 +329,10 @@ function getPointGen() {
 	if (hasMilestone('mass', 23)) gain = gain.mul("1e111")
 	if (hasMilestone('mass', 25)) gain = gain.add(0.99)
 	if (hasMilestone('mass', 25)) gain = gain.pow(2)
-	if (hasUpgrade("terri", 63)) gain = gain.times(player.terri.points.mag)
+	if (hasUpgrade("terri", 63)) gain = gain.times(new Decimal(player.terri.points.mag).max(1))
 	if ((hasMilestone('terri', 0)) && (hasUpgrade("terri", 71)) && (hasMilestone("univ", 2))) gain = gain.pow("1.25")
 	if ((hasMilestone('awf', 1)) && (hasUpgrade("terri", 71)) && (hasMilestone("univ", 2))) gain = gain.pow("1.05")
-	if (hasUpgrade("terri", 73)) gain = gain.times(player.points.log(2))
+	if (hasUpgrade("terri", 73)) gain = gain.times(player.points.max(2).log(2))
 	if (hasUpgrade("terri", 73)) gain = gain.times("1e308")
 	return gain
 }
