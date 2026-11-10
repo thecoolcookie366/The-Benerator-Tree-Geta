@@ -1676,7 +1676,7 @@ addLayer("terri", {
         if (player.terri.points.gte(1e6) && (!hasUpgrade('dia',14) && (!hasUpgrade("terri", 61)))) Gen = new Decimal(0)
         if (player.terri.points.gte(1e9) && (!hasUpgrade('alr',14) && (!hasUpgrade("terri", 61)))) Gen = new Decimal(0)
         if (player.terri.points.gte(9.0071993e15)) Gen = new Decimal(0)
-        if (hasUpgrade("terri", 62)) Gen = Gen.times(player.terri.points.log2())
+        if (hasUpgrade("terri", 62)) Gen = Gen.mul(player.terri.points.log2())
         return Gen
     }, 
     upgrades: {
