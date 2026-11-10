@@ -132,7 +132,7 @@ function getPointGen() {
 	if (hasAchievement('plv', 12)) gain = gain.pow("1.011")
 	if (hasMilestone('terri', 1)) gain = gain.pow("1.025")
 	if (hasUpgrade('per', 11)) gain = gain.pow("1.025")
-	if (hasMilestone('awf', 0)) gain = gain.pow("1.05")
+	if (hasMilestone('awf', 1)) gain = gain.pow("1.05")
 	if (hasUpgrade('med', 24)) gain = gain.pow("1.1")
 	if (hasUpgrade('per', 12)) gain = gain.pow("1.2")
 	if (hasMilestone('terri', 0)) gain = gain.pow("1.25")
@@ -329,6 +329,11 @@ function getPointGen() {
 	if (hasMilestone('mass', 23)) gain = gain.mul("1e111")
 	if (hasMilestone('mass', 25)) gain = gain.add(0.99)
 	if (hasMilestone('mass', 25)) gain = gain.pow(2)
+	if (hasUpgrade("terri", 63)) gain = gain.times(player.terri.points.mag)
+	if ((hasMilestone('terri', 0)) && (hasUpgrade("terri", 71)) && (hasMilestone("univ", 2))) gain = gain.pow("1.25")
+	if ((hasMilestone('awf', 1)) && (hasUpgrade("terri", 71)) && (hasMilestone("univ", 2))) gain = gain.pow("1.05")
+	if (hasUpgrade("terri", 73)) gain = gain.times(player.points.log(2))
+	if (hasUpgrade("terri", 73)) gain = gain.times("1e308")
 	return gain
 }
 
