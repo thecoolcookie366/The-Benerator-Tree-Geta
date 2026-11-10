@@ -4932,7 +4932,7 @@ addLayer("mass", {
                     if (money.lt("1e2.5e19")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #f0b4ff;'>1e25,000,000,000,000,000,000 money (Goated)</b></span>"
                     if (money.lt("1e1e20")) return "<span style='font-size: 14px; color: #ffffff;'>Next extender unlocks at <b style='color: #ffffff;'>1e100,000,000,000,000,000,000 money (Peak)</b></span>"
                     
-                    return "<span style='font-size: 14px; color: #62189f;'>All matrix extenders successfully initialized.</span>"
+                    return "<span style='font-size: 14px; color: #62189f;'>You've unlocked everything!</span>"
                 }],
                 "blank",
                 ["buyables", [5, 6, 7, 8, 9, 10, 11, 12]]
