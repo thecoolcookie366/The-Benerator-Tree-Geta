@@ -1665,16 +1665,18 @@ addLayer("terri", {
         return "adding +" + format(tmp[this.layer].effect) + " to your money base"
     },
     passiveGeneration() {
-        let Gen = 0
-        if (hasUpgrade('terri',54)) Gen = 1
-        if (hasUpgrade('awf',22)) Gen = 10
-        if (hasUpgrade('awf',23)) Gen = 100
-        if (hasUpgrade('awf',24)) Gen = 1000
-        if (hasUpgrade('dia',14)) Gen = 1e6
+        let Gen = new Decimal(0)
+        if (hasUpgrade('terri',54)) Gen = new Decimal(1)
+        if (hasUpgrade('awf',22)) Gen = new Decimal(10)
+        if (hasUpgrade('awf',23)) Gen = new Decimal(100)
+        if (hasUpgrade('awf',24)) Gen = new Decimal(1000)
+        if (hasUpgrade('terri',64)) Gen = new Decimal(1e5)
+        if (hasUpgrade('dia',14)) Gen = new Decimal(1e6)
         if (hasUpgrade('alr',14)) Gen = player.terri.points.mag
-        if (player.terri.points.gte(1e6) && (!hasUpgrade('dia',14))) Gen = 0
-        if (player.terri.points.gte(1e9) && (!hasUpgrade('alr',14))) Gen = 0
-        if (player.terri.points.gte(9.0071993e15)) Gen = 0
+        if (player.terri.points.gte(1e6) && (!hasUpgrade('dia',14) && (!hasUpgrade("terri", 61)))) Gen = new Decimal(0)
+        if (player.terri.points.gte(1e9) && (!hasUpgrade('alr',14) && (!hasUpgrade("terri", 61)))) Gen = new Decimal(0)
+        if (player.terri.points.gte(9.0071993e15)) Gen = new Decimal(0)
+        if (hasUpgrade("terri", 62)) Gen = Gen.times(player.terri.points.log2())
         return Gen
     }, 
     upgrades: {
@@ -1873,9 +1875,9 @@ addLayer("terri", {
             },
         },
         61: {
-            title: "One Thousand Years Later...",
-            description: "This upgrade does nothing yet, but it looks cool.",
-            cost: new Decimal("1e1e3020"),
+            title: "A Hundred Thousand Years Later",
+            description: "Uncap terrible generators once again...",
+            cost: new Decimal("1e3029"),
             currencyInternalName: "points",
             currencyLocation() { return player },
             currencyDisplayName: "money",
@@ -1889,6 +1891,128 @@ addLayer("terri", {
                         'color': '#ffffff',
                         'box-shadow': '0px 0px 15px #8e44ad',
                         'border-color': '#8e44ad'
+                    }
+                }
+            }
+        },
+        62: {
+            title: "ONWARD TO YOUR DESTINY, MY FRIEND",
+            description: "Multiply base terrible generator gain by log2(terrible generators).",
+            cost: new Decimal(1100000),
+            currencyLocation() { return player },
+            currencyDisplayName: "terrible generators",
+            unlocked() { 
+                return hasUpgrade("terri", 61)
+            },
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#3e1f4f',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #783894',
+                        'border-color': '#783894'
+                    }
+                }
+            }
+        },
+        63: {
+            title: "Wow this is so useful",
+            description: "Money gain boosts itself.",
+            cost: new Decimal(5e6),
+            currencyLocation() { return player },
+            currencyDisplayName: "terrible generators",
+            unlocked() { 
+                return hasUpgrade("terri", 62)
+            },
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#3a144e',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #721798',
+                        'border-color': '#721798'
+                    }
+                }
+            }
+        },
+        64: {
+            title: "Why does every universe eventually get going again???",
+            description: "Start gaining a base rate of 100000 terrible generators per second.",
+            cost: new Decimal("1e3037"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+            unlocked() { 
+                return hasUpgrade("terri", 63)
+            },
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#270937',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #4d026c',
+                        'border-color': '#4d026c'
+                    }
+                }
+            }
+        },
+        71: {
+            title: "I CAN HAS THE POWER",
+            description: "Terrible and awful generator milestones actually work now!!",
+            cost: new Decimal("1e9"),
+            currencyLocation() { return player },
+            currencyDisplayName: "terrible generators",
+            unlocked() { 
+                return hasUpgrade("terri", 64)
+            },
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#feb760',
+                        'color': '#000000',
+                        'box-shadow': '0px 0px 15px #b9560f',
+                        'border-color': '#b9560f'
+                    }
+                }
+            }
+        },
+        72: {
+            title: "Milestone Jumpscare",
+            description: "Uncap awful generators, and generate 1000 awful gens/s.",
+            cost: new Decimal("2e5677"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+            unlocked() { 
+                return hasUpgrade("terri", 71)
+            },
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#c4fe60',
+                        'color': '#000000',
+                        'box-shadow': '0px 0px 15px #9db90f',
+                        'border-color': '#9db90f'
+                    }
+                }
+            }
+        },
+        73: {
+            title: "I fear for my life",
+            description: "Multiply money by log2(money), then x1e308",
+            cost: new Decimal("2e9"),
+            currencyLocation() { return player },
+            currencyDisplayName: "terrible generators",
+            unlocked() { 
+                return hasUpgrade("terri", 72)
+            },
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#60fe8d',
+                        'color': '#000000',
+                        'box-shadow': '0px 0px 15px #0fb93f',
+                        'border-color': '#0fb93f'
                     }
                 }
             }
@@ -1982,9 +2106,10 @@ addLayer("awf", {
         if (hasUpgrade('alr',12)) Gen = 1
         if (hasUpgrade('alr',13)) Gen = 10
         if (hasUpgrade('awf',33)) Gen = 100
+        if (hasUpgrade('terri',72)) Gen = 1000
         if (hasUpgrade('dia',21)) Gen = 1e4
-        if (player.awf.points.gte(1e4) && (!hasUpgrade('dia',21))) Gen = 0
-        if (player.awf.points.gte(1.0005e6) && (hasUpgrade('dia',21))) Gen = 0
+        if (player.awf.points.gte(1e4) && (!hasUpgrade('dia',21)) && (!hasUpgrade("terri", 72))) Gen = 0
+        if (player.awf.points.gte(1.0005e6) && (hasUpgrade('dia',21)) && (!hasUpgrade("terri", 72))) Gen = 0
         return Gen
     },
     upgrades: {
