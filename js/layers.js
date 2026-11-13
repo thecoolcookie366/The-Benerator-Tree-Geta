@@ -2808,7 +2808,7 @@ addLayer("good", {
         return exp
     },
     resetsNothing() {return hasMilestone('p',29)},
-    autoPrestige() {return hasMilestone('p',29)},
+    autoPrestige() {return hasMilestone('p',29) || hasUpgrade('med',31)},
     canBuyMax() {return hasMilestone('p',29)},
     autoUpgrade() {return hasMilestone('a', 0)},
     effect() {
