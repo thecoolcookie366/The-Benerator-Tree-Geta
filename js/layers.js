@@ -3580,6 +3580,7 @@ addLayer("abs", {
     },
     tabFormat: [
         "main-display",
+        ["prestige-button", () => hasUpgrade("rad", 23)],
         "blank",
         "upgrades",
     ],
