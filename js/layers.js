@@ -1629,6 +1629,7 @@ addLayer("terri", {
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
+        prestige: new Decimal(0),
     }},
     color: "#ff0000",
     //nodeStyle: {
@@ -1648,6 +1649,7 @@ addLayer("terri", {
     exponent: 1, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+        mult = mult.mul(player.terri.prestige.add(1))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -1675,8 +1677,11 @@ addLayer("terri", {
         if (hasUpgrade('alr',14)) Gen = player.terri.points.mag
         if (player.terri.points.gte(1e6) && (!hasUpgrade('dia',14) && (!hasUpgrade("terri", 61)))) Gen = new Decimal(0)
         if (player.terri.points.gte(1e9) && (!hasUpgrade('alr',14) && (!hasUpgrade("terri", 61)))) Gen = new Decimal(0)
-        if (player.terri.points.gte(9.0071993e15)) Gen = new Decimal(0)
+        if ((player.terri.points.gte(9.0071993e15)) && (!hasUpgrade("terri", 81))) Gen = new Decimal(0)
         if (hasUpgrade("terri", 62)) Gen = Gen.mul(player.terri.points.max(2).log2())
+        if (hasUpgrade("ult", 13)) Gen = Gen.pow(3)
+        if (hasUpgrade("good", 11)) Gen = Gen.mul(1e75)
+        if (player.terri.points.gte(1e100)) Gen = 0
         return Gen
     }, 
     upgrades: {
@@ -2009,6 +2014,99 @@ addLayer("terri", {
                 }
             }
         },
+        74: {
+            title: "New layer WHEN",
+            description: "Unlock another ultra generator upgrade :>",
+            cost: new Decimal("1e7500"),
+            currencyInternalName: "points",
+            currencyLocation() { return player },
+            currencyDisplayName: "money",
+            unlocked() { 
+                return hasUpgrade("terri", 73)
+            },
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#60a4fe',
+                        'color': '#000000',
+                        'box-shadow': '0px 0px 15px #0fb9b0',
+                        'border-color': '#0fb9b0'
+                    }
+                }
+            }
+        },
+        81: {
+            title: "The last frontier",
+            description: "Remove the last cap...",
+            cost: new Decimal("9e15"),
+            unlocked() { 
+                return hasUpgrade("terri", 74)
+            },
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#fff',
+                        'color': '#000000',
+                        'box-shadow': '0px 0px 15px #000',
+                        'border-color': '#000'
+                    }
+                }
+            }
+        },
+        82: {
+            title: "These upgrades are dumb...",
+            description: "Generate 1 more diamond per second, and uncap.",
+            cost: new Decimal("5e22"),
+            unlocked() { 
+                return hasUpgrade("terri", 81)
+            },
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#aaa',
+                        'color': '#000000',
+                        'box-shadow': '0px 0px 20px #555',
+                        'border-color': '#555'
+                    }
+                }
+            }
+        },
+        83: {
+            title: "...BUT THIS ONE IS BETTER",
+            description: "Get 10,000,000 awful gens/second, and unlock an extra mediocre gen upgrade.",
+            cost: new Decimal("2e26"),
+            unlocked() { 
+                return hasUpgrade("terri", 82)
+            },
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#555',
+                        'color': '#fff',
+                        'box-shadow': '0px 0px 25px #aaa',
+                        'border-color': '#aaa'
+                    }
+                }
+            }
+        },
+        84: {
+            title: "New Mechanic Time!",
+            description: "Unlock Terrible Prestige.",
+            cost: new Decimal("1e100"),
+            unlocked() { 
+                return hasUpgrade("good", 11)
+            },
+            style() {
+                if (hasUpgrade(this.layer, this.id)) {
+                    return {
+                        'background-color': '#000',
+                        'color': '#fff',
+                        'box-shadow': '0px 0px 30px #fff',
+                        'border-color': '#fff'
+                    }
+                }
+            },
+        },
     },
     milestones: {
         0: {
@@ -2044,8 +2142,29 @@ addLayer("terri", {
             },
         },
     },
+    clickables: {
+        11: {
+            display() {return "<h1>TERRIBLE PRESTIGE</h1><br>Reset for a boost!"},
+            tooltip() { return "OH MY GOD"},
+            unlocked() { return player.terri.points.gte(1e100)},
+            canClick() { return player.terri.points.gte(1e100)},
+            onClick() {
+                player.terri.points = new Decimal(0)
+                player.terri.upgrades = []
+                player.terri.prestige = player.terri.prestige.add(1)
+            },
+        },
+    },
     branches:['p'],
     row: 0, // Row the layer is in on the tree (0 is the first row)
+    tabFormat: [
+        "main-display",
+        "blank",
+        ["upgrades", [1,2,3,4,5,6,7,8]],
+        "blank",
+        ["display-text", "You have <h3 style='color: #ff0000; font-weight: bold;'>" + formatWhole(player.terri.prestige) + "</h3> Improved Generators, multiplying terrible generators by " + format(player.terri.prestige) + "x"],
+        "clickables",
+    ],
     layerShown(){return hasMilestone('p',1) || hasMilestone('univ',2)},
 
 
@@ -2100,6 +2219,7 @@ addLayer("awf", {
         if (hasUpgrade('awf',33)) Gen = 100
         if (hasUpgrade('terri',72)) Gen = 1000
         if (hasUpgrade('dia',21)) Gen = 1e4
+        if (hasUpgrade('terri',83)) Gen = 1e7
         if (player.awf.points.gte(1e4) && (!hasUpgrade('dia',21)) && (!hasUpgrade("terri", 72))) Gen = 0
         if (player.awf.points.gte(1.0005e6) && (hasUpgrade('dia',21)) && (!hasUpgrade("terri", 72))) Gen = 0
         return Gen
@@ -2373,7 +2493,7 @@ addLayer("med", {
     passiveGeneration() {
         let Gen = 0
         if (hasMilestone('xp',3)) Gen = 1
-        if (player.med.points.gte(100)) Gen = 0
+        if ((player.med.points.gte(100)) && (!hasUpgrade("med", 31))) Gen = 0
         return Gen
     },
     effect() {
@@ -2430,6 +2550,12 @@ addLayer("med", {
             description: "^1.1 money.",
             cost: new Decimal(116),
             unlocked(){return hasMilestone('p',32)},
+        },
+        31: {
+            title: "Diabolical",
+            description: "Get 1 mediocre generator per second.",
+            cost: new Decimal(300),
+            unlocked(){return hasUpgrade('terri',83)},
         },
     },
     branches:['awf'],
@@ -2636,6 +2762,14 @@ addLayer("good", {
     },
     effectDescription() {
         return "and with the help of money, it is multiplying your money by x" + format(tmp[this.layer].effect)
+    },
+    upgrades: {
+        11: {
+            unlocked() {return hasUpgrade("med", 31)},
+            title: "#Delegation",
+            description: "YOU SO HAVE TO WAIT BUT IT'S SO WORTH IT<br><br>At last an Actual Upgrade! x1e75 to terrible generator gain.",
+            cost: new Decimal(2),
+        },
     },
     branches:['dec'],
     row: 5, // Row the layer is in on the tree (0 is the first row)
@@ -3425,6 +3559,12 @@ addLayer("ult", {
             currencyLocation() { return player },
             currencyDisplayName: "money",
         },
+        13: {
+            unlocked() {return hasUpgrade("terri", 74)},
+            title: "it's a... upgrade",
+            description: "<i>Upgrade name by thisisaperson.<br><br>There are times to Inflate and times to Slow Down.</i> However, ^3 to terrible generator gain >:]",
+            cost: new Decimal(4),
+        },
     },
     branches:['abs'],
     row: 11, // Row the layer is in on the tree (0 is the first row)
@@ -3476,8 +3616,9 @@ addLayer("dia", {
     },
     passiveGeneration() {
         let Gen = 0
-        if (hasMilestone('p',27)) Gen = 1
-        if (player.dia.points.gte(100)) Gen = 0
+        if ((hasMilestone('p',27)) || (hasUpgrade("terri", 82))) Gen = 1
+        if ((hasMilestone('p',27)) && (hasUpgrade("terri", 82))) Gen = 2
+        if ((player.dia.points.gte(100)) && (!hasUpgrade("terri", 82))) Gen = 0
         return Gen
     },
     upgrades: {
