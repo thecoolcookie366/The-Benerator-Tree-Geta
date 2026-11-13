@@ -1681,7 +1681,7 @@ addLayer("terri", {
         if (hasUpgrade("terri", 62)) Gen = Gen.mul(player.terri.points.max(2).log2())
         if (hasUpgrade("ult", 13)) Gen = Gen.pow(3)
         if (hasUpgrade("good", 11)) Gen = Gen.mul(1e75)
-        if (player.terri.points.gte(1e100)) Gen = 0
+        if (player.terri.points.gte(1e100)) Gen = new Decimal(0)
         return Gen
     }, 
     upgrades: {
@@ -2144,14 +2144,43 @@ addLayer("terri", {
     },
     clickables: {
         11: {
-            display() {return "<h1>TERRIBLE PRESTIGE</h1><br>Reset for a boost!"},
-            tooltip() { return "OH MY GOD"},
-            unlocked() { return player.terri.points.gte(1e100)},
-            canClick() { return player.terri.points.gte(1e100)},
+            display() {
+                return "<h2 style='margin-bottom: 6px; letter-spacing: 1px;'>Terrible Prestige</h2><br>" +
+                       "Reset your terrible generators & upgrades for an Improved Generator!<br>" +
+                       "<span style='font-size: 12px; opacity: 0.85;'>Requires: " + format(1e100) + " terrible generators</span>"
+            },
+            tooltip() { return "OH MY GOD" },
+            unlocked() { return hasUpgrade('terri', 84) },
+            canClick() { return player.terri.points.gte(1e100) },
             onClick() {
                 player.terri.points = new Decimal(0)
-                player.terri.upgrades = []
+                player.terri.upgrades = [84]
                 player.terri.prestige = player.terri.prestige.add(1)
+            },
+            style() {
+                if (this.canClick()) {
+                    return {
+                        'width': '340px',
+                        'min-height': '100px',
+                        'background': 'radial-gradient(circle, #590d22 0%, #1a0007 100%)',
+                        'color': '#ffffff',
+                        'border': '2px solid #ff4d6d',
+                        'border-radius': '12px',
+                        'box-shadow': '0px 0px 20px rgba(255, 77, 109, 0.65)',
+                        'text-shadow': '0px 0px 8px #ff4d6d',
+                        'cursor': 'pointer',
+                        'transition': 'all 0.2s ease'
+                    }
+                }
+                return {
+                    'width': '340px',
+                    'min-height': '100px',
+                    'background-color': '#181818',
+                    'color': '#777777',
+                    'border': '2px solid #333333',
+                    'border-radius': '12px',
+                    'box-shadow': 'none'
+                }
             },
         },
     },
@@ -2159,11 +2188,14 @@ addLayer("terri", {
     row: 0, // Row the layer is in on the tree (0 is the first row)
     tabFormat: [
         "main-display",
+        ["display-text", function() {
+            if (!hasUpgrade("terri", 84) && player.terri.prestige.eq(0)) return ""
+            return "You have <h3 style='color: #ff0000; font-weight: bold;'>" + formatWhole(player.terri.prestige) + "</h3> improved generators, multiplying terrible generators by " + format(player.terri.prestige.add(1)) + "x"
+        }],
         "blank",
-        ["upgrades", [1,2,3,4,5,6,7,8]],
-        "blank",
-        ["display-text", "You have <h3 style='color: #ff0000; font-weight: bold;'>" + formatWhole(player.terri.prestige) + "</h3> Improved Generators, multiplying terrible generators by " + format(player.terri.prestige) + "x"],
+        "milestones",
         "clickables",
+        ["upgrades", [1,2,3,4,5,6,7,8]],
     ],
     layerShown(){return hasMilestone('p',1) || hasMilestone('univ',2)},
 
@@ -2447,6 +2479,12 @@ addLayer("awf", {
             }
         },
     },
+    tabFormat: [
+        "main-display",
+        "blank",
+        "milestones",
+        "upgrades",
+    ],
     branches:['terri'],
     row: 1, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('p',3) || hasMilestone('univ',2)},
@@ -2558,6 +2596,11 @@ addLayer("med", {
             unlocked(){return hasUpgrade('terri',83)},
         },
     },
+    tabFormat: [
+        "main-display",
+        "blank",
+        "upgrades",
+    ],
     branches:['awf'],
     row: 2, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('p',6) || hasMilestone('univ',2)},
@@ -2649,6 +2692,11 @@ addLayer("alr", {
             unlocked(){return hasMilestone('p',33)},
         },
     },
+    tabFormat: [
+        "main-display",
+        "blank",
+        "upgrades",
+    ],
     branches:['med'],
     row: 3, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('p',10) || hasMilestone('univ',2)},
@@ -2714,6 +2762,11 @@ addLayer("dec", {
             },
         },
     },
+    tabFormat: [
+        "main-display",
+        "blank",
+        "upgrades",
+    ],
     branches:['alr'],
     row: 4, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('p',19) || hasMilestone('univ',2)},
@@ -2771,6 +2824,11 @@ addLayer("good", {
             cost: new Decimal(2),
         },
     },
+    tabFormat: [
+        "main-display",
+        "blank",
+        "upgrades",
+    ],
     branches:['dec'],
     row: 5, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('p',29) || hasMilestone('univ',2)},
@@ -2993,6 +3051,11 @@ addLayer("per", {
             },
         },
     },
+    tabFormat: [
+        "main-display",
+        "blank",
+        "upgrades",
+    ],
     branches:['good'],
     row: 6, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return (hasMilestone('p',34) && !hasMilestone('univ',1)) || Number(player.univ?.challenges?.["21"] || 0) >= 5},
@@ -3064,6 +3127,11 @@ addLayer("exc", {
             unlocked() { return hasMilestone('a', 2) }
         },
     },
+    tabFormat: [
+        "main-display",
+        "blank",
+        "upgrades",
+    ],
     branches:['per'],
     row: 7, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('a',1) || hasMilestone('univ',2)},
@@ -3115,6 +3183,7 @@ addLayer("flw", {
         return exp
     },
     resetsNothing() {return hasMilestone('a',3)},
+    autoPrestige() {return hasMilestone('a',3)},
     effectDescription() {
         return "i think these might be a bit buggy (flawed generator :sob:)"
     },
@@ -3169,6 +3238,11 @@ addLayer("flw", {
             pay() {},
         },
     },
+    tabFormat: [
+        "main-display",
+        "blank",
+        "upgrades",
+    ],
     branches:['exc'],
     row: 8, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('a',3) || hasMilestone('univ',2)},
@@ -3217,6 +3291,7 @@ addLayer("sup", {
         return exp
     },
     resetsNothing() {return hasMilestone('a',5)},
+    autoPrestige() {return hasMilestone('a',5)},
     effectDescription() {
         return "it's almost... amazing."
     },
@@ -3259,6 +3334,11 @@ addLayer("sup", {
             currencyDisplayName: "money",
         },
     },
+    tabFormat: [
+        "main-display",
+        "blank",
+        "upgrades",
+    ],
     branches:['flw'],
     row: 9, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return (hasMilestone('a',5) && !hasMilestone('univ',1)) || Number(player.univ?.challenges?.["21"] || 0) >= 5},
@@ -3297,7 +3377,7 @@ addLayer("abs", {
         return exp
     },
     resetsNothing() {return hasChallenge('univ',12)},
-    autoPrestige() {return hasUpgrade('rad',23)},
+    autoPrestige() {return hasChallenge('univ',12)},
     canBuyMax() {return hasUpgrade('rad',23)},
     effectDescription() {
         return "do you like universes?"
@@ -3497,6 +3577,11 @@ addLayer("abs", {
             pay() {}
         },
     },
+    tabFormat: [
+        "main-display",
+        "blank",
+        "upgrades",
+    ],
     branches:['sup'],
     row: 10, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasChallenge('univ',12) && !inChallenge('univ',12) && !inChallenge('univ',22)},
@@ -3537,6 +3622,7 @@ addLayer("ult", {
         return exp
     },
     resetsNothing() {return hasMilestone('univ',2)},
+    autoPrestige() {return hasMilestone('univ',2)},
     effectDescription() {
         return "i love it when the updates take this long<br><br>Upgrade names from now on might be suggested by the community on Discord."
     },
@@ -3564,8 +3650,18 @@ addLayer("ult", {
             title: "it's a... upgrade",
             description: "<i>Upgrade name by thisisaperson.<br><br>There are times to Inflate and times to Slow Down.</i> However, ^3 to terrible generator gain >:]",
             cost: new Decimal(4),
+            canAfford() {
+                return player[this.layer].points.gte(this.cost)
+            },
+            pay() {
+            },
         },
     },
+    tabFormat: [
+        "main-display",
+        "blank",
+        "upgrades",
+    ],
     branches:['abs'],
     row: 11, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('univ',2)},
