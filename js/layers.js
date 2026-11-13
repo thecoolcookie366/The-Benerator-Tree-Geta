@@ -2484,6 +2484,7 @@ addLayer("awf", {
         "blank",
         "milestones",
         "upgrades",
+        "clickables"
     ],
     branches:['terri'],
     row: 1, // Row the layer is in on the tree (0 is the first row)
