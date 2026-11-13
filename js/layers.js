@@ -2807,9 +2807,9 @@ addLayer("good", {
         exp = new Decimal (1)
         return exp
     },
-    resetsNothing() {return hasMilestone('p',29)},
+    resetsNothing() {return hasMilestone('p',29) || hasUpgrade('good',11)},
     autoPrestige() {return hasMilestone('p',29) || hasUpgrade('med',31)},
-    canBuyMax() {return hasMilestone('p',29)},
+    canBuyMax() {return hasMilestone('p',29) || hasUpgrade('good',11)},
     autoUpgrade() {return hasMilestone('a', 0)},
     effect() {
         return player[this.layer].points.add(1).mul(player.points.pow(0.2))
