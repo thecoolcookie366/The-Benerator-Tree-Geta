@@ -3378,7 +3378,7 @@ addLayer("abs", {
         return exp
     },
     resetsNothing() {return hasChallenge('univ',12)},
-    autoPrestige() {return hasChallenge('univ',12)},
+    autoPrestige() {return hasUpgrade('rad',23)},
     canBuyMax() {return hasUpgrade('rad',23)},
     effectDescription() {
         return "do you like universes?"
