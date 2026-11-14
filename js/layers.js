@@ -2151,7 +2151,7 @@ addLayer("terri", {
             },
             tooltip() { return "OH MY GOD" },
             unlocked() { return hasUpgrade('terri', 84) },
-            canClick() { return player.terri.points.gte(1e100) },
+            canClick() { return player.terri.points.gte(1e100) && player.terri.prestige.eq(0)},
             onClick() {
                 player.terri.points = new Decimal(0)
                 player.terri.upgrades = [84]

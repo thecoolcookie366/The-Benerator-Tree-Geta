@@ -11,8 +11,8 @@ let modInfo = {
 }
 
 let VERSION = {
-	num: "1.1",
-	name: "The Universe Update",
+	num: "1.12",
+	name: "The Heavy Update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -22,6 +22,9 @@ let changelog = `<h1>Changelog:</h1><br>
 	B = medium update <br>
 	C = small update <br>
 	<br>
+	<h2>v1.12</h2><br>
+		- You can check the full update changelogs on galaxy!<br>
+		<br>
 	<h1>v1.1</h1><br>
 		- Added Universes and challenges.<br>
 		- Added Radiation.<br>
@@ -384,7 +387,7 @@ var displayThings = [
 ]
 
 function isEndgame() {
-	return player.univ.points.gte(2)
+	return player.terri.prestige.gte(1)
 }
 
 var backgroundStyle = function() {
@@ -564,8 +567,53 @@ var backgroundStyle = function() {
 }
 
 function maxTickLength() {
-	return(3600) 
+	return(86400) 
 }
 
 function fixOldSave(oldVersion){
+}
+
+let bgm = new Audio("resources/bgm.mp3")
+bgm.loop = true
+
+function updateMusic() {
+	let vol = (options.musicVolume !== undefined ? options.musicVolume : 50) / 100
+	bgm.volume = vol
+
+	if (options.music) {
+		if (bgm.paused) bgm.play().catch(() => {})
+	} else {
+		bgm.pause()
+	}
+}
+
+function cycleMusicVolume() {
+	const levels = [100, 75, 50, 25, 0]
+	let current = options.musicVolume !== undefined ? options.musicVolume : 50
+	let nextIndex = (levels.indexOf(current) + 1) % levels.length
+	options.musicVolume = levels[nextIndex]
+	updateMusic()
+}
+
+document.addEventListener("click", () => {
+	if (options.music && bgm.paused) {
+		updateMusic()
+	}
+})
+
+function toggleMusicWithConfirm() {
+	if (!options.music) {
+		document.getElementById("music-confirm-modal").style.display = "flex"
+	} else {
+		toggleOpt('music')
+		updateMusic()
+	}
+}
+
+function confirmMusicEnable(choice) {
+	document.getElementById("music-confirm-modal").style.display = "none"
+	if (choice) {
+		toggleOpt('music')
+		updateMusic()
+	}
 }
