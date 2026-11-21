@@ -1017,7 +1017,7 @@ addLayer("univ", {
         },
         3: {
             requirementDescription: "<h3><span>The Electric Universe (u3)</span></h3>",
-            effectDescription: "<i>You can feel the electricity from far away.</i><br>Nerf: Money is CAPPED at 1e10.<br>Buff: ??? Next update coming soon.",
+            effectDescription: "<i>You can feel the electricity from far away.</i><br>Nerf: Money is CAPPED at 1e10, and mass does nothing.<br>Buff: ??? Next update coming soon.",
             done() { return player.univ.points.gte(3) },
             style() {
                 if (hasMilestone(this.layer, this.id) && player[this.layer].points.floor().eq(3)) {
