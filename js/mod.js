@@ -337,8 +337,8 @@ function getPointGen() {
 	if ((hasMilestone('awf', 1)) && (hasUpgrade("terri", 71)) && (hasMilestone("univ", 2))) gain = gain.pow("1.05")
 	if (hasUpgrade("terri", 73)) gain = gain.times(player.points.max(2).log(2))
 	if (hasUpgrade("terri", 73)) gain = gain.times("1e308")
-	if ((hasMilestone("terri", 4)) && (player.mass.rank.lte(543))) gain = gain.pow(10)
-	if ((hasMilestone("mass", 31)) && (player.mass.rank.lte(543))) gain = gain.pow(2)
+	if ((hasMilestone("terri", 4))) gain = gain.pow(10)
+	if ((hasMilestone("mass", 31))) gain = gain.pow(2)
 	return gain
 }
 

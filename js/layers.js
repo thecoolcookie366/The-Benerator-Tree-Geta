@@ -822,6 +822,7 @@ addLayer("univ", {
             new Decimal("(e^1e15)2"),
             new Decimal("(e^1e15)2"),
             new Decimal("(e^1e15)2"), 
+            new Decimal("(e^1e15)2"), 
         ]
         let currentPoints = player[this.layer].points.toNumber()
         return costs[currentPoints]
@@ -830,11 +831,15 @@ addLayer("univ", {
     baseResource: "money", 
     baseAmount() { return player.points }, 
     type: "static", 
+    update(diff) {
+        if ((player.univ.points.eq(3)) && (player.points.gt(1e10))) player.points = new Decimal(1e10)
+    },
     onPrestige(gain) {
         if (player.sup !== undefined) {
             player.sup.points = new Decimal(0)
             player.sup.upgrades = []
         }
+        doReset("mass", true)
 
         let overlay = document.createElement("div")
         overlay.id = "prestige-overlay"
@@ -1012,7 +1017,7 @@ addLayer("univ", {
         },
         3: {
             requirementDescription: "<h3><span>The Electric Universe (u3)</span></h3>",
-            effectDescription: "<i>You can feel the electricity from far away.</i><br>Nerf: soon.<br>Buff: soon.",
+            effectDescription: "<i>You can feel the electricity from far away.</i><br>Nerf: Money is CAPPED at 1e10.<br>Buff: ??? Next update coming soon.",
             done() { return player.univ.points.gte(3) },
             style() {
                 if (hasMilestone(this.layer, this.id) && player[this.layer].points.floor().eq(3)) {
@@ -2256,7 +2261,7 @@ addLayer("terri", {
         ["upgrades", [1,2,3,4,5,6,7,8]],
         ["milestones", [2,3,4,5,6,7,8,9]]
     ],
-    layerShown(){return hasMilestone('p',1) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('p',1) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -2547,7 +2552,7 @@ addLayer("awf", {
     ],
     branches:['terri'],
     row: 1, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('p',3) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('p',3) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -2663,7 +2668,7 @@ addLayer("med", {
     ],
     branches:['awf'],
     row: 2, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('p',6) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('p',6) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -2759,7 +2764,7 @@ addLayer("alr", {
     ],
     branches:['med'],
     row: 3, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('p',10) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('p',10) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -2829,7 +2834,7 @@ addLayer("dec", {
     ],
     branches:['alr'],
     row: 4, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('p',19) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('p',19) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -2891,7 +2896,7 @@ addLayer("good", {
     ],
     branches:['dec'],
     row: 5, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('p',29) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('p',29) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -3194,7 +3199,7 @@ addLayer("exc", {
     ],
     branches:['per'],
     row: 7, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('a',1) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('a',1) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -3305,7 +3310,7 @@ addLayer("flw", {
     ],
     branches:['exc'],
     row: 8, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('a',3) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('a',3) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -3858,7 +3863,7 @@ addLayer("dia", {
     },
     branches:['awf'],
     row: 1, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('p',4) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('p',4) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -3986,7 +3991,7 @@ addLayer("xp", {
     },
     branches:['med'],
     row: 2, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('p',11) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('p',11) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -4114,7 +4119,7 @@ addLayer("lv", {
     },
     branches:['alr'],
     row: 3, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('p',12) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('p',12) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -4256,7 +4261,7 @@ addLayer("pri", {
     canBuyMax() {return hasMilestone('p',30)},
     branches:['dec'],
     row: 4, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('p',30) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('p',30) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -4409,7 +4414,7 @@ addLayer("snd", {
     canBuyMax() {return hasMilestone('p',31)},
     branches:['good'],
     row: 5, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('p',31) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('p',31) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -4527,7 +4532,7 @@ addLayer("ter", {
     canBuyMax() {return hasUpgrade('exc',11)},
     branches:['exc'],
     row: 7, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasUpgrade('exc',11) || hasMilestone('univ',2)},
+    layerShown(){return hasUpgrade('exc',11) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -4594,7 +4599,7 @@ addLayer("qua", {
     canBuyMax() {return hasMilestone('a',4)},
     branches:['flw'],
     row: 8, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('a',4) || hasMilestone('univ',2)},
+    layerShown(){return hasMilestone('a',4) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
 
 })
@@ -5007,6 +5012,16 @@ addLayer("mass", {
         borderWidth: "3px",
         color: "#ffffff",
         boxShadow: "0px 0px 15px rgba(0, 0, 0, 0.75), inset 0px 0px 8px rgba(255, 255, 255, 0.2)",
+    },
+    doReset(resettingLayer) {
+        // Allow resets from higher rows OR specifically from layer "a"
+        if (layers[resettingLayer].row <= this.row && resettingLayer !== "univ") return;
+
+        // Keep anything you don't want wiped (optional)
+        let keep = [];
+        
+        // Wipe Layer B's progress
+        layerDataReset("mass", keep);
     },
     tooltip() {
         let mass = player[this.layer].points
@@ -5832,24 +5847,31 @@ addLayer("mass", {
             },
             display() {
                 let amount = getBuyableAmount(this.layer, this.id)
-                let cost = this.cost(amount)
+                let cost = formatWhole(this.cost(amount))
+                if (amount.gte(1e7)) cost = "MAX"
                 let effect = Decimal.pow(229, amount)
+
                 
                 return "amount: " + formatWhole(amount) + "<br>" +
-                    "cost: " + formatWhole(cost) + " ranks<br><br>" +
+                    "cost: " + cost + " ranks<br><br>" +
                     "effect: multiplies money by <b>x" + formatWhole(effect) + "</b>"
             },
             canAfford() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1e7)) return false
                 return player[this.layer].rank.gte(this.cost(getBuyableAmount(this.layer, this.id)))
             },
             buy() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1e7)) return
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
                 if (!this.canAfford()) return
                 let currentRank = player[this.layer].rank
                 let amount = getBuyableAmount(this.layer, this.id)
-                while (currentRank.gte(this.cost(amount))) {
+                while (currentRank.gte(this.cost(amount)) && amount.lt(1e7)) {
+                    if (amount.gte(1e7)) break;
                     amount = amount.add(1)
                 }
                 setBuyableAmount(this.layer, this.id, amount)
@@ -5877,24 +5899,30 @@ addLayer("mass", {
             },
             display() {
                 let amount = getBuyableAmount(this.layer, this.id)
-                let cost = this.cost(amount)
+                let cost = formatWhole(this.cost(amount))
+                if (amount.gte(1e7)) cost = "MAX"
                 let effect = Decimal.pow(1583, amount)
                 
                 return "amount: " + formatWhole(amount) + "<br>" +
-                    "cost: " + formatWhole(cost) + " ranks<br><br>" +
+                    "cost: " + cost + " ranks<br><br>" +
                     "effect: multiplies money by <b>x" + formatWhole(effect) + "</b>"
             },
             canAfford() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1e7)) return false
                 return player[this.layer].rank.gte(this.cost(getBuyableAmount(this.layer, this.id)))
             },
             buy() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1e7)) return
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
                 if (!this.canAfford()) return
                 let currentRank = player[this.layer].rank
                 let amount = getBuyableAmount(this.layer, this.id)
-                while (currentRank.gte(this.cost(amount))) {
+                while (currentRank.gte(this.cost(amount)) && amount.lt(1e7)) {
+                    if (amount.gte(1e7)) break;
                     amount = amount.add(1)
                 }
                 setBuyableAmount(this.layer, this.id, amount)
@@ -5922,24 +5950,30 @@ addLayer("mass", {
             },
             display() {
                 let amount = getBuyableAmount(this.layer, this.id)
-                let cost = this.cost(amount)
+                let cost = formatWhole(this.cost(amount))
+                if (amount.gte(1e7)) cost = "MAX"
                 let effect = Decimal.pow(10177, amount)
                 
                 return "amount: " + formatWhole(amount) + "<br>" +
-                    "cost: " + formatWhole(cost) + " ranks<br><br>" +
+                    "cost: " + cost + " ranks<br><br>" +
                     "effect: multiplies money by <b>x" + formatWhole(effect) + "</b>"
             },
             canAfford() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1e7)) return false
                 return player[this.layer].rank.gte(this.cost(getBuyableAmount(this.layer, this.id)))
             },
             buy() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1e7)) return
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
                 if (!this.canAfford()) return
                 let currentRank = player[this.layer].rank
                 let amount = getBuyableAmount(this.layer, this.id)
-                while (currentRank.gte(this.cost(amount))) {
+                while (currentRank.gte(this.cost(amount)) && amount.lt(1e7)) {
+                    if (amount.gte(1e7)) break;
                     amount = amount.add(1)
                 }
                 setBuyableAmount(this.layer, this.id, amount)
@@ -5967,24 +6001,30 @@ addLayer("mass", {
             },
             display() {
                 let amount = getBuyableAmount(this.layer, this.id)
-                let cost = this.cost(amount)
+                let cost = formatWhole(this.cost(amount))
+                if (amount.gte(1e7)) cost = "MAX"
                 let effect = Decimal.pow(62189, amount)
                 
                 return "amount: " + formatWhole(amount) + "<br>" +
-                    "cost: " + formatWhole(cost) + " ranks<br><br>" +
+                    "cost: " + cost + " ranks<br><br>" +
                     "effect: multiplies money by <b>x" + formatWhole(effect) + "</b>"
             },
             canAfford() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1e7)) return false
                 return player[this.layer].rank.gte(this.cost(getBuyableAmount(this.layer, this.id)))
             },
             buy() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1e7)) return
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
                 if (!this.canAfford()) return
                 let currentRank = player[this.layer].rank
                 let amount = getBuyableAmount(this.layer, this.id)
-                while (currentRank.gte(this.cost(amount))) {
+                while (currentRank.gte(this.cost(amount)) && amount.lt(1e7)) {
+                    if (amount.gte(1e7)) break;
                     amount = amount.add(1)
                 }
                 setBuyableAmount(this.layer, this.id, amount)
@@ -6012,24 +6052,30 @@ addLayer("mass", {
             },
             display() {
                 let amount = getBuyableAmount(this.layer, this.id)
-                let cost = this.cost(amount)
+                let cost = formatWhole(this.cost(amount))
+                if (amount.gte(1e7)) cost = "MAX"
                 let effect = Decimal.pow(252233, amount)
                 
                 return "amount: " + formatWhole(amount) + "<br>" +
-                    "cost: " + formatWhole(cost) + " ranks<br><br>" +
+                    "cost: " + cost + " ranks<br><br>" +
                     "effect: multiplies money by <b>x" + formatWhole(effect) + "</b>"
             },
             canAfford() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1e7)) return false
                 return player[this.layer].rank.gte(this.cost(getBuyableAmount(this.layer, this.id)))
             },
             buy() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1e7)) return
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
                 if (!this.canAfford()) return
                 let currentRank = player[this.layer].rank
                 let amount = getBuyableAmount(this.layer, this.id)
-                while (currentRank.gte(this.cost(amount))) {
+                while (currentRank.gte(this.cost(amount)) && amount.lt(1e7)) {
+                    if (amount.gte(1e7)) break;
                     amount = amount.add(1)
                 }
                 setBuyableAmount(this.layer, this.id, amount)
@@ -6057,24 +6103,30 @@ addLayer("mass", {
             },
             display() {
                 let amount = getBuyableAmount(this.layer, this.id)
-                let cost = this.cost(amount)
+                let cost = formatWhole(this.cost(amount))
+                if (amount.gte(1e7)) cost = "MAX"
                 let effect = Decimal.pow(1632899, amount)
                 
                 return "amount: " + formatWhole(amount) + "<br>" +
-                    "cost: " + formatWhole(cost) + " ranks<br><br>" +
+                    "cost: " + cost + " ranks<br><br>" +
                     "effect: multiplies money by <b>x" + formatWhole(effect) + "</b>"
             },
             canAfford() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1e7)) return false
                 return player[this.layer].rank.gte(this.cost(getBuyableAmount(this.layer, this.id)))
             },
             buy() {
+                let amount = getBuyableAmount(this.layer, this.id)
+                if (amount.gte(1e7)) return
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
                 if (!this.canAfford()) return
                 let currentRank = player[this.layer].rank
                 let amount = getBuyableAmount(this.layer, this.id)
-                while (currentRank.gte(this.cost(amount))) {
+                while (currentRank.gte(this.cost(amount)) && amount.lt(1e7)) {
+                    if (amount.gte(1e7)) break;
                     amount = amount.add(1)
                 }
                 setBuyableAmount(this.layer, this.id, amount)
