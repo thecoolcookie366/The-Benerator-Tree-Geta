@@ -6256,7 +6256,7 @@ addLayer("mass", {
                     "• unlock something<br>" +
                     "• unlock something else, idk" +
                     "</div><br><br>" +
-                    "requires " + format(cost) + " money" +
+                    "requires " + format(cost) + " money, and ??? Improved Generators. Soon..." +
                     "</div>"
                     
                 return leftSide + rightSide
