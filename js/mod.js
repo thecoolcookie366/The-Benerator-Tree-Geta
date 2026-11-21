@@ -11,8 +11,8 @@ let modInfo = {
 }
 
 let VERSION = {
-	num: "1.12",
-	name: "The Heavy Update",
+	num: "1.13",
+	name: "The \"Fixed It!\" Update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -22,7 +22,7 @@ let changelog = `<h1>Changelog:</h1><br>
 	B = medium update <br>
 	C = small update <br>
 	<br>
-	<h2>v1.12</h2><br>
+	<h2>v1.13</h2><br>
 		- You can check the full update changelogs on galaxy!<br>
 		<br>
 	<h1>v1.1</h1><br>
