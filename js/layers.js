@@ -1630,6 +1630,7 @@ addLayer("terri", {
         unlocked: true,
 		points: new Decimal(0),
         prestige: new Decimal(0),
+        totalPrestige: new Decimal(0),
     }},
     color: "#ff0000",
     //nodeStyle: {
@@ -1649,7 +1650,7 @@ addLayer("terri", {
     exponent: 1, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-        mult = mult.mul(player.terri.prestige.add(1))
+        mult = mult.mul(player.terri.prestige.add(1)).pow(2)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -1666,7 +1667,7 @@ addLayer("terri", {
     effectDescription() {
         return "adding +" + format(tmp[this.layer].effect) + " to your money base"
     },
-    passiveGeneration() {
+    pointGen() {
         let Gen = new Decimal(0)
         if (hasUpgrade('terri',54)) Gen = new Decimal(1)
         if (hasUpgrade('awf',22)) Gen = new Decimal(10)
@@ -1674,16 +1675,20 @@ addLayer("terri", {
         if (hasUpgrade('awf',24)) Gen = new Decimal(1000)
         if (hasUpgrade('terri',64)) Gen = new Decimal(1e5)
         if (hasUpgrade('dia',14)) Gen = new Decimal(1e6)
-        if (hasUpgrade('alr',14)) Gen = player.terri.points.mag
+        if ((hasUpgrade('alr',14)) && (!hasUpgrade("terri", 84))) Gen = new Decimal(player.terri.points.mag)
         if (player.terri.points.gte(1e6) && (!hasUpgrade('dia',14) && (!hasUpgrade("terri", 61)))) Gen = new Decimal(0)
         if (player.terri.points.gte(1e9) && (!hasUpgrade('alr',14) && (!hasUpgrade("terri", 61)))) Gen = new Decimal(0)
         if ((player.terri.points.gte(9.0071993e15)) && (!hasUpgrade("terri", 81))) Gen = new Decimal(0)
         if (hasUpgrade("terri", 62)) Gen = Gen.mul(player.terri.points.max(2).log2())
-        if (hasUpgrade("ult", 13)) Gen = Gen.pow(3)
-        if (hasUpgrade("good", 11)) Gen = Gen.mul(1e75)
-        if (player.terri.points.gte(1e100)) Gen = new Decimal(0)
+        if (hasUpgrade("ult", 13) && (hasUpgrade("terri", 54))) Gen = Gen.pow(3)
+        if ((hasUpgrade("good", 11)) && (hasUpgrade("terri", 54))) Gen = Gen.mul(1e75)
+        if ((player.terri.points.gte(1e100)) && (!hasMilestone("terri", 2)))  Gen = new Decimal(0)
         return Gen
     }, 
+    update(diff) {
+        let gain = layers.terri.pointGen()
+        addPoints("terri", gain.mul(diff))
+    },
     upgrades: {
         11: {
             title: "This is terrible!",
@@ -2055,7 +2060,7 @@ addLayer("terri", {
         },
         82: {
             title: "These upgrades are dumb...",
-            description: "Generate 1 more diamond per second, and uncap.",
+            description: "Generate 1 more diamond per second, and uncap diamonds.",
             cost: new Decimal("5e22"),
             unlocked() { 
                 return hasUpgrade("terri", 81)
@@ -2073,7 +2078,7 @@ addLayer("terri", {
         },
         83: {
             title: "...BUT THIS ONE IS BETTER",
-            description: "Get 10,000,000 awful gens/second, and unlock an extra mediocre gen upgrade.",
+            description: "Get 10,000,000 awful gens/second, and unlock an extra mediocre generator upgrade.",
             cost: new Decimal("2e26"),
             unlocked() { 
                 return hasUpgrade("terri", 82)
@@ -2141,21 +2146,70 @@ addLayer("terri", {
                 }
             },
         },
+        2: {
+        requirementDescription: "1 Improved Generator",
+        effectDescription: "<i>REMOVE THE CAP AGAIN!</i>",
+        done() { return player.terri.prestige.gte(1) },
+        unlocked(){return hasUpgrade('terri', 84)},
+        style() {
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                        'background-color': '#3f0000',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #800000',
+                        'border-color': '#800000'
+                    }
+                }
+            },
+        },
+        3: {
+        requirementDescription: "25 Improved Generators",
+        effectDescription: "<i>Keep upgrades on reset.</i>",
+        done() { return player.terri.prestige.gte(25) },
+        unlocked() {return hasMilestone('terri', 2)},
+        style() {
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                        'background-color': '#3f0000',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #800000',
+                        'border-color': '#800000'
+                    }
+                }
+            },
+        },
+        4: {
+        requirementDescription: "100 Improved Generators",
+        effectDescription: "<i>^10 money!!</i> WARNING: TIMEWALL!! Breaks the game....",
+        done() { return player.terri.prestige.gte(100) },
+        unlocked() {return hasMilestone('terri', 3)},
+        style() {
+                if (hasMilestone(this.layer, this.id)) {
+                    return {
+                        'background-color': '#3f0000',
+                        'color': '#ffffff',
+                        'box-shadow': '0px 0px 15px #800000',
+                        'border-color': '#800000'
+                    }
+                }
+            },
+        },
     },
     clickables: {
         11: {
             display() {
                 return "<h2 style='margin-bottom: 6px; letter-spacing: 1px;'>Terrible Prestige</h2><br>" +
-                       "Reset your terrible generators & upgrades for an Improved Generator!<br>" +
+                       "Reset your terrible generators & upgrades for +" + format(Math.floor(player.terri.points.div(1e100).pow(Decimal.div(1, 3)))) + " Improved Generators!<br>" +
                        "<span style='font-size: 12px; opacity: 0.85;'>Requires: " + format(1e100) + " terrible generators</span>"
             },
             tooltip() { return "OH MY GOD" },
             unlocked() { return hasUpgrade('terri', 84) },
-            canClick() { return player.terri.points.gte(1e100) && player.terri.prestige.eq(0)},
+            canClick() { return player.terri.points.gte(1e100) },
             onClick() {
+                if (!hasMilestone("terri", 3)) player.terri.upgrades = [84]
+                let more = Math.floor(player.terri.points.div(1e100).pow(Decimal.div(1, 3)))
+                player.terri.prestige = player.terri.prestige.add(more)
                 player.terri.points = new Decimal(0)
-                player.terri.upgrades = [84]
-                player.terri.prestige = player.terri.prestige.add(1)
             },
             style() {
                 if (this.canClick()) {
@@ -2190,12 +2244,17 @@ addLayer("terri", {
         "main-display",
         ["display-text", function() {
             if (!hasUpgrade("terri", 84) && player.terri.prestige.eq(0)) return ""
-            return "You have <h3 style='color: #ff0000; font-weight: bold;'>" + formatWhole(player.terri.prestige) + "</h3> improved generators, multiplying terrible generators by " + format(player.terri.prestige.add(1)) + "x"
+            return "You have <h3 style='color: #ff0000; font-weight: bold;'>" + formatWhole(player.terri.prestige) + "</h3> improved generators, multiplying terrible generators by " + format(player.terri.prestige.add(1).pow(2)) + "x"
+        }],
+        ["display-text", function() {
+            if ((!hasUpgrade("terri", 54)) && (!hasUpgrade("awf", 22)) && (!hasUpgrade("dia", 14))) return ""
+            return "You are gaining <h3 style='color: #ff0000; font-weight: bold;'>" + format(layers[this.layer].pointGen()) + "</h3> terrible generators per second"
         }],
         "blank",
-        "milestones",
+        ["milestones", [0,1]],
         "clickables",
         ["upgrades", [1,2,3,4,5,6,7,8]],
+        ["milestones", [2,3,4,5,6,7,8,9]]
     ],
     layerShown(){return hasMilestone('p',1) || hasMilestone('univ',2)},
 
@@ -2592,7 +2651,7 @@ addLayer("med", {
         },
         31: {
             title: "Diabolical",
-            description: "Get 1 mediocre generator per second.",
+            description: "Get 1 mediocre generator per second. Also, unlock a good generator upgrade.",
             cost: new Decimal(300),
             unlocked(){return hasUpgrade('terri',83)},
         },
@@ -4994,7 +5053,7 @@ addLayer("mass", {
         return hasMilestone(this.layer, 13) ? 1 : 0
     },
     update(diff) {
-        if (hasMilestone(this.layer, 16)) {
+        if ((hasMilestone(this.layer, 16)) && (!hasMilestone("mass", 32))) {
             layers[this.layer].buyables[11].buyMax()
             layers[this.layer].buyables[12].buyMax()
             layers[this.layer].buyables[13].buyMax()
@@ -5015,13 +5074,19 @@ addLayer("mass", {
                 layers[this.layer].clickables[31].onClick()
             }
         }
-        if (hasMilestone(this.layer, 28)) {
+        if ((hasMilestone(this.layer, 28)) && (!hasMilestone("mass", 32))) {
             layers[this.layer].buyables[31].buyMax()
             layers[this.layer].buyables[32].buyMax()
             layers[this.layer].buyables[33].buyMax()
             layers[this.layer].buyables[41].buyMax()
             layers[this.layer].buyables[42].buyMax()
             layers[this.layer].buyables[43].buyMax()
+        if ((hasMilestone(this.layer, 30)) && (player.mass.tetr.lte(125))) player.mass.tetr = new Decimal(126) 
+        if ((hasMilestone(this.layer, 31)) && ((player.mass.tetr.lte(542)) || (player.mass.tier.lte(590000)) || (player.mass.rank.lte(9.97e8))) && (!hasMilestone("mass", 32))) {
+            player.mass.tetr = new Decimal(543)
+            player.mass.tier = new Decimal(590001)
+            player.mass.rank = new Decimal(9.98e8)
+        } 
         }
     },
     baseResource: "money", // Name of resource prestige is based on
@@ -5304,28 +5369,30 @@ addLayer("mass", {
                 return player[this.layer].tier.gte(reqTier)
             },
             onClick() {
+                if (!hasMilestone("mass", 30)) {
+                    player[this.layer].tier = new Decimal(0)
+                    player[this.layer].rank = new Decimal(0)
+                    player[this.layer].points = new Decimal(0)
+                    player.points = new Decimal(0)
+                    setBuyableAmount(this.layer, 11, new Decimal(0))
+                    setBuyableAmount(this.layer, 12, new Decimal(0))
+                    setBuyableAmount(this.layer, 13, new Decimal(0))
+                    setBuyableAmount(this.layer, 21, new Decimal(0))
+                    setBuyableAmount(this.layer, 22, new Decimal(0))
+                    setBuyableAmount(this.layer, 23, new Decimal(0))
+                    setBuyableAmount(this.layer, 31, new Decimal(0))
+                    setBuyableAmount(this.layer, 32, new Decimal(0))
+                    setBuyableAmount(this.layer, 33, new Decimal(0))
+                    setBuyableAmount(this.layer, 41, new Decimal(0))
+                    setBuyableAmount(this.layer, 42, new Decimal(0))
+                    setBuyableAmount(this.layer, 43, new Decimal(0))
+                    player[this.layer].milestones = player[this.layer].milestones.filter(id => {
+                        let num = Number(id)
+                        return num === 9 || num === 24 || num === 13 || num === 16 || num === 19 || num >= 25
+                    })
+                }
                 player[this.layer].tetr = player[this.layer].tetr.add(1)
-                player[this.layer].tier = new Decimal(0)
-                player[this.layer].rank = new Decimal(0)
-                player[this.layer].points = new Decimal(0)
-                player.points = new Decimal(0)
-                setBuyableAmount(this.layer, 11, new Decimal(0))
-                setBuyableAmount(this.layer, 12, new Decimal(0))
-                setBuyableAmount(this.layer, 13, new Decimal(0))
-                setBuyableAmount(this.layer, 21, new Decimal(0))
-                setBuyableAmount(this.layer, 22, new Decimal(0))
-                setBuyableAmount(this.layer, 23, new Decimal(0))
-                setBuyableAmount(this.layer, 31, new Decimal(0))
-                setBuyableAmount(this.layer, 32, new Decimal(0))
-                setBuyableAmount(this.layer, 33, new Decimal(0))
-                setBuyableAmount(this.layer, 41, new Decimal(0))
-                setBuyableAmount(this.layer, 42, new Decimal(0))
-                setBuyableAmount(this.layer, 43, new Decimal(0))
-                player[this.layer].milestones = player[this.layer].milestones.filter(id => {
-                    let num = Number(id)
-                    return num === 9 || num === 24 || num === 13 || num === 16 || num === 19 || num >= 25
-                })
-            }
+            },
         },
     },
     buyables: {
@@ -6564,19 +6631,19 @@ addLayer("mass", {
             }
         },
         30: {
-            requirementDescription: "Tetr 9,443",
-            effectDescription: "Soon?",
-            done() { return player[this.layer].tetr.gte(9443) },
+            requirementDescription: "Tetr 30",
+            effectDescription: "This is taking too long. Tetr resets nothing, and skip all the boring bits for once!!",
+            done() { return player[this.layer].tetr.gte(30) },
         },
         31: {
-            requirementDescription: "Tetr 123,456,789",
-            effectDescription: "Soon?",
-            done() { return player[this.layer].tetr.gte(123456789) },
+            requirementDescription: "Tetr 127",
+            effectDescription: "Oh no. OH NO. ^2 money again... WARNING: SEVERE LAG - but skip some bits.",
+            done() { return player[this.layer].tetr.gte(127) },
         },
         32: {
-            requirementDescription: "Tetr ♾",
-            effectDescription: "Soon?",
-            done() { return player[this.layer].tetr.gte(Infinity) },
+            requirementDescription: "Tetr 544",
+            effectDescription: "Uncap points. <i><strong>THY END IS NOW.</strong></i> *Though we do have to undo milestones 16 and 28 otherwise the game dies :(",
+            done() { return player[this.layer].tetr.gte(544) },
         },
     },
     resetsNothing() {return hasUpgrade('ult',12)},
