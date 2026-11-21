@@ -2257,9 +2257,12 @@ addLayer("terri", {
         }],
         "blank",
         ["milestones", [0,1]],
+        "blank",
         "clickables",
+        ["milestones", [2,3,4,5,6,7,8,9]],
+        "blank",
+        "blank",
         ["upgrades", [1,2,3,4,5,6,7,8]],
-        ["milestones", [2,3,4,5,6,7,8,9]]
     ],
     layerShown(){return hasMilestone('p',1) || (hasMilestone('univ',2) && (!hasMilestone("univ", 3)))},
 
